@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Title of the document</title>
+</head>
+
+<body>
+{% block content %}
+<ul>
+    {% if not feedbacks %}
+    <h3>No feedbacks to show!</h3>
+    {% endif %}
+    {% for feedback in feedbacks %}
+    <li>{{ feedback.lat }} {{ feedback.lon }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
+</body>
+
+</html>
