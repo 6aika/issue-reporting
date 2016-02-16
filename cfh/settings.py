@@ -115,7 +115,8 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+# Use our own DATETIME format, see below
+USE_L10N = False
 
 USE_TZ = True
 
@@ -125,3 +126,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 GEOS_LIBRARY_PATH="/Applications/Postgres.app/Contents/Versions/latest/lib/libgeos_c.dylib"
+
+# Default formatting
+DATETIME_FORMAT = "j.n.Y - G:i"
+DATE_FORMAT = "j.n.Y"

@@ -1,0 +1,23 @@
+<!-- Template for creating small feedback box -->
+<div class="short-feedback-box">
+	<div class="row">
+		<div class="col-xs-12">
+			<h4>{{feedback.title|default:"NO TITLE"}}</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<h5>{{feedback.service_name}}</h5>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<span>Avattu: {{feedback.requested_datetime}}</span>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<span>Ratkaistu: {{feedback.updated_datetime}}</span>
+		</div>
+	</div>
+</div>

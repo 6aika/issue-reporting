@@ -7,26 +7,18 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span> 
 			</button>
-			<a class="navbar-brand" href="/">Fix my Helsinki</a>
+			<a class="navbar-brand" href="/">CFH</a>
 		</div>
 		<div class="collapse navbar-collapse" id="myNavbar">
 			<ul class="nav navbar-nav">
 				<li><a href="#">Anna palaute</a></li>
-				<li><a href="#">Listaa palautteet</a></li>
+				<li><a href="{% url 'feedback_list' %}">Listaa palautteet</a></li>
 				<li><a href="#">Ohje</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li><a href="#"><span class="glyphicon glyphicon-user"></span> Rekisteröidy</a></li>
 				<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Kirjaudu</a></li>
 			</ul>
-			 <form class="navbar-form navbar-right" method="get">
-			    <div class="input-group">
-			        <input type="text" class="form-control" placeholder="Etsi palautteita..." name="searchterm">
-			        <div class="input-group-btn">
-			            <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-			        </div>
-			    </div>
-			</form>
 		</div>
 	</div>
 </nav>

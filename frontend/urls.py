@@ -1,7 +1,8 @@
 from django.conf.urls import url
 
-from frontend.views import locations_demo
+import frontend.views
 
 urlpatterns = [
-    url(r'^$', locations_demo, name='locations_demo')
+    url(r'^$', frontend.views.mainpage, name='mainpage'),
+    url(r'^feedbacks/$', frontend.views.feedback_list, name="feedback_list")
 ]

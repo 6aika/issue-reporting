@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>{% block title %}Fix my Helsinki{% endblock %}</title>
+		<title>{% block title %}City Feedback Hub{% endblock %}</title>
 
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,10 +14,13 @@
 		{% endblock meta %}
 	</head>
 	<body>
-		{% include "navbar.html" %}
+		{% include "navbar.html" %} <!-- This block for special cases where full width is needed -->
+		{% block full_width_content %}
 		<div class="container">
 			{% block content %}
+				<!-- NORMALLY USE THIS BLOCK -->
 			{% endblock %}
 		</div>
+		{% endblock %}
 	</body>
 </html>

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% for item in feedbacks %}
+<div class="feedback_list_item">
+	<div class="row">
+		<div class="col-sm-3">
+			<img class="img-responsive" src="https://placehold.it/350x250" />
+		</div>
+		<div class="col-sm-6">
+			<div class="row">
+				<div class="col-sm-9">
+					<div class=row>
+						<div class="col-sm-12">
+							<h4>{{item.title|default:'NO TITLE'}}</h4>
+						</div>
+					</div>
+					<div class=row>
+						<div class="col-sm-12">
+							<p>{{item.service_name}}</p>
+						</div>
+					</div>
+				</div>
+				<div class="sm-col-3">
+					<span class="feedback_list_thumb glyphicon glyphicon-thumbs-up"></span>
+					<span class="badge feedback_list_thumb_badge">76</span>
+				</div>
+			</div>
+			<div class=row>
+				<div class="col-sm-12">
+					<p>{{item.description | truncatechars:300}}</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="row">
+				<div class="col-sm-12">
+					<h4>{{item.status|capfirst}}</h4>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<p>{{item.updated_datetime}}</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<p>Etäisyys: 600m</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<a href="#">Näytä kartalla</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endfor %}
+{% endblock %}
