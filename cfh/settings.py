@@ -129,3 +129,7 @@ STATIC_URL = '/static/'
 # Default formatting
 DATETIME_FORMAT = "j.n.Y - G:i"
 DATE_FORMAT = "j.n.Y"
+
+# Set CFH environment variable to apply the path
+if "CFH" in os.environ:
+    GEOS_LIBRARY_PATH="/Applications/Postgres.app/Contents/Versions/latest/lib/libgeos_c.dylib"
