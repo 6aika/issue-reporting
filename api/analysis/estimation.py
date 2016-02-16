@@ -4,12 +4,12 @@ from ..models import Feedback
 
 
 def calc_fixing_time(service_code):
-    requests = Feedback.query.filter(Feedback.service_code == service_code, Feedback.status == 'closed').all()
+    requests = Feedback.objects.filter(service_code=service_code, status='closed').all()
 
     diffs = []
     for request in requests:
 
-        if request.service_code == service_code:
+        if request.service_code == str(service_code):
             a = request.requested_datetime
             b = request.updated_datetime
 
