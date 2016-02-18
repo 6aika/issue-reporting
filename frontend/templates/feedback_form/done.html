@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'feedback_form/stagebar.html' with stage="5"%}
+{% for item in form_data %}
+<p>{{item}}</p>
+{%endfor%}
+{% endblock %}

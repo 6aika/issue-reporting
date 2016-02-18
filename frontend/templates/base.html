@@ -9,12 +9,10 @@
 		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		{% block head %}
+		<!-- Custom CDN and CSS links here -->
+		{% endblock head %}
 		<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
-		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
-		<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
-		
-		{% block meta %}
-		{% endblock meta %}
 	</head>
 	<body>
 		{% include "navbar.html" %} <!-- This block for special cases where full width is needed -->
@@ -26,5 +24,4 @@
 		</div>
 		{% endblock %}
 	</body>
-	<script src="{% static 'map.js' %}"></script>
 </html>

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'feedback_form/stagebar.html' with stage=wizard.steps.step1%}
+<form method="post">
+{% csrf_token %}
+{{ wizard.management_form }}
+	{{form.category}}
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
