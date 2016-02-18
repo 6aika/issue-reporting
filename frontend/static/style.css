@@ -45,3 +45,8 @@ body {
 #info-row h3 {
 	margin-top: 0.1em;
 }
+
+#map { 
+	height: 400px; 
+	width: 100%; 
+}

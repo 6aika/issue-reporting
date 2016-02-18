@@ -14,3 +14,7 @@ def locations_demo(request):
 def feedback_list(request):
 	feedbacks = Feedback.objects.all()
 	return render(request, "feedback_list.html", {"feedbacks": feedbacks})
+
+def map(request):
+	feedbacks = Feedback.objects.all()
+	return render(request, "map.html", {"feedbacks": feedbacks})	
