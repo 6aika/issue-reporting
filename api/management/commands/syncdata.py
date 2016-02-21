@@ -112,7 +112,8 @@ def sync_all_data():
 
 
 def sync_new_data():
-    start_datetime = Feedback.objects.all().aggregate(Max('updated_datetime'))
+    start_datetime = Feedback.objects.all().aggregate(Max('updated_datetime'))['updated_datetime__max']\
+        .replace(tzinfo=None)
     sync_open311_data(start_datetime)
 
 
