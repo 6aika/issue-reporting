@@ -47,7 +47,7 @@ class MediaURL(models.Model):
     class Meta:
         db_table = 'media_urls'
 
-    request = models.ForeignKey('Feedback', on_delete=models.CASCADE, related_name='media_urls', null=True)
+    feedback = models.ForeignKey('Feedback', on_delete=models.CASCADE, related_name='media_urls', null=True)
     media_url = models.TextField(null=True)
 
 
@@ -55,7 +55,7 @@ class Task(models.Model):
     class Meta:
         db_table = 'tasks'
 
-    request = models.ForeignKey('Feedback', on_delete=models.CASCADE, related_name='tasks', null=True)
+    feedback = models.ForeignKey('Feedback', on_delete=models.CASCADE, related_name='tasks', null=True)
     task_state = models.TextField(null=True)
     task_type = models.TextField(null=True)
     owner_name = models.TextField(null=True)

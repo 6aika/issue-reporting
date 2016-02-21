@@ -138,6 +138,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 DATETIME_FORMAT = "j.n.Y - G:i"
 DATE_FORMAT = "j.n.Y"
 
+# OPEN311 synchronization options
+OPEN311_URL = "https://asiointi.hel.fi/palautews/rest/v1/requests.json"
+SYNCHRONIZATION_START_DATETIME = '2014-09-07T00:00:00'
+OPEN311_FEEDBACKS_PER_RESPONSE_LIMIT = 500
+OPEN311_RANGE_LIMIT_DAYS = 90
+
 # Set CFH environment variable to apply the path
 if "CFH" in os.environ:
     GEOS_LIBRARY_PATH = "/Applications/Postgres.app/Contents/Versions/latest/lib/libgeos_c.dylib"
