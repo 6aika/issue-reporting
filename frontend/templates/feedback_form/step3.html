@@ -1,11 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
 {% include 'feedback_form/stagebar.html' with stage=wizard.steps.step1%}
-<form method="post">
+<form method="post" class="form-horizontal">
 {% csrf_token %}
 {{ wizard.management_form }}
-	{{form.title}}
-	{{form.description}}
-	<button type="submit" class="btn btn-primary">Submit</button>
+	<div class="form-group">
+		<label for="{{form.title.id_for_label}}" class="col-sm-2 control-label">Otsikko:</label>
+		<div class="col-sm-8">
+			{{form.title}}
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="{{form.title.id_for_label}}" class="col-sm-2 control-label">Kuvaus:</label>
+		<div class="col-sm-8">
+			{{form.description}}
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-8">
+			<button type="submit" class="btn btn-primary">Seuraava</button>
+		</div>
+	</div>
 </form>
 {% endblock %}
