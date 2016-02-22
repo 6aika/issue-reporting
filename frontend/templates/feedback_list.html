@@ -1,71 +1,110 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% for item in feedbacks %}
-<div class="feedback_list_item">
-	<div class="row">
-		<div class="col-sm-3">
-			<img class="img-responsive" src="{{item.media_url|default:'https://placehold.it/350x250'}}" />
-		</div>
-		<div class="col-sm-6">
-			<div class="row">
-				<div class="col-sm-9">
-					<div class=row>
-						<div class="col-sm-12">
-							<h4>{{item.title|default:'NO TITLE'}}</h4>
-						</div>
-					</div>
-					<div class=row>
-						<div class="col-sm-12">
-							<p>{{item.service_name}}</p>
-						</div>
-					</div>
-				</div>
-				<div class="sm-col-3">
-					<span class="feedback_list_thumb glyphicon glyphicon-thumbs-up"></span>
-					<span class="badge feedback_list_thumb_badge">76</span>
-				</div>
-			</div>
-			<div class=row>
-				<div class="col-sm-12">
-					<p>{{item.description | truncatechars:300}}</p>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-3">
-			<div class="row">
-				<div class="col-sm-12">
-					<h4>{{item.status|capfirst}}</h4>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12">
-					<p>{{item.updated_datetime}}</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12">
-					<p>Etäisyys: 600 m</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12">
-					<a href="#">Näytä kartalla</a>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-{% endfor %}
-<div class="row">
-	<div class="col-xs-12">
-	    {% if feedbacks.has_previous %}
-	        <a href="?{{get_params.urlencode}}&amp;page={{ feedbacks.previous_page_number }}" role="button" class="btn btn-default">Previous</a>
-	    {% endif %}
-	    <span class="current">Page: {{ feedbacks.number }} / {{ feedbacks.paginator.num_pages }}</span>
-	    {% if feedbacks.has_next %}
-	        <a href="?{{get_params.urlencode}}&amp;page={{ feedbacks.next_page_number }}" role="button" class="btn btn-default">Next</a>
-	    {% endif %}
+    {% for item in feedbacks %}
+        <div class="feedback_list_item">
+            <div class="row">
+                <div class="col-sm-3 col-md-3 feedback_list_img">
+                    <img class="img-responsive center-cropped"
+                         src="{{ item.media_url|default:'https://placehold.it/240x240' }}"/>
+                </div>
+                <div class="col-sm-6 col-md-6 feedback_list_content">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <div class=row>
+                                <div class="col-sm-12">
+                                    <a href="{{ item.id }}"><h4>{{ item.title|default:'NO TITLE' }}</h4></a>
+                                </div>
+                            </div>
+                            <div class=row>
+                                <div class="col-sm-12">
+                                    <p>{{ item.service_name }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 text-info">
+                            <p>Luotu:
+                                <small>{{ item.requested_datetime }}</small>
+                            </p>
+                        </div>
+
+                        <div class="sm-col-3">
+                            <span class="feedback_list_thumb glyphicon glyphicon-exclamation-sign"></span>
+                            <span class="badge feedback_list_thumb_badge">76</span>
+                        </div>
+                    </div>
+                    <div class=row>
+                        <div class="col-sm-12">
+                            <p>{{ item.description | truncatechars:300 }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-md-3 feedback_list_details">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            {% if item.status == 'closed' %}
+                                <h4 class="text-danger">{{ item.status|capfirst }}<br/>
+                                    <small>{{ item.updated_datetime }}</small>
+                                </h4>{% else %}
+                                <h4 class="text-success">{{ item.status|capfirst }}<br/>
+                                    <small>{{ item.updated_datetime }}</small>
+                                </h4>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-info">
+                            <p>Arvio: <br/>
+                                <small>{{ item.expected_datetime }}</small>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p>Etäisyys: 600 m</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p>
+                                <a href="#" data-toggle="popover">
+                                    <small>{{ item.address_string }}</small>
+                                </a>
+                                <script>
+                                    $(document).ready(function () {
+                                        $('[data-toggle="popover"]').popover({
+                                            html: true,
+                                            content: function () {
+                                                return '<img src="https://placehold.it/220x220" />';
+                                            }
+                                        });
+                                    });
+                                </script>
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="row">
+        <div class="col-xs-12">
+            <ul class="pagination nav navbar-nav">
+                {% if feedbacks.has_previous %}
+                    <li><a href="?page={{ feedbacks.previous_page_number }}">Prev</a></li>
+                {% endif %}
+                {% for page in feedbacks.paginator.page_range %}
+                    <li class="{% if feedbacks.number == page %}active{% endif %}"><a
+                            href="?page={{ page }}">{{ page }}</a></li>
+                {% endfor %}
+
+                {% if feedbacks.has_next %}
+                    <li><a href="?page={{ feedbacks.next_page_number }}">Next</a></li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
-</div>
 {% endblock %}
