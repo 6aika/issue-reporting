@@ -17,9 +17,18 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-8">
+		<div class="col-sm-offset-2 col-sm-2 col-xs-2">
 			<button type="submit" class="btn btn-primary">Seuraava</button>
 		</div>
+		<span class="col-sm-4 col-sm-offset-2 col-xs-6 col-xs-offset-4 text-right" id="char_counter">5000 merkkiä jäljellä</span>
 	</div>
 </form>
+<script>
+$("#{{form.description.id_for_label}}").keyup(function() {
+  var text_length = $('#{{form.description.id_for_label}}').val().length;
+  var text_remaining = 5000 - text_length;
+  
+  $('#char_counter').text(text_remaining + " merkkiä jäljellä");
+});
+</script>
 {% endblock %}

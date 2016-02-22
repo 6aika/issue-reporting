@@ -10,5 +10,5 @@ class FeedbackForm2(forms.Form):
 
 class FeedbackForm3(forms.Form):
 	title = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Anna otsikko..."}))
-	description = forms.CharField(required=True, widget=forms.Textarea(attrs={'rows': 8, 'class': 'form-control', 'placeholder': "Kirjoita tarkka kuvaus..."}))
+	description = forms.CharField(required=True, widget=forms.Textarea(attrs={'rows': 8, 'maxlength': 5000, 'class': 'form-control', 'placeholder': "Kirjoita tarkka kuvaus..."}))
 
