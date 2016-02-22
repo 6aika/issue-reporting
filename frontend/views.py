@@ -4,12 +4,19 @@ from formtools.wizard.views import SessionWizardView
 from frontend.forms import FeedbackForm1, FeedbackForm2, FeedbackForm3
 from api.models import Feedback
 
+import urllib.request, json
+
+
 FORMS = [("location", FeedbackForm1), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
 TEMPLATES = {"location": "feedback_form/step1.html", "category": "feedback_form/step2.html", "basic_info": "feedback_form/step3.html"}
 
 def mainpage(request):
-	fixed_feedbacks = Feedback.objects.all()[0:4]
-	return render(request, "mainpage.html", {"fixed_feedbacks": fixed_feedbacks})
+	context = {}
+	fixed_feedbacks = Feedback.objects.filter(status="closed")[0:4]
+	recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
+	context["fixed_feedbacks"] = fixed_feedbacks
+	context["recent_feedbacks"]  = recent_feedbacks
+	return render(request, "mainpage.html", context)
 
 def locations_demo(request):
 	feedbacks = Feedback.objects.all()
@@ -36,9 +43,38 @@ def map(request):
 	feedbacks = Feedback.objects.all()
 	return render(request, "map.html", {"feedbacks": feedbacks})
 
+
+# Returns all Helsinki services as a python object
+def get_services():
+	url = "https://asiointi.hel.fi/palautews/rest/v1/services.json?locale=fi_FI"
+	response = urllib.request.urlopen(url)
+	data = json.loads(response.read().decode("utf8"))
+	return data
+
 class FeedbackWizard(SessionWizardView):
 	def get_template_names(self):
 		return [TEMPLATES[self.steps.current]]
+
+	def get_context_data(self, form, **kwargs):
+		context = super(FeedbackWizard, self).get_context_data(form=form, **kwargs)
+		if self.steps.current == 'category':
+			categories = []
+			data = get_services()
+
+			GLYPHICONS = ["glyphicon-wrench", "glyphicon-road", "glyphicon-euro", "glyphicon-music", "glyphicon-glass", "glyphicon-heart", "glyphicon-star", "glyphicon-user", "glyphicon-film", "glyphicon-home"]
+
+			for idx, item in enumerate(data):
+				category = {}
+				category["name"] = item["service_name"]
+				category["description"] = item["description"]
+				category["src"] = "https://placehold.it/150x150"
+				category["alt"] = "Category image"
+				category["glyphicon"] = GLYPHICONS[idx]
+				categories.append(category)
+
+			context.update({'categories': categories})
+
+		return context
 
 	def done(self, form_list, **kwargs):
 		return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
