@@ -51,3 +51,12 @@ body {
 	height: 400px; 
 	width: 100%; 
 }
+
+/* Color for item under mouse in category selection */ 
+.feedback_form_category_item:hover {
+	background-color: #ddd
+}
+
+.feedback_form_category_item.active {
+	border-color: #000
+}

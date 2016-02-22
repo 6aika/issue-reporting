@@ -8,4 +8,21 @@
 	{{form.category}}
 	<button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+<script>
+var selected = null;
+$(function () {
+	$(".feedback_form_category_item").click(item_clicked);
+});
+
+function item_clicked(event) {
+	$("#id_category-category").val($(this).attr("id"));
+	if(selected) {
+		$(selected).removeClass("active");
+	}
+	selected = $(this);
+	$(this).addClass("active");
+}
+
+</script>
 {% endblock %}
