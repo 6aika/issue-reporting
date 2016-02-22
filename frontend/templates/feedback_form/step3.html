@@ -11,9 +11,15 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="{{form.title.id_for_label}}" class="col-sm-2 control-label">Kuvaus:</label>
+		<label for="{{form.description.id_for_label}}" class="col-sm-2 control-label">Kuvaus:</label>
 		<div class="col-sm-8">
 			{{form.description}}
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="{{form.image.id_for_label}}" class="col-sm-2 control-label">Liitä kuva:</label>
+		<div class="col-sm-8">
+			{{form.image}}
 		</div>
 	</div>
 	<div class="form-group">
@@ -23,6 +29,7 @@
 		<span class="col-sm-4 col-sm-offset-2 col-xs-6 col-xs-offset-4 text-right" id="char_counter">5000 merkkiä jäljellä</span>
 	</div>
 </form>
+{{form.errors}}
 <script>
 $("#{{form.description.id_for_label}}").keyup(function() {
   var text_length = $('#{{form.description.id_for_label}}').val().length;

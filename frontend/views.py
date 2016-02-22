@@ -1,9 +1,11 @@
 from django.shortcuts import render, render_to_response
+from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from formtools.wizard.views import SessionWizardView
 from frontend.forms import FeedbackForm1, FeedbackForm2, FeedbackForm3
 from api.models import Feedback
-
+import os
+from django.conf import settings
 import urllib.request, json
 
 
@@ -52,6 +54,8 @@ def get_services():
 	return data
 
 class FeedbackWizard(SessionWizardView):
+	file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos'))
+
 	def get_template_names(self):
 		return [TEMPLATES[self.steps.current]]
 
