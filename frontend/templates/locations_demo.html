@@ -5,7 +5,7 @@
     <h3>No feedbacks to show!</h3>
     {% endif %}
     {% for feedback in feedbacks %}
-    <li>{{ feedback.lat }} {{ feedback.lon }}</li>
+    <li>{{feedback.distance}} to {{feedback.address_string}} - lat: {{ feedback.lat }}, lon: {{ feedback.lon }}</li>
     {% endfor %}
 </ul>
 {% endblock %}
