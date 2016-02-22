@@ -70,6 +70,7 @@ class FeedbackWizard(SessionWizardView):
 				category["src"] = "https://placehold.it/150x150"
 				category["alt"] = "Category image"
 				category["glyphicon"] = GLYPHICONS[idx]
+				# category["code"] = item["service_code"]
 				categories.append(category)
 
 			context.update({'categories': categories})
