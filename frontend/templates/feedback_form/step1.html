@@ -1,10 +1,62 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+{% endblock %}
+
 {% block content %}
-{% include 'feedback_form/stagebar.html' with stage=wizard.steps.step1%}
-<form method="post">
-{% csrf_token %}
-{{ wizard.management_form }}
-	{{form.address}}
-	<button type="submit" class="btn btn-primary">Submit</button>
-</form>
+
+{% include 'feedback_form/stagebar.html' with stage=wizard.steps.step1 %}
+	<form method="post">
+	{% csrf_token %}
+	{{ wizard.management_form }}
+		{{ form.address }}
+		{{ form.latitude }}
+		{{ form.longitude }}
+		<button type="submit" class="btn btn-primary">Submit</button>
+	</form>
+<div id="map">
+</div>
+
+<script>
+"use strict";
+
+var HelsinkiCoord = {lat: 60.211, lng: 24.948};
+
+var map = L.map('map').setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 12);
+
+L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+    maxZoom: 18,
+}).addTo(map);
+
+map.on('click', updateMarker);
+
+var userLocation = new L.marker([HelsinkiCoord.lat, HelsinkiCoord.lng]).addTo(map);
+storeLocation(userLocation.getLatLng());
+
+function updateMarker(e){
+    if ( typeof(userLocation) === 'undefined' )
+	{
+    	userLocation = new L.marker(e.latlng).addTo(map);
+    	map.panTo(e.latlng);
+    	storeLocation(e.latlng);
+    }
+    else 
+	{
+		userLocation.setLatLng(e.latlng); 
+		map.panTo(e.latlng);
+		storeLocation(e.latlng)       
+	}
+}
+
+// TODO: Change to use {{form.latitude.id_for_label}} instead #id.
+function storeLocation(latlng) {
+	console.log(latlng);
+	$("#id_location-latitude").val(latlng.lat);
+	$("#id_location-longitude").val(latlng.lng);
+}
+</script>
 {% endblock %}

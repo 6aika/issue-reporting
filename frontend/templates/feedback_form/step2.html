@@ -1,10 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
 {% include 'feedback_form/stagebar.html' with stage=wizard.steps.step1%}
+{% include "feedback_form/category_list.html" %}
 <form method="post">
 {% csrf_token %}
 {{ wizard.management_form }}
 	{{form.category}}
 	<button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+<script>
+var selected = null;
+$(function () {
+	$(".feedback_form_category_item").click(item_clicked);
+});
+
+function item_clicked(event) {
+	$("#{{form.category.id_for_label}}").val($(this).attr("id"));
+	if(selected) {
+		$(selected).removeClass("active");
+	}
+	selected = $(this);
+	$(this).addClass("active");
+}
+</script>
 {% endblock %}

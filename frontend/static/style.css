@@ -105,3 +105,21 @@ body {
     color: red;
     font-size: 10px;
 }
+
+/* Color for item under mouse in category selection */
+.feedback_form_category_item:hover {
+	background-color: #eee
+}
+
+.category_icon {
+	color: #777;
+	font-size: 5em;
+}
+.active .category_icon {
+	color: #000;
+}
+
+.feedback_form_category_item.active {
+	border-color: #000;
+	background-color: #ddd;
+}
