@@ -16,13 +16,12 @@ $(function () {
 });
 
 function item_clicked(event) {
-	$("#id_category-category").val($(this).attr("id"));
+	$("#{{form.category.id_for_label}}").val($(this).attr("id"));
 	if(selected) {
 		$(selected).removeClass("active");
 	}
 	selected = $(this);
 	$(this).addClass("active");
 }
-
 </script>
 {% endblock %}
