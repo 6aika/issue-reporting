@@ -57,4 +57,15 @@
 	</div>
 </div>
 {% endfor %}
+<div class="row">
+	<div class="col-xs-12">
+	    {% if feedbacks.has_previous %}
+	        <a href="?{{get_params.urlencode}}&amp;page={{ feedbacks.previous_page_number }}" role="button" class="btn btn-default">Previous</a>
+	    {% endif %}
+	    <span class="current">Page: {{ feedbacks.number }} / {{ feedbacks.paginator.num_pages }}</span>
+	    {% if feedbacks.has_next %}
+	        <a href="?{{get_params.urlencode}}&amp;page={{ feedbacks.next_page_number }}" role="button" class="btn btn-default">Next</a>
+	    {% endif %}
+    </div>
+</div>
 {% endblock %}

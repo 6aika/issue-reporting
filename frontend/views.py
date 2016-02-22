@@ -1,4 +1,5 @@
 from django.shortcuts import render, render_to_response
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from formtools.wizard.views import SessionWizardView
 from frontend.forms import FeedbackForm1, FeedbackForm2, FeedbackForm3
 from api.models import Feedback
@@ -16,7 +17,20 @@ def locations_demo(request):
 
 def feedback_list(request):
 	feedbacks = Feedback.objects.all()
+	page = request.GET.get("page")
+	feedbacks = paginate_query_set(feedbacks, 20, page)
 	return render(request, "feedback_list.html", {"feedbacks": feedbacks})
+
+	# Helper function. Paginates given queryset. Used for game list views.
+def paginate_query_set(query_set, items_per_page, page):
+	paginator = Paginator(query_set, items_per_page)
+	try:
+		paginate_set = paginator.page(page)
+	except PageNotAnInteger:
+		paginate_set = paginator.page(1)
+	except EmptyPage:
+		paginate_set = paginator.page(paginator.num_pages)
+	return paginate_set
 
 def map(request):
 	feedbacks = Feedback.objects.all()
