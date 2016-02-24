@@ -1,9 +1,8 @@
 {% extends "base.html" %}
-
+{% load staticfiles %}
 {% block head %}
-<script src="//cdn.jsdelivr.net/alertifyjs/1.6.1/alertify.min.js"></script>
-<link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.6.1/css/alertify.min.css"/>
-<link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.6.1/css/themes/bootstrap.min.css"/>
+<link rel="stylesheet" href="{% static 'animate.css' %}"/>
+<script type="text/javascript" src="{% static 'bootstrap-notify.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -115,24 +114,45 @@
     </div>
 </div>
 <script type="text/javascript">
+    $.notifyDefaults({
+        type: "success",
+        animate: {
+            enter: 'animated bounceIn',
+            exit: 'animated bounceOut'
+        },
+        placement: {
+            from: "bottom",
+            align: "right"
+        }
+    });
     $(function(){
         // Voting. Do a POST request to record the vote
         $(".feedback_list_vote_icon").click(function () {
             var id = $(this).attr("id");
             var data = {id: id, csrfmiddlewaretoken: "{{ csrf_token }}"};
             $.post("{% url 'vote_feedback' %}", data, function(data){
-                if(data.status = "success"){
+                if(data.status === "success"){
                     value = parseInt($(this).next().text()) + 1;
                     $(this).next().text(value);
-                    alertify.notify('Äänesi on rekisteröity!', 'success', 5);
+                    $.notify({
+                      message: "Kiitos, äänesi on rekisteröity!"
+                    },{
+                      type: "success"
+                    });  
                 }
                 else {
-                    //console.log("Error in voting: ", data.status);
-                    alertify.notify('Ääntä ei voitu tallentaa!', 'error', 5);
+                    var message = "Virhe, ääntäsi ei voitu tallentaa! [" + data.status + "]";
+                    $.notify({
+                        message: message
+                    },{
+                        type: "danger"
+                    });
                 }
             }.bind(this));
         });
     });
 </script>
+<script>
 
+</script>
 {% endblock %}
