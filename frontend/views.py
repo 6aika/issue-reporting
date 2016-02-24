@@ -2,12 +2,13 @@ import json
 import os
 import urllib.request
 
+from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
-from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http.response import JsonResponse
 from django.shortcuts import render, render_to_response
 from formtools.wizard.views import SessionWizardView
 
@@ -36,10 +37,21 @@ def locations_demo(request):
 
 
 def feedback_list(request):
-    feedbacks = Feedback.objects.all()
+    feedbacks = Feedback.objects.all().order_by("-requested_datetime")
     page = request.GET.get("page")
     feedbacks = paginate_query_set(feedbacks, 20, page)
     return render(request, "feedback_list.html", {"feedbacks": feedbacks})
+
+def vote_feedback(request):
+	try:
+		id = request.POST["id"]
+		feedback = Feedback.objects.get(service_request_id=id)
+	except (Feedback.DoesNotExist, KeyError):
+		return
+	else:
+		feedback.vote_counter += 1
+		feedback.save()
+		return JsonResponse({'status': 'success'})
 
 
 # Helper function. Paginates given queryset. Used for game list views.
