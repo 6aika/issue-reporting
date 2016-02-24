@@ -9,7 +9,7 @@ from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http.response import JsonResponse
-from django.shortcuts import render, render_to_response
+from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
 
 from api.models import Feedback
@@ -43,15 +43,20 @@ def feedback_list(request):
     return render(request, "feedback_list.html", {"feedbacks": feedbacks})
 
 def vote_feedback(request):
-	try:
-		id = request.POST["id"]
-		feedback = Feedback.objects.get(service_request_id=id)
-	except (Feedback.DoesNotExist, KeyError):
-		return
+	if request.method == "POST":
+		try:
+			id = request.POST["id"]
+			feedback = Feedback.objects.get(service_request_id=id)
+		except KeyError:
+			return JsonResponse({'status': 'No id parameter!'})
+		except Feedback.DoesNotExist:
+			return JsonResponse({'status': 'No such feedback!'})
+		else:
+			feedback.vote_counter += 1
+			feedback.save()
+			return JsonResponse({'status': 'success'})
 	else:
-		feedback.vote_counter += 1
-		feedback.save()
-		return JsonResponse({'status': 'success'})
+		return redirect("feedback_list")
 
 
 # Helper function. Paginates given queryset. Used for game list views.

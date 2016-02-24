@@ -118,10 +118,9 @@
                 if(data.status = "success"){
                     value = parseInt($(this).next().text()) + 1;
                     $(this).next().text(value);
-                    console.log("Voted! ", value);
                 }
                 else {
-                    console.log("Vote failed");
+                    console.log("Error in voting: ", data.status);
                 }
             }.bind(this));
         });
