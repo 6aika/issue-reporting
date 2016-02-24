@@ -30,8 +30,8 @@
                     </div>
 
                     <div class="sm-col-3">
-                        <span class="feedback_list_thumb glyphicon glyphicon-exclamation-sign" id="{{item.service_request_id}}"></span>
-                        <span class="badge feedback_list_thumb_badge">{{item.vote_counter}}</span>
+                        <span class="feedback_list_vote_icon glyphicon glyphicon-exclamation-sign" id="{{item.service_request_id}}"></span>
+                        <span class="badge feedback_list_vote_badge">{{item.vote_counter}}</span>
                     </div>
                 </div>
                 <div class=row>
@@ -111,7 +111,7 @@
 <script type="text/javascript">
     $(function(){
         // Voting. Do a POST request to record the vote
-        $(".feedback_list_thumb").click(function () {
+        $(".feedback_list_vote_icon").click(function () {
             var id = $(this).attr("id");
             var data = {id: id, csrfmiddlewaretoken: "{{ csrf_token }}"};
             $.post("{% url 'vote_feedback' %}", data, function(data){
