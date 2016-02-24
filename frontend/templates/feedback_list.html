@@ -1,6 +1,12 @@
 {% extends "base.html" %}
-{% block content %}
 
+{% block head %}
+<script src="//cdn.jsdelivr.net/alertifyjs/1.6.1/alertify.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.6.1/css/alertify.min.css"/>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.6.1/css/themes/bootstrap.min.css"/>
+{% endblock %}
+
+{% block content %}
 {% for item in feedbacks %}
     <div class="feedback_list_item">
         <div class="row">
@@ -118,9 +124,11 @@
                 if(data.status = "success"){
                     value = parseInt($(this).next().text()) + 1;
                     $(this).next().text(value);
+                    alertify.notify('Äänesi on rekisteröity!', 'success', 5);
                 }
                 else {
-                    console.log("Error in voting: ", data.status);
+                    //console.log("Error in voting: ", data.status);
+                    alertify.notify('Ääntä ei voitu tallentaa!', 'error', 5);
                 }
             }.bind(this));
         });
