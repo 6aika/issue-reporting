@@ -75,5 +75,5 @@ class FeedbackViewSet(viewsets.ViewSet):
                 order_by=request.query_params.get('order_by', None)
         )
         serializer = FeedbackSerializer(queryset, many=True,
-                                        context={'extensions': request.query_params.get('extensions', False)})
+                                        context={'extensions': request.query_params.get('extensions', 'false')})
         return Response(serializer.data)

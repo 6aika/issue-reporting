@@ -32,12 +32,12 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
         media_urls = self.fields['media_urls']
         media_urls_value = media_urls.to_representation(
-            media_urls.get_attribute(instance)
+                media_urls.get_attribute(instance)
         )
 
         tasks = self.fields['tasks']
         tasks_value = tasks.to_representation(
-            tasks.get_attribute(instance)
+                tasks.get_attribute(instance)
         )
 
         representation = {
@@ -77,7 +77,8 @@ class FeedbackSerializer(serializers.ModelSerializer):
             'vote_counter': instance.vote_counter,
         }
 
-        if self.context.get('extensions').lower() == str(True).lower():
+        extensions = self.context.get('extensions')
+        if extensions and extensions[0].upper() == 'T':
             ext_attribute = self.fields['extended_attribute']
             ext_attribute_value = ext_attribute.to_representation(
                     ext_attribute.get_attribute(instance)
