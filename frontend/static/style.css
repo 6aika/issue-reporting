@@ -20,6 +20,7 @@ body {
 
 .feedback_list_vote_icon:hover {
     color: #e90;
+    cursor: pointer;
 }
 
 .feedback_list_vote_badge {
