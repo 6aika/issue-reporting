@@ -1,6 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
 {% include 'feedback_form/stagebar.html' with stage="5"%}
+<div class="row text-center">
+	<div class="col-sm-6 col-sm-offset-3">
+		<h1>Kiitos palautteesta!</h1>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-4 col-sm-offset-4">
+		<img class="img-responsive" src="https://s-media-cache-ak0.pinimg.com/564x/26/69/f9/2669f9640e9072f06b72ef0c6ad853e0.jpg" />
+	</div>
+</div>
+<div class="row text-center">
+	<div class="col-sm-6 col-sm-offset-3">
+		<p>
+			Palautteesi on vastaanotettu ja se pyritään käsittelemään mahdollisimman nopeasti. Arvostamme sitä, että haluat tehdä Helsingistämme vieläkin paremman paikan asua!
+		</p>
+	</div>
+</div>
 {% for item in form_data %}
 <p>{{item}}</p>
 {%endfor%}
