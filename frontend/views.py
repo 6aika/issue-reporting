@@ -98,7 +98,7 @@ def statistic_page(request):
 
     zipped = zip(feedback_category,closed)
     return render(request, "statistic_page.html",{'feedback':zipped})
-#####}################################################
+#####################################################
 
 class FeedbackWizard(SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp'))
@@ -150,6 +150,10 @@ class FeedbackWizard(SessionWizardView):
     def done(self, form_list, form_dict, **kwargs):
         handle_uploaded_file(form_dict["basic_info"].cleaned_data["image"])
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
+
+def instructions(request):
+    context = {}
+    return render(request, "instructions.html", context)
 
 def handle_uploaded_file(file):
     if file:
