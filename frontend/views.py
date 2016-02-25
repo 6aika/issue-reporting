@@ -117,3 +117,8 @@ class FeedbackWizard(SessionWizardView):
 
 def done(self, form_list, **kwargs):
     return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
+
+def instructions(request):
+    context = {}
+    
+    return render(request, "instructions.html", context)
