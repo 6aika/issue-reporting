@@ -149,9 +149,12 @@ class FeedbackWizard(SessionWizardView):
         data["title"] = form_dict["basic_info"].cleaned_data["title"]
         data["description"] = form_dict["basic_info"].cleaned_data["description"]
         data["service_code"] = form_dict["category"].cleaned_data["service_code"]
-        data["location"] = location=GEOSGeometry('SRID=4326;POINT(' + str(f.get('long', 0)) + ' ' + str(f.get('lat', 0)) + ')')
+        latitude = form_dict["location"].cleaned_data["latitude"]
+        longitude = form_dict["location"].cleaned_data["longitude"]
+        data["location"] = location=GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
         new_feedback = Feedback(**data)
-        new_feedback.save()
+        print(new_feedback)
+        #new_feedback.save()
 
         handle_uploaded_file(form_dict["basic_info"].cleaned_data["image"])
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
