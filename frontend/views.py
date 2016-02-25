@@ -88,7 +88,7 @@ def get_services():
 
 
 class FeedbackWizard(SessionWizardView):
-    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos'))
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp'))
 
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
@@ -114,6 +114,11 @@ class FeedbackWizard(SessionWizardView):
                 context.update({'categories': categories})
         return context
 
+    def done(self, form_list, form_dict, **kwargs):
+        handle_uploaded_file(form_dict["basic_info"].cleaned_data["image"])
+        return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
 
-def done(self, form_list, **kwargs):
-    return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
+def handle_uploaded_file(file):
+    with open('mediafiles/file.gif', 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
