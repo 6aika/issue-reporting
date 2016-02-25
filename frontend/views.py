@@ -1,15 +1,14 @@
 import json
-import urllib.request
-
-import json
 import os
 import urllib.request
+import urllib.request
+import urllib.request
 
-from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
+from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render, render_to_response
@@ -42,24 +41,25 @@ def locations_demo(request):
 def feedback_list(request):
     feedbacks = Feedback.objects.all().order_by("-requested_datetime")
     page = request.GET.get("page")
-    feedbacks = paginate_query_set(feedbacks, 10, page)
+    feedbacks = paginate_query_set(feedbacks, 20, page)
     return render(request, "feedback_list.html", {"feedbacks": feedbacks})
 
+
 def vote_feedback(request):
-	if request.method == "POST":
-		try:
-			id = request.POST["id"]
-			feedback = Feedback.objects.get(service_request_id=id)
-		except KeyError:
-			return JsonResponse({'status': 'No id parameter!'})
-		except Feedback.DoesNotExist:
-			return JsonResponse({'status': 'No such feedback!'})
-		else:
-			feedback.vote_counter += 1
-			feedback.save()
-			return JsonResponse({'status': 'success'})
-	else:
-		return redirect("feedback_list")
+    if request.method == "POST":
+        try:
+            id = request.POST["id"]
+            feedback = Feedback.objects.get(service_request_id=id)
+        except KeyError:
+            return JsonResponse({'status': 'No id parameter!'})
+        except Feedback.DoesNotExist:
+            return JsonResponse({'status': 'No such feedback!'})
+        else:
+            feedback.vote_counter += 1
+            feedback.save()
+            return JsonResponse({'status': 'success'})
+    else:
+        return redirect("feedback_list")
 
 
 # Helper function. Paginates given queryset. Used for game list views.
@@ -112,9 +112,10 @@ class FeedbackWizard(SessionWizardView):
                 category["service_code"] = item["service_code"]
                 categories.append(category)
 
-            context.update({'categories': categories})
+                context.update({'categories': categories})
 
-        return context
+                return context
 
-    def done(self, form_list, **kwargs):
-        return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
+
+def done(self, form_list, **kwargs):
+    return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
