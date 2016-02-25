@@ -44,6 +44,7 @@ def feedback_list(request):
     feedbacks = Feedback.objects.all().order_by("-requested_datetime")
     page = request.GET.get("page")
     feedbacks = paginate_query_set(feedbacks, 20, page)
+    servicename = Feedback.objects.values_list('service_name', flat=True).distinct() 
     return render(request, "feedback_list.html", {"feedbacks": feedbacks})
 
 
