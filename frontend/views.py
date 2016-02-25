@@ -152,11 +152,12 @@ class FeedbackWizard(SessionWizardView):
         latitude = form_dict["closest"].cleaned_data["latitude"]
         longitude = form_dict["closest"].cleaned_data["longitude"]
         data["location"] = GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
+        image = form_dict["basic_info"].cleaned_data["image"]
+        if image:
+            handle_uploaded_file(image)
+            data["media_url"] = "/media/" + image.name
         new_feedback = Feedback(**data)
-        print(new_feedback)
         new_feedback.save()
-
-        handle_uploaded_file(form_dict["basic_info"].cleaned_data["image"])
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
 
 def instructions(request):
@@ -165,10 +166,9 @@ def instructions(request):
 
 # Now only saves the submitted file into MEDIA_ROOT directory
 def handle_uploaded_file(file):
-    if file:
-        with open(os.path.join(settings.MEDIA_ROOT,file.name), 'wb+') as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
+    with open(os.path.join(settings.MEDIA_ROOT,file.name), 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
 
 # Retrieve correct service_name from service_code
 def get_service_name(service_code):

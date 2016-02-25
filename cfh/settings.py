@@ -136,6 +136,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles/")
+MEDIA_URL = "/media/"
 
 # Default formatting
 DATETIME_FORMAT = "j.n.Y - G:i"
