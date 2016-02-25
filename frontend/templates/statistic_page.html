@@ -12,19 +12,17 @@
                     <th>Total</th>
                     <th>Processed</th>
                     <th>Average time</th>
-
                 </tr>
                 </thead>
                 <tbody>
-                {% for every, closed in feedback %}
+                {% for every, closed,avg in feedback %}
                     <tr>
                         <td>{{ every.service_name }}</td>
                         <td>{{ every.total }}</td>
-                        <td>{{ closed.total  }}</td>
+                        <td>{{ closed.total }}</td>
+                        <td>{{ avg.duration }}</td>
                     </tr>
                 {% endfor %}
-
-
                 </tbody>
             </table>
         </div>
