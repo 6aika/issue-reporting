@@ -34,6 +34,9 @@ class Feedback(models.Model):
 
     location = models.PointField(srid=4326)
 
+    # Keeps track of votes users have given to the feedback
+    vote_counter = models.IntegerField(default=0)
+
     @property
     def lon(self):
         return self.location[0]

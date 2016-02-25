@@ -36,7 +36,7 @@ def insert_feedback(f):
             service_object_id=f.get('service_object_id', ''),
             service_object_type=f.get('service_object_type', ''),
 
-            location=GEOSGeometry('SRID=4326;POINT(' + str(f.get('lat', 0)) + ' ' + str(f.get('long', 0)) + ')')
+            location=GEOSGeometry('SRID=4326;POINT(' + str(f.get('long', 0)) + ' ' + str(f.get('lat', 0)) + ')')
     )
 
     extended_attributes = f.get('extended_attributes', None)

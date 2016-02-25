@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'django_nose',
     'formtools',
+    'rest_framework',
     'api',
     'frontend',
 ]
@@ -143,6 +144,10 @@ OPEN311_URL = "https://asiointi.hel.fi/palautews/rest/v1/requests.json"
 SYNCHRONIZATION_START_DATETIME = '2014-09-07T00:00:00'
 OPEN311_FEEDBACKS_PER_RESPONSE_LIMIT = 500
 OPEN311_RANGE_LIMIT_DAYS = 90
+
+# geocoding options
+
+REVERSE_GEO_URL = 'http://api.hel.fi/servicemap/v1/address/?lat={}&lon={}&page=1'
 
 # Set CFH environment variable to apply the path
 if "CFH" in os.environ:
