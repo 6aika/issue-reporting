@@ -111,10 +111,8 @@ class FeedbackWizard(SessionWizardView):
                 category["glyphicon"] = GLYPHICONS[idx]
                 category["service_code"] = item["service_code"]
                 categories.append(category)
-
                 context.update({'categories': categories})
-
-                return context
+        return context
 
 
 def done(self, form_list, **kwargs):
