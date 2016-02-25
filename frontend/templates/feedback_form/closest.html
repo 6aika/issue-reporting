@@ -68,10 +68,11 @@
         $("#id_location-longitude").val(latlng.lng);
     }
 
-    $.getJSON("/api/v1/feedbacks?status=closed&lat=60.186917&long=24.821334&radius=3000&extensions=true", function (data) {
+    $.getJSON("/api/v1/feedbacks?status=open", function (data) {
         var items = [];
-        $.each(data, function (key, val) {
-            items.push("<li>" + val.address + "</li>");
+        $.each(data, function (key, feedback) {
+            items.push("<li>" + feedback.address + "</li>");
+            L.marker([feedback.lat, feedback.long]).addTo(map);
         });
 
         $("<ul/>", {
