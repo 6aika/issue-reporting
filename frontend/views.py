@@ -90,7 +90,7 @@ def get_services():
 ##############################################
 
 def statistic_page(request):
-    #context={}
+
     feedback_category = Feedback.objects.exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
     closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
 
