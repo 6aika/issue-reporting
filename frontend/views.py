@@ -1,10 +1,9 @@
 import json
 import os
 import urllib.request
-
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.geos import fromstr
+from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -148,12 +147,12 @@ class FeedbackWizard(SessionWizardView):
         data["title"] = form_dict["basic_info"].cleaned_data["title"]
         data["description"] = form_dict["basic_info"].cleaned_data["description"]
         data["service_code"] = form_dict["category"].cleaned_data["service_code"]
-        latitude = form_dict["location"].cleaned_data["latitude"]
-        longitude = form_dict["location"].cleaned_data["longitude"]
+        latitude = form_dict["closest"].cleaned_data["latitude"]
+        longitude = form_dict["closest"].cleaned_data["longitude"]
         data["location"] = location=GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
         new_feedback = Feedback(**data)
         print(new_feedback)
-        #new_feedback.save()
+        new_feedback.save()
 
         handle_uploaded_file(form_dict["basic_info"].cleaned_data["image"])
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
