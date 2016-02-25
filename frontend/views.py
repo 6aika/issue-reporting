@@ -15,10 +15,11 @@ from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
 
 from api.models import Feedback
-from frontend.forms import FeedbackForm1, FeedbackForm2, FeedbackForm3
+from api.views import get_feedbacks
+from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
 
-FORMS = [("location", FeedbackForm1), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
-TEMPLATES = {"location": "feedback_form/step1.html", "category": "feedback_form/step2.html",
+FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
+TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/step2.html",
              "basic_info": "feedback_form/step3.html"}
 
 
@@ -88,13 +89,33 @@ def get_services():
 
 
 class FeedbackWizard(SessionWizardView):
-    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos'))
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp'))
 
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
 
     def get_context_data(self, form, **kwargs):
         context = super(FeedbackWizard, self).get_context_data(form=form, **kwargs)
+        if self.steps.current == 'closest':
+            print('duplicates step')
+            closest = get_feedbacks(
+                    service_request_ids=None,
+                    service_codes=None,
+                    start_date=None,
+                    end_date=None,
+                    statuses=None,
+                    service_object_type=None,
+                    service_object_id=None,
+                    lat=60.17067,
+                    lon=24.94152,
+                    radius=3000,
+                    updated_after=None,
+                    updated_before=None,
+                    description=None,
+                    order_by='distance')[:10]
+
+            context.update({'closest': closest})
+
         if self.steps.current == 'category':
             categories = []
             data = get_services()
@@ -114,6 +135,11 @@ class FeedbackWizard(SessionWizardView):
                 context.update({'categories': categories})
         return context
 
+    def done(self, form_list, form_dict, **kwargs):
+        handle_uploaded_file(form_dict["basic_info"].cleaned_data["image"])
+        return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
 
-def done(self, form_list, **kwargs):
-    return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
+def handle_uploaded_file(file):
+    with open(os.path.join(settings.MEDIA_ROOT,file.name), 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
