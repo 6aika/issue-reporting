@@ -1,10 +1,9 @@
 import json
 import os
 import urllib.request
-
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.geos import fromstr
+from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -16,6 +15,7 @@ import datetime
 from api.models import Feedback
 from api.views import get_feedbacks
 from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
+from django.db.models import F, ExpressionWrapper,fields
 
 FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
 TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/step2.html",
@@ -90,9 +90,9 @@ def statistic_page(request):
 
     feedback_category = Feedback.objects.exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
     closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
-
-
-    zipped = zip(feedback_category,closed)
+    duration = ExpressionWrapper((F('updated_datetime') - F('requested_datetime')), output_field=fields.DurationField())
+    avg = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(duration=duration)
+    zipped = zip(feedback_category,closed,avg)
     return render(request, "statistic_page.html",{'feedback':zipped})
 
 class FeedbackWizard(SessionWizardView):
@@ -148,8 +148,11 @@ class FeedbackWizard(SessionWizardView):
         data["title"] = form_dict["basic_info"].cleaned_data["title"]
         data["description"] = form_dict["basic_info"].cleaned_data["description"]
         data["service_code"] = form_dict["category"].cleaned_data["service_code"]
-        data["location"] = location=GEOSGeometry('SRID=4326;POINT(' + str(f.get('long', 0)) + ' ' + str(f.get('lat', 0)) + ')')
+        latitude = form_dict["closest"].cleaned_data["latitude"]
+        longitude = form_dict["closest"].cleaned_data["longitude"]
+        data["location"] = location=GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
         new_feedback = Feedback(**data)
+        print(new_feedback)
         new_feedback.save()
 
         handle_uploaded_file(form_dict["basic_info"].cleaned_data["image"])
