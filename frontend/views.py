@@ -49,7 +49,7 @@ def vote_feedback(request):
     if request.method == "POST":
         try:
             id = request.POST["id"]
-            feedback = Feedback.objects.get(service_request_id=id)
+            feedback = Feedback.objects.get(pk=id)
         except KeyError:
             return JsonResponse({'status': 'No id parameter!'})
         except Feedback.DoesNotExist:
@@ -148,9 +148,10 @@ class FeedbackWizard(SessionWizardView):
         data["title"] = form_dict["basic_info"].cleaned_data["title"]
         data["description"] = form_dict["basic_info"].cleaned_data["description"]
         data["service_code"] = form_dict["category"].cleaned_data["service_code"]
+        data["service_name"] = get_service_name(data["service_code"])
         latitude = form_dict["closest"].cleaned_data["latitude"]
         longitude = form_dict["closest"].cleaned_data["longitude"]
-        data["location"] = location=GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
+        data["location"] = GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
         new_feedback = Feedback(**data)
         print(new_feedback)
         new_feedback.save()
@@ -170,13 +171,9 @@ def handle_uploaded_file(file):
                 destination.write(chunk)
 
 # Retrieve correct service_name from service_code
-def get_service_name(code_string):
-    try:
-        code = int(code_string)
-    except ValueError:
-        return "ERROR"
+def get_service_name(service_code):
     data = get_services()
     for item in data:
-        if item.service_code == code:
-            return item.service_code
+        if item["service_code"] == service_code:
+            return item["service_name"]
     return None
