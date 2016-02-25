@@ -5,7 +5,7 @@
 <form method="post">
 {% csrf_token %}
 {{ wizard.management_form }}
-	{{form.category}}
+	{{form.service_code}}
 	<button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
@@ -16,7 +16,7 @@ $(function () {
 });
 
 function item_clicked(event) {
-	$("#{{form.category.id_for_label}}").val($(this).attr("id"));
+	$("#{{form.service_code.id_for_label}}").val($(this).attr("data-service-code"));
 	if(selected) {
 		$(selected).removeClass("active");
 	}

@@ -1,7 +1,7 @@
 <div class="row">
 	{% for category in categories %}
 	<div class="col-xs-6 col-sm-4">
-		<div class="thumbnail feedback_form_category_item" id="{{forloop.counter0}}">
+		<div class="thumbnail feedback_form_category_item" data-service-code="{{category.service_code}}" id="{{forloop.counter0}}">
 			<!-- <img src="{{category.src}}" alt="{{category.alt}}"> -->
 			<div class="text-center">
 				<span class="glyphicon {{category.glyphicon}} text-center category_icon"></span>

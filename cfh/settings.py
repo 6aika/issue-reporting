@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'django_nose',
     'formtools',
+    'rest_framework',
     'api',
     'frontend',
 ]

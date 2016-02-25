@@ -1,8 +1,18 @@
 import json
 import urllib.request
 
+import json
+import os
+import urllib.request
+
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import fromstr
+from django.contrib.gis.measure import D
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render, render_to_response
+from django.http.response import JsonResponse
+from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
 
 from api.models import Feedback
@@ -23,15 +33,33 @@ def mainpage(request):
 
 
 def locations_demo(request):
-    feedbacks = Feedback.objects.all()
+    point = fromstr('SRID=4326;POINT(%s %s)' % (24.821711, 60.186896))
+    feedbacks = Feedback.objects.annotate(distance=Distance('location', point)) \
+        .filter(location__distance_lte=(point, D(m=3000))).order_by('distance')
     return render(request, 'locations_demo.html', {'feedbacks': feedbacks})
 
 
 def feedback_list(request):
-    feedbacks = Feedback.objects.all()
+    feedbacks = Feedback.objects.all().order_by("-requested_datetime")
     page = request.GET.get("page")
     feedbacks = paginate_query_set(feedbacks, 10, page)
     return render(request, "feedback_list.html", {"feedbacks": feedbacks})
+
+def vote_feedback(request):
+	if request.method == "POST":
+		try:
+			id = request.POST["id"]
+			feedback = Feedback.objects.get(service_request_id=id)
+		except KeyError:
+			return JsonResponse({'status': 'No id parameter!'})
+		except Feedback.DoesNotExist:
+			return JsonResponse({'status': 'No such feedback!'})
+		else:
+			feedback.vote_counter += 1
+			feedback.save()
+			return JsonResponse({'status': 'success'})
+	else:
+		return redirect("feedback_list")
 
 
 # Helper function. Paginates given queryset. Used for game list views.
@@ -60,6 +88,8 @@ def get_services():
 
 
 class FeedbackWizard(SessionWizardView):
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos'))
+
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
 
@@ -69,9 +99,8 @@ class FeedbackWizard(SessionWizardView):
             categories = []
             data = get_services()
 
-            GLYPHICONS = ["glyphicon-wrench", "glyphicon-road", "glyphicon-euro", "glyphicon-music",
-                          "glyphicon-glass", "glyphicon-heart", "glyphicon-star", "glyphicon-user",
-                          "glyphicon-film", "glyphicon-home"]
+            GLYPHICONS = ["glyphicon-wrench", "glyphicon-road", "glyphicon-euro", "glyphicon-music", "glyphicon-glass",
+                          "glyphicon-heart", "glyphicon-star", "glyphicon-user", "glyphicon-film", "glyphicon-home"]
 
             for idx, item in enumerate(data):
                 category = {}
@@ -80,7 +109,7 @@ class FeedbackWizard(SessionWizardView):
                 category["src"] = "https://placehold.it/150x150"
                 category["alt"] = "Category image"
                 category["glyphicon"] = GLYPHICONS[idx]
-                # category["code"] = item["service_code"]
+                category["service_code"] = item["service_code"]
                 categories.append(category)
 
             context.update({'categories': categories})
@@ -88,5 +117,4 @@ class FeedbackWizard(SessionWizardView):
         return context
 
     def done(self, form_list, **kwargs):
-        return render_to_response('feedback_form/done.html',
-                                  {'form_data': [form.cleaned_data for form in form_list]})
+        return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
