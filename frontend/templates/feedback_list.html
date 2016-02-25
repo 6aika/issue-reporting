@@ -1,14 +1,56 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'animate.css' %}"/>
+<script type="text/javascript" src="{% static 'bootstrap-notify.min.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 
     {% for item in feedbacks %}
         <div class="feedback_list_item">
-            <div class="row">
-                <div class="col-sm-3 col-md-3 feedback_list_img">
-                    <img class="img-responsive center-cropped"
+            <div class="row feedback_list_row">
+
+                <div class="col-xs-6 col-md-3 feedback_list_img ">
+                    <img class="img-thumbnail img-responsive center-cropped"
                          src="{{ item.media_url|default:'https://placehold.it/240x240' }}"/>
                 </div>
-                <div class="col-sm-6 col-md-6 feedback_list_content">
+
+                <div class="col-xs-6 col-md-2 feedback_list_details col-md-push-7">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            {% if item.status == 'closed' %}
+                                <h4 class="text-danger">{{ item.status|capfirst }}<br/>
+                                    <small>{{ item.updated_datetime }}</small>
+                                </h4>{% else %}
+                                <h4 class="text-success">{{ item.status|capfirst }}<br/>
+                                    <small>{{ item.updated_datetime }}</small>
+                                </h4>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-info">
+                            <p>Arvio: <br/>
+                                <small>{{ item.expected_datetime }}</small>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p>Etäisyys: 600 m</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p>
+                                <small>{{ item.address_string|default:'No Address' }}</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-7 feedback_list_content  col-md-pull-2">
                     <div class="row">
                         <div class="col-sm-9">
                             <div class=row>
@@ -29,9 +71,9 @@
                             </p>
                         </div>
 
-                        <div class="sm-col-3">
-                            <span class="feedback_list_thumb glyphicon glyphicon-exclamation-sign"></span>
-                            <span class="badge feedback_list_thumb_badge">76</span>
+                        <div class="xs-col-3">
+                            <span class="glyphicon glyphicon-exclamation-sign feedback_list_vote_icon" id="{{item.service_request_id}}"></span>
+                            <span class="badge feedback_list_vote_badge">76</span>
                         </div>
                     </div>
                     <div class=row>
@@ -40,53 +82,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-3 col-md-3 feedback_list_details">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            {% if item.status == 'closed' %}
-                                <h4 class="text-danger">{{ item.status|capfirst }}<br/>
-                                    <small>{{ item.updated_datetime }}</small>
-                                </h4>{% else %}
-                                <h4 class="text-success">{{ item.status|capfirst }}<br/>
-                                    <small>{{ item.updated_datetime }}</small>
-                                </h4>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12 text-info">
-                            <p>Arvio: <br/>
-                                <small>{{ item.expected_datetime }}</small>
-                            </p>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <p>Etäisyys: 600 m</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <p>
-                                <a href="#" data-toggle="popover">
-                                    <small>{{ item.address_string }}</small>
-                                </a>
-                                <script>
-                                    $(document).ready(function () {
-                                        $('[data-toggle="popover"]').popover({
-                                            html: true,
-                                            content: function () {
-                                                return '<img src="https://placehold.it/220x220" />';
-                                            }
-                                        });
-                                    });
-                                </script>
-
-                            </p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     {% endfor %}
@@ -101,10 +97,52 @@
                             href="?page={{ page }}">{{ page }}</a></li>
                 {% endfor %}
 
-                {% if feedbacks.has_next %}
-                    <li><a href="?page={{ feedbacks.next_page_number }}">Next</a></li>
-                {% endif %}
-            </ul>
-        </div>
+            {% if feedbacks.has_next %}
+                <li><a href="?page={{ feedbacks.next_page_number }}">Next</a></li>
+            {% endif %}
+        </ul>
     </div>
+</div>
+<script type="text/javascript">
+    $.notifyDefaults({
+        type: "success",
+        animate: {
+            enter: 'animated bounceIn',
+            exit: 'animated bounceOut'
+        },
+        placement: {
+            from: "bottom",
+            align: "right"
+        }
+    });
+    $(function(){
+        // Voting. Do a POST request to record the vote
+        $(".feedback_list_vote_icon").click(function () {
+            var id = $(this).attr("id");
+            var data = {id: id, csrfmiddlewaretoken: "{{ csrf_token }}"};
+            $.post("{% url 'vote_feedback' %}", data, function(data){
+                if(data.status === "success"){
+                    value = parseInt($(this).next().text()) + 1;
+                    $(this).next().text(value);
+                    $.notify({
+                      message: "Kiitos, äänesi on rekisteröity!"
+                    },{
+                      type: "success"
+                    });
+                }
+                else {
+                    var message = "Virhe, ääntäsi ei voitu tallentaa! [" + data.status + "]";
+                    $.notify({
+                        message: message
+                    },{
+                        type: "danger"
+                    });
+                }
+            }.bind(this));
+        });
+    });
+</script>
+<script>
+
+</script>
 {% endblock %}

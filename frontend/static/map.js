@@ -1,8 +1,8 @@
 "use strict";
 
-var HelsinkiCoord = {lat: 60.211, lon: 24.948};
+var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
 
-var map = L.map('map').setView([60.211, 24.948], 12);
+var map = L.map('map').setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 14);
 
 
 // Try to get CartoDB's Positron/light basemap into use

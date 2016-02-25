@@ -1,102 +1,103 @@
 {% extends 'base.html' %}
 {% block content-fluid %}
 
-<img id="banner-photo" src="http://cdn.aarp.net/content/dam/travel/destination-images/finland/helsinki/1400-hero-helsinki-finland-summer.imgcache.rev1409674055616.web.jpg" />
-<div class="container">
-	<div class="row" id="info-row"> <!-- Info graph icons -->
-		<div class="col-sm-3 col-xs-6"> <!-- One icon -->
-			<div class="row">
-				<div class="col-sm-4"> <!-- The icon -->
-					<span class="info-icon glyphicon glyphicon-unchecked"></span>
-				</div>
-				<div class="col-sm-8">
-					<div class="row">
-						<div class="col-sm-12"> <!-- The legend -->
-							<p>Palautteita annettu</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12"> <!-- The value -->
-							<h3>123120</h3>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-3 col-xs-6"> <!-- One icon -->
-			<div class="row">
-				<div class="col-sm-4"> <!-- The icon -->
-					<span class="info-icon glyphicon glyphicon-check"></span>
-				</div>
-				<div class="col-sm-8">
-					<div class="row">
-						<div class="col-sm-12"> <!-- The legend -->
-							<p>Palautteita korjattu</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12"> <!-- The value -->
-							<h3>1120</h3>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-3 col-xs-6"> <!-- One icon -->
-			<div class="row">
-				<div class="col-sm-4"> <!-- The icon -->
-					<span class="info-icon glyphicon glyphicon-user"></span>
-				</div>
-				<div class="col-sm-8">
-					<div class="row">
-						<div class="col-sm-12"> <!-- The legend -->
-							<p>Käyttäjiä</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12"> <!-- The value -->
-							<h3>8</h3>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-3 col-xs-6"> <!-- One icon -->
-			<div class="row">
-				<div class="col-sm-4"> <!-- The icon -->
-					<span class="info-icon glyphicon glyphicon-time"></span>
-				</div>
-				<div class="col-sm-8">
-					<div class="row">
-						<div class="col-sm-12"> <!-- The legend -->
-							<p>Odotusaika</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12"> <!-- The value -->
-							<h3>2 viikkoa</h3>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<h3>Äsken korjattu:</h3>
-	<div class="row" id="recent-fix-info">
-		{% for feedback in fixed_feedbacks %}
-		<div class="col-sm-3 col-xs-6">
-			{%include "short_feedback_box.html"%}
-		</div>
-		{% endfor %}
-	</div>
-	<h3>Äsken raportoitu:</h3>
-	<div class="row" id="recent-feedback-info">
-		{% for feedback in recent_feedbacks %}
-		<div class="col-sm-6 col-xs-12">
-			{%include "short_feedback_box_with_image.html"%}
-		</div>
-		{% endfor %}
-	</div>
-</div>
+    <img class="hidden-xs" id="banner-photo"
+         src="http://cdn.aarp.net/content/dam/travel/destination-images/finland/helsinki/1400-hero-helsinki-finland-summer.imgcache.rev1409674055616.web.jpg"/>
+    <div class="container">
+        <div class="row" id="info-row"> <!-- Info graph icons -->
+            <div class="col-sm-3 col-xs-6"> <!-- One icon -->
+                <div class="row">
+                    <div class="col-sm-4"> <!-- The icon -->
+                        <span class="info-icon glyphicon glyphicon-unchecked"></span>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-12"> <!-- The legend -->
+                                <p>Palautteita annettu</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12"> <!-- The value -->
+                                <h3>123120</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 col-xs-6"> <!-- One icon -->
+                <div class="row">
+                    <div class="col-sm-4"> <!-- The icon -->
+                        <span class="info-icon glyphicon glyphicon-check"></span>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-12"> <!-- The legend -->
+                                <p>Palautteita korjattu</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12"> <!-- The value -->
+                                <h3>1120</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 col-xs-6"> <!-- One icon -->
+                <div class="row">
+                    <div class="col-sm-4"> <!-- The icon -->
+                        <span class="info-icon glyphicon glyphicon-user"></span>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-12"> <!-- The legend -->
+                                <p>Käyttäjiä</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12"> <!-- The value -->
+                                <h3>8</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 col-xs-6"> <!-- One icon -->
+                <div class="row">
+                    <div class="col-sm-4"> <!-- The icon -->
+                        <span class="info-icon glyphicon glyphicon-time"></span>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-12"> <!-- The legend -->
+                                <p>Odotusaika</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12"> <!-- The value -->
+                                <h3>2 viikkoa</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h3>Äsken korjattu:</h3>
+        <div class="row" id="recent-fix-info">
+            {% for feedback in fixed_feedbacks %}
+                <div class="col-sm-3 col-xs-6">
+                    {% include "short_feedback_box.html" %}
+                </div>
+            {% endfor %}
+        </div>
+        <h3>Äsken raportoitu:</h3>
+        <div class="row" id="recent-feedback-info">
+            {% for feedback in recent_feedbacks %}
+                <div class="col-sm-6 col-xs-12 ">
+                    {% include "short_feedback_box_with_image.html" %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 
 {% endblock %}
