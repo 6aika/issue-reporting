@@ -103,7 +103,7 @@ class FeedbackWizard(SessionWizardView):
                     service_codes=None,
                     start_date=None,
                     end_date=None,
-                    statuses=None,
+                    statuses='Open',
                     service_object_type=None,
                     service_object_id=None,
                     lat=60.17067,
