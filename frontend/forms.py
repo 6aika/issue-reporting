@@ -2,7 +2,10 @@ from django import forms
 
 
 class FeedbackFormClosest(forms.Form):
-    pass
+    latitude = forms.FloatField(required=True, widget=forms.HiddenInput(
+        attrs={'class': 'form-control', 'placeholder': "Latitude"}))
+    longitude = forms.FloatField(required=True, widget=forms.HiddenInput(
+        attrs={'class': 'form-control', 'placeholder': "Longitude"}))
 
 
 class FeedbackForm2(forms.Form):

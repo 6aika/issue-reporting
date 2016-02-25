@@ -1,12 +1,9 @@
 import json
 import os
 import urllib.request
-import urllib.request
-import urllib.request
-
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.geos import fromstr
+from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -88,7 +85,6 @@ def get_services():
     response = urllib.request.urlopen(url)
     data = json.loads(response.read().decode("utf8"))
     return data
-##############################################
 
 def statistic_page(request):
 
@@ -98,7 +94,6 @@ def statistic_page(request):
     avg = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(duration=duration)
     zipped = zip(feedback_category,closed,avg)
     return render(request, "statistic_page.html",{'feedback':zipped})
-#####}################################################
 
 class FeedbackWizard(SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp'))
@@ -148,11 +143,40 @@ class FeedbackWizard(SessionWizardView):
         return context
 
     def done(self, form_list, form_dict, **kwargs):
+        data = {}
+        data["status"] = "open"
+        data["title"] = form_dict["basic_info"].cleaned_data["title"]
+        data["description"] = form_dict["basic_info"].cleaned_data["description"]
+        data["service_code"] = form_dict["category"].cleaned_data["service_code"]
+        latitude = form_dict["closest"].cleaned_data["latitude"]
+        longitude = form_dict["closest"].cleaned_data["longitude"]
+        data["location"] = location=GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
+        new_feedback = Feedback(**data)
+        print(new_feedback)
+        new_feedback.save()
+
         handle_uploaded_file(form_dict["basic_info"].cleaned_data["image"])
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
 
+def instructions(request):
+    context = {}
+    return render(request, "instructions.html", context)
+
+# Now only saves the submitted file into MEDIA_ROOT directory
 def handle_uploaded_file(file):
     if file:
         with open(os.path.join(settings.MEDIA_ROOT,file.name), 'wb+') as destination:
             for chunk in file.chunks():
                 destination.write(chunk)
+
+# Retrieve correct service_name from service_code
+def get_service_name(code_string):
+    try:
+        code = int(code_string)
+    except ValueError:
+        return "ERROR"
+    data = get_services()
+    for item in data:
+        if item.service_code == code:
+            return item.service_code
+    return None
