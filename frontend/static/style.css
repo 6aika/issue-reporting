@@ -12,14 +12,12 @@ body {
     border-color: #ddd;
 }
 
-.feedback_list_thumb {
-    padding: 15px;
-}
-
 .feedback_list_vote_icon {
     font-size: 2em;
     vertical-align: middle;
     color: #fb0;
+    padding: 15px;
+    
 }
 
 .feedback_list_vote_icon:hover {
