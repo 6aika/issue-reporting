@@ -2,6 +2,8 @@
 
 body {
     padding-top: 60px;
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Lato', sans-serif !important;
 }
 
 .feedback_list_item {
@@ -17,7 +19,7 @@ body {
     vertical-align: middle;
     color: #fb0;
     padding: 15px;
-    
+
 }
 
 .feedback_list_vote_icon:hover {
@@ -31,9 +33,9 @@ body {
 
 #banner-photo {
     width: 100%;
-    height: 500px;
+    height: 300px;
     object-fit: cover;
-    object-position: 50% 18%;
+    object-position: 50% 20%;
     background-position: center center;
     background-repeat: no-repeat;
     top: 50px;
@@ -49,9 +51,39 @@ body {
     /* border-width: 1px;*/
     /* border-radius: 10px;*/
     padding: 0.5em;
-    height: 200px;
-    margin-top: 20px;
-    box-shadow: 1px 1px 3px 1px #aaa;
+    /* box-shadow: 1px 1px 3px 1px #aaa; */
+    margin: 0px 0px 0px 15px;
+
+}
+
+.shadow {
+    padding: 0 15px 15px 15px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px 1px #E0E0E0;
+    min-height: 120px;
+}
+
+.short-img {
+    width: 100%;
+    padding: 0;
+}
+
+.short-text {
+    color: #333;
+    margin-top: 0px;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.short-text h4 {
+    font-weight: bold;
+    margin-bottom: 10px;
+
+}
+
+.main-icon {
+    margin-bottom: 20px;
 }
 
 #info-row {
@@ -105,14 +137,6 @@ body {
 
 }
 
-@media (min-width: 992px) {
-    .feedback_list_content {
-        border-right-style: solid;
-        border-right-width: 1px;
-        border-color: #ddd;
-    }
-}
-
 .feedback_list_content {
     padding: 10px;
     /*height: 240px;*/
@@ -133,6 +157,7 @@ body {
 
 .feedback_list_row {
     padding: 15px;
+    border-radius: 4px;
     box-shadow: 1px 1px 3px 1px #aaa;
 }
 
@@ -154,3 +179,38 @@ body {
     border-color: #000;
     background-color: #ddd;
 }
+
+.main_footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 15px;
+    color: #9d9d9d;
+    background-color: #333;
+    max-height: 400px;
+}
+
+@media (min-width: 992px) {
+    .shadow {
+        min-height: 200px;
+    }
+
+    .feedback_list_content {
+        border-right-style: solid;
+        border-right-width: 1px;
+        border-color: #ddd;
+    }
+
+    .report-well {
+        width: 45%;
+        border-color: transparent;
+        margin-top: -250px;
+        background-color: rgba(35, 35, 35, 0.8);
+    }
+
+    .report-well h1 {
+        color: #ddd;
+    }
+}
+
+
+
