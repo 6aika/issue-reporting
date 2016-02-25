@@ -77,16 +77,13 @@
                         </div>
                     </div>
                     <div class=row>
-                        <div class="col-sm-12">
+                        <div class="col-sm-12 feedback_list_content_desc">
                             <p>{{ item.description | truncatechars:300 }}</p>
                         </div>
                     </div>
                 </div>
 
-            </div>
-        </div>
-    {% endfor %}
-    <div class="row">
+                <div class="row">
         <div class="col-xs-12">
             <ul class="pagination nav navbar-nav">
                 {% if feedbacks.has_previous %}
@@ -101,7 +98,9 @@
                 <li><a href="?page={{ feedbacks.next_page_number }}">Next</a></li>
             {% endif %}
         </ul>
-    </div>
+        </div
+                    {% endif %}
+
 </div>
 <script type="text/javascript">
     $.notifyDefaults({
