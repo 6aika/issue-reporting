@@ -1,5 +1,5 @@
 from django.contrib.gis.db import models
-
+from django.utils import timezone
 
 # TODO: change some TextFields with CharFields, remove null=True where required
 class Feedback(models.Model):
@@ -14,7 +14,7 @@ class Feedback(models.Model):
     description = models.TextField(null=True)
     agency_responsible = models.TextField(null=True)
     service_notice = models.TextField(null=True)
-    requested_datetime = models.DateTimeField(null=True)
+    requested_datetime = models.DateTimeField(null=True, default=timezone.now)
     updated_datetime = models.DateTimeField(null=True)
     expected_datetime = models.DateTimeField(null=True)
     address_string = models.TextField(null=True)
