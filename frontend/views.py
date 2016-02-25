@@ -18,6 +18,7 @@ import datetime
 from api.models import Feedback
 from api.views import get_feedbacks
 from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
+from django.db.models import F, ExpressionWrapper,fields
 
 FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
 TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/step2.html",
@@ -93,9 +94,9 @@ def statistic_page(request):
 
     feedback_category = Feedback.objects.exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
     closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
-
-
-    zipped = zip(feedback_category,closed)
+    duration = ExpressionWrapper((F('updated_datetime') - F('requested_datetime')), output_field=fields.DurationField())
+    avg = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(duration=duration)
+    zipped = zip(feedback_category,closed,avg)
     return render(request, "statistic_page.html",{'feedback':zipped})
 #####}################################################
 
