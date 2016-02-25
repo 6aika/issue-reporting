@@ -1,8 +1,6 @@
 import json
 import os
 import urllib.request
-import urllib.request
-import urllib.request
 
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
@@ -13,12 +11,14 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
-
+from django.db.models import Count
+import datetime
 from api.models import Feedback
-from frontend.forms import FeedbackForm1, FeedbackForm2, FeedbackForm3
+from api.views import get_feedbacks
+from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
 
-FORMS = [("location", FeedbackForm1), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
-TEMPLATES = {"location": "feedback_form/step1.html", "category": "feedback_form/step2.html",
+FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
+TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/step2.html",
              "basic_info": "feedback_form/step3.html"}
 
 
@@ -86,15 +86,43 @@ def get_services():
     data = json.loads(response.read().decode("utf8"))
     return data
 
+def statistic_page(request):
+
+    feedback_category = Feedback.objects.exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
+    closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
+
+
+    zipped = zip(feedback_category,closed)
+    return render(request, "statistic_page.html",{'feedback':zipped})
 
 class FeedbackWizard(SessionWizardView):
-    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos'))
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp'))
 
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
 
     def get_context_data(self, form, **kwargs):
         context = super(FeedbackWizard, self).get_context_data(form=form, **kwargs)
+        if self.steps.current == 'closest':
+            print('duplicates step')
+            closest = get_feedbacks(
+                    service_request_ids=None,
+                    service_codes=None,
+                    start_date=None,
+                    end_date=None,
+                    statuses='Open',
+                    service_object_type=None,
+                    service_object_id=None,
+                    lat=60.17067,
+                    lon=24.94152,
+                    radius=3000,
+                    updated_after=None,
+                    updated_before=None,
+                    description=None,
+                    order_by='distance')[:10]
+
+            context.update({'closest': closest})
+
         if self.steps.current == 'category':
             categories = []
             data = get_services()
@@ -111,11 +139,41 @@ class FeedbackWizard(SessionWizardView):
                 category["glyphicon"] = GLYPHICONS[idx]
                 category["service_code"] = item["service_code"]
                 categories.append(category)
-
                 context.update({'categories': categories})
+        return context
 
-                return context
+    def done(self, form_list, form_dict, **kwargs):
+        data = {}
+        data["status"] = "open"
+        data["title"] = form_dict["basic_info"].cleaned_data["title"]
+        data["description"] = form_dict["basic_info"].cleaned_data["description"]
+        data["service_code"] = form_dict["category"].cleaned_data["service_code"]
+        data["location"] = location=GEOSGeometry('SRID=4326;POINT(' + str(f.get('long', 0)) + ' ' + str(f.get('lat', 0)) + ')')
+        new_feedback = Feedback(**data)
+        new_feedback.save()
 
+        handle_uploaded_file(form_dict["basic_info"].cleaned_data["image"])
+        return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
 
-def done(self, form_list, **kwargs):
-    return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
+def instructions(request):
+    context = {}
+    return render(request, "instructions.html", context)
+
+# Now only saves the submitted file into MEDIA_ROOT directory
+def handle_uploaded_file(file):
+    if file:
+        with open(os.path.join(settings.MEDIA_ROOT,file.name), 'wb+') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+
+# Retrieve correct service_name from service_code
+def get_service_name(code_string):
+    try:
+        code = int(code_string)
+    except ValueError:
+        return "ERROR"
+    data = get_services()
+    for item in data:
+        if item.service_code == code:
+            return item.service_code
+    return None
