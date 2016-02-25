@@ -42,12 +42,12 @@ def get_feedbacks(service_codes, service_request_ids,
     if lat and lon and radius:
         point = fromstr('SRID=4326;POINT(%s %s)' % (lon, lat))
         queryset = Feedback.objects.annotate(distance=Distance('location', point)) \
-            .filter(location__distance_lte=(point, D(m=radius))).order_by('distance')
+            .filter(location__distance_lte=(point, D(m=radius)))
 
     # end CitySDK Helsinki specific filtration
 
     if order_by:
-        queryset.order_by(order_by)
+        queryset = queryset.order_by(order_by)
 
     return queryset
 
