@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+
+            <h3 class="text-center">Statistics</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Services</th>
+                    <th>Total</th>
+                    <th>Processed</th>
+                    <th>Avr time (o to close)</th>
+                    <th>Avr time</th>
+                    <th>Average time</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for every, closed in feedback %}
+                    <tr>
+                        <td>{{ every.service_name }}</td>
+                        <td>{{ every.total }}</td>
+                        <td>{{ closed.total  }}</td>
+                       
+                    </tr>
+                {% endfor %}
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

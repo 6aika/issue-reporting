@@ -10,7 +10,8 @@ from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, render_to_response
 from formtools.wizard.views import SessionWizardView
-
+from django.db.models import Count
+import datetime
 from api.models import Feedback
 from frontend.forms import FeedbackForm1, FeedbackForm2, FeedbackForm3
 
@@ -65,7 +66,17 @@ def get_services():
     response = urllib.request.urlopen(url)
     data = json.loads(response.read().decode("utf8"))
     return data
+##############################################
 
+def statistic_page(request):
+    #context={}
+    feedback_category = Feedback.objects.exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
+    closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
+
+
+    zipped = zip(feedback_category,closed)
+    return render(request, "statistic_page.html",{'feedback':zipped})
+#####}################################################
 
 class FeedbackWizard(SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos'))
