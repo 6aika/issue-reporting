@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+{% include 'feedback_form/stagebar.html' with stage=wizard.steps.step1 %}
+<h1>Possible duplicates</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    <button type="submit" class="btn btn-block btn-primary">
+        Next<span class="glyphicon glyphicon-triangle-right"></span>
+    </button>
+    {% for item in closest %}
+    <div class="feedback_list_item">
+        <div class="row feedback_list_row">
+
+            <div class="col-xs-6 col-md-3 feedback_list_img ">
+                <img class="img-thumbnail img-responsive center-cropped"
+                     src="{{ item.media_url|default:'https://placehold.it/240x240' }}"/>
+            </div>
+
+            <div class="col-xs-6 col-md-2 feedback_list_details col-md-push-7">
+                <div class="row">
+                    <div class="col-sm-12">
+                        {% if item.status == 'closed' %}
+                        <h4 class="text-danger">{{ item.status|capfirst }}<br/>
+                            <small>{{ item.updated_datetime }}</small>
+                        </h4>
+                        {% else %}
+                        <h4 class="text-success">{{ item.status|capfirst }}<br/>
+                            <small>{{ item.updated_datetime }}</small>
+                        </h4>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 text-info">
+                        <p>Arvio: <br/>
+                            <small>{{ item.expected_datetime }}</small>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Etäisyys: {{item.distance}}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>
+                            <small>{{ item.address_string|default:'No Address' }}</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-md-7 feedback_list_content  col-md-pull-2">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <div class=row>
+                            <div class="col-sm-12">
+                                <a href="{{ item.id }}"><h4>{{ item.title|default:'NO TITLE' }}</h4></a>
+                            </div>
+                        </div>
+                        <div class=row>
+                            <div class="col-sm-12">
+                                <p>{{ item.service_name }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 text-info">
+                        <p>Luotu:
+                            <small>{{ item.requested_datetime }}</small>
+                        </p>
+                    </div>
+
+                    <div class="xs-col-3">
+                            <span class="glyphicon glyphicon-exclamation-sign feedback_list_vote_icon"
+                                  id="{{item.service_request_id}}"></span>
+                        <span class="badge feedback_list_vote_badge">76</span>
+                    </div>
+                </div>
+                <div class=row>
+                    <div class="col-sm-12">
+                        <p>{{ item.description | truncatechars:300 }}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-block btn-primary">
+        Next<span class="glyphicon glyphicon-triangle-right"></span>
+    </button>
+</form>
+{% endblock %}
