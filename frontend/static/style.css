@@ -121,6 +121,10 @@ body {
 
 }
 
+.feedback_list_content_desc p {
+    overflow: hidden;
+}
+
 .feedback_list_img {
     padding: 0 15px 0 0;
     border-right-style: solid;
