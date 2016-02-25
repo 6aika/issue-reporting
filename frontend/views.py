@@ -140,6 +140,6 @@ class FeedbackWizard(SessionWizardView):
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
 
 def handle_uploaded_file(file):
-    with open('mediafiles/file.gif', 'wb+') as destination:
+    with open(os.path.join(settings.MEDIA_ROOT,file.name), 'wb+') as destination:
         for chunk in file.chunks():
             destination.write(chunk)
