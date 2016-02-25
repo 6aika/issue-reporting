@@ -1,15 +1,15 @@
 <!-- Template for creating small feedback box -->
 <div class="short-feedback-box-with-image">
     <div class="row">
-        <div class="col-xs-8 col-xs-offset-2 shadow">
+        <div class="col-xs-8 col-sm-12 col-xs-offset-2 col-sm-offset-0 shadow">
             <div class="row">
                 <div class="col-xs-12 short-img">
-                    <img class="img-responsive" src="https://placehold.it/250x200"/>
+                    <img class="img-responsive" src="https://placehold.it/270x200"/>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-12 short-text">
-                    <a href="#"><h4>{{ feedback.title|default:"NO TITLE" }}</h4></a>
+                    <a href="#"><h5>{{ feedback.title|default:"NO TITLE" }}</h5></a>
                     <h5 class="text-muted">{{ feedback.service_name }}</h5>
                     <span>Avattu: {{ feedback.requested_datetime }}</span>
                     <span>Ratkaistu: {{ feedback.updated_datetime }}</span>

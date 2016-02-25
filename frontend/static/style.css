@@ -83,11 +83,13 @@ body {
 }
 
 .main-icon {
-    margin-bottom: 20px;
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-bottom: 0;
 }
 
 #info-row {
-    margin-top: 3em;
+    margin-top: 1.5em;
 }
 
 #info-row h3 {
@@ -191,7 +193,7 @@ body {
 
 @media (min-width: 992px) {
     .shadow {
-        min-height: 200px;
+        min-height: 160px;
     }
 
     .feedback_list_content {
@@ -203,14 +205,48 @@ body {
     .report-well {
         width: 45%;
         border-color: transparent;
-        margin-top: -250px;
+        margin-top: -280px;
         background-color: rgba(35, 35, 35, 0.8);
     }
 
     .report-well h1 {
+        padding-bottom: 0;
+        padding-top: 0;
         color: #ddd;
     }
+
+    .report-well a {
+        padding: 20px;
+        color: #ddd;
+    }
+
+    .report-well a p {
+        font-size: 18px;
+        text-decoration: solid;
+        padding-left: 10px;
+    }
+
+    .btn-lg {
+
+        margin-bottom: 10px;
+        padding: 15px 25px 15px 25px;
+        font-size: 30px;
+    }
 }
+
+.btn-lg {
+
+    margin-bottom: 10px;
+    padding: 15px 25px 15px 25px;
+    font-size: 20px;
+}
+
+.report-well a p {
+    font-size: 18px;
+    text-decoration: solid;
+    padding-left: 10px;
+}
+
 
 
 

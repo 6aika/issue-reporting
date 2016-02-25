@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block head %}
-<link rel="stylesheet" href="{% static 'animate.css' %}"/>
-<script type="text/javascript" src="{% static 'bootstrap-notify.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'animate.css' %}"/>
+    <script type="text/javascript" src="{% static 'bootstrap-notify.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -72,7 +72,8 @@
                         </div>
 
                         <div class="xs-col-3">
-                            <span class="glyphicon glyphicon-exclamation-sign feedback_list_vote_icon" id="{{item.service_request_id}}"></span>
+                        <span class="glyphicon glyphicon-exclamation-sign feedback_list_vote_icon"
+                              id="{{ item.service_request_id }}"></span>
                             <span class="badge feedback_list_vote_badge">76</span>
                         </div>
                     </div>
@@ -82,66 +83,82 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    {% endfor %}
 
-                <div class="row">
-        <div class="col-xs-12">
+    <div class="row">
+        <div class="col-xs-4 col-xs-offset-4">
             <ul class="pagination nav navbar-nav">
                 {% if feedbacks.has_previous %}
                     <li><a href="?page={{ feedbacks.previous_page_number }}">Prev</a></li>
                 {% endif %}
-                {% for page in feedbacks.paginator.page_range %}
-                    <li class="{% if feedbacks.number == page %}active{% endif %}"><a
-                            href="?page={{ page }}">{{ page }}</a></li>
-                {% endfor %}
+                <li><a href="?page={{ feedbacks.number }}">Page {{ feedbacks.number }}
+                    of {{ feedbacks.paginator.num_pages }}.</a></li>
+                {% if feedbacks.has_next %}
+                    <li><a href="?page={{ feedbacks.next_page_number }}">Next</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
 
-            {% if feedbacks.has_next %}
-                <li><a href="?page={{ feedbacks.next_page_number }}">Next</a></li>
-            {% endif %}
-        </ul>
-        </div
-                    {% endif %}
+    <!--
+    <div class="pagination">
+    <span class="step-links pagination nav navbar-nav">
+        {% if feedbacks.has_previous %}
+            <a href="?page={{ feedbacks.previous_page_number }}">previous</a>
+        {% endif %}
 
+        <span class="current">
+            Page {{ feedbacks.number }} of {{ feedbacks.paginator.num_pages }}.
+        </span>
+
+        {% if feedbacks.has_next %}
+            <a href="?page={{ feedbacks.next_page_number }}">next</a>
+        {% endif %}
+    </span>
 </div>
-<script type="text/javascript">
-    $.notifyDefaults({
-        type: "success",
-        animate: {
-            enter: 'animated bounceIn',
-            exit: 'animated bounceOut'
-        },
-        placement: {
-            from: "bottom",
-            align: "right"
-        }
-    });
-    $(function(){
-        // Voting. Do a POST request to record the vote
-        $(".feedback_list_vote_icon").click(function () {
-            var id = $(this).attr("id");
-            var data = {id: id, csrfmiddlewaretoken: "{{ csrf_token }}"};
-            $.post("{% url 'vote_feedback' %}", data, function(data){
-                if(data.status === "success"){
-                    value = parseInt($(this).next().text()) + 1;
-                    $(this).next().text(value);
-                    $.notify({
-                      message: "Kiitos, äänesi on rekisteröity!"
-                    },{
-                      type: "success"
-                    });
-                }
-                else {
-                    var message = "Virhe, ääntäsi ei voitu tallentaa! [" + data.status + "]";
-                    $.notify({
-                        message: message
-                    },{
-                        type: "danger"
-                    });
-                }
-            }.bind(this));
+-->
+    <script type="text/javascript">
+        $.notifyDefaults({
+            type: "success",
+            animate: {
+                enter: 'animated bounceIn',
+                exit: 'animated bounceOut'
+            },
+            placement: {
+                from: "bottom",
+                align: "right"
+            }
         });
-    });
-</script>
-<script>
+        $(function () {
+            // Voting. Do a POST request to record the vote
+            $(".feedback_list_vote_icon").click(function () {
+                var id = $(this).attr("id");
+                var data = {id: id, csrfmiddlewaretoken: "{{ csrf_token }}"};
+                $.post("{% url 'vote_feedback' %}", data, function (data) {
+                    if (data.status === "success") {
+                        value = parseInt($(this).next().text()) + 1;
+                        $(this).next().text(value);
+                        $.notify({
+                            message: "Kiitos, äänesi on rekisteröity!"
+                        }, {
+                            type: "success"
+                        });
+                    }
+                    else {
+                        var message = "Virhe, ääntäsi ei voitu tallentaa! [" + data.status + "]";
+                        $.notify({
+                            message: message
+                        }, {
+                            type: "danger"
+                        });
+                    }
+                }.bind(this));
+            });
+        });
+    </script>
+    <script>
 
-</script>
+    </script>
 {% endblock %}
