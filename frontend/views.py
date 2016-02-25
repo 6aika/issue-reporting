@@ -87,7 +87,7 @@ def get_services():
     return data
 
 def statistic_page(request):
-    #context={}
+
     feedback_category = Feedback.objects.exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
     closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
 
@@ -154,6 +154,10 @@ class FeedbackWizard(SessionWizardView):
 
         handle_uploaded_file(form_dict["basic_info"].cleaned_data["image"])
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
+
+def instructions(request):
+    context = {}
+    return render(request, "instructions.html", context)
 
 # Now only saves the submitted file into MEDIA_ROOT directory
 def handle_uploaded_file(file):
