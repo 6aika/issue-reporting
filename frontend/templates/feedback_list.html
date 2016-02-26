@@ -6,6 +6,11 @@
 {% endblock %}
 
 {% block content %}
+
+
+{% include "feedback_list_filter.html" %}
+
+
     {% for item in feedbacks %}
         <div class="feedback_list_item">
             <div class="row feedback_list_row">

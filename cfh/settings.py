@@ -43,8 +43,6 @@ INSTALLED_APPS = [
     'frontend',
 ]
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-
 # Use nose to run all tests
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
