@@ -14,9 +14,9 @@ VALUES (1, '1982hglaqe8pdnpophff', 171, '111adsfasdf', '2015-06-23T15:50:11', '2
         'open', 'Kiitos', '1234', 'Potholes', 'SPb', ST_GeomFromText('POINT(24.769625 60.192005)', 4326),
         'Helsingissä monesti pyöräti...', 'IN_PROCESS', '', '', 0);
 
-insert into media_urls(request_id, media_url) values(1, 'https://asiointi.hel.fi/palautews/rest/v1/attachment/13timm1nle0m4cvi6ocf.jpg');
+insert into media_urls(feedback_id, media_url) values(1, 'https://asiointi.hel.fi/palautews/rest/v1/attachment/13timm1nle0m4cvi6ocf.jpg');
 
-insert into tasks(request_id, task_state, task_type, owner_name, task_modified, task_created)
+insert into tasks(feedback_id, task_state, task_type, owner_name, task_modified, task_created)
 values(1, 're_assigned', 'assigned', 'Rakennusvirasto', '2015-06-18T12:31:41+03:00', '2015-06-17T19:55:09+03:00'),
   (1, 'completed', 'wait_for_answer', 'Rakennusvirasto', '2015-06-18T12:32:19+03:00', '2015-06-18T12:31:41+03:00'),
   (1, 'open', 'wait_for_answer', 'Kaupunkisuunnitteluvirasto', '2015-06-18T14:12:48+03:00', '2015-06-18T14:12:48+03:00'),

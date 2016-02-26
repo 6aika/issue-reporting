@@ -4,5 +4,5 @@ from api.urls import router
 
 urlpatterns = [
     url(r'', include('frontend.urls')),
-    url(r'^api/v1/', include(router.urls)),
+    url(r'^api/v1/', include(router.urls, namespace='api/v1')),
 ]

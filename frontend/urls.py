@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.conf.urls import url
+from django.conf.urls.static import static
 
 import frontend.views
 
@@ -11,4 +13,4 @@ urlpatterns = [
     url(r'^instructions/$', frontend.views.instructions, name="instructions"),
     url(r'^statistic/$', frontend.views.statistic_page, name="statistic"),
     url(r'^vote_feedback/$', frontend.views.vote_feedback, name="vote_feedback")
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
