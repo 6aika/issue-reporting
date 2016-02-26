@@ -2,12 +2,14 @@ from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
 from rest_framework import viewsets
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from .models import Feedback
 from .serializers import FeedbackSerializer
 
 
+# TODO: move from view to other place
 def get_feedbacks(service_codes, service_request_ids,
                   start_date, end_date,
                   statuses, description,
@@ -58,14 +60,21 @@ class FeedbackViewSet(viewsets.ViewSet):
     """
 
     def list(self, request):
+        service_object_id = request.query_params.get('service_object_id', None)
+        service_object_type = request.query_params.get('service_object_type', None)
+
+        if service_object_id is not None and service_object_type is None:
+            raise ValidationError(
+                    "If service_object_id is included in the request, then service_object_type must be included.")
+
         queryset = get_feedbacks(
                 service_request_ids=request.query_params.get('service_request_id', None),
                 service_codes=request.query_params.get('service_code', None),
                 start_date=request.query_params.get('start_date', None),
                 end_date=request.query_params.get('end_date', None),
                 statuses=request.query_params.get('status', None),
-                service_object_type=request.query_params.get('service_object_type', None),
-                service_object_id=request.query_params.get('service_object_id', None),
+                service_object_type=service_object_type,
+                service_object_id=service_object_id,
                 lat=request.query_params.get('lat', None),
                 lon=request.query_params.get('long', None),
                 radius=request.query_params.get('radius', None),
@@ -74,6 +83,7 @@ class FeedbackViewSet(viewsets.ViewSet):
                 description=request.query_params.get('description', None),
                 order_by=request.query_params.get('order_by', None)
         )
+
         serializer = FeedbackSerializer(queryset, many=True,
                                         context={'extensions': request.query_params.get('extensions', 'false')})
         return Response(serializer.data)
