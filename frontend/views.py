@@ -47,6 +47,9 @@ def feedback_list(request):
 
 
 def vote_feedback(request):
+    """Process vote requests. Increases vote count of a feedback if the session data
+    does not contain the id for that feedback. Ie. let the user vote only once.
+    """ 
     if request.method == "POST":
         try:
             id = request.POST["id"]
