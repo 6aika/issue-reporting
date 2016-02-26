@@ -42,22 +42,34 @@ def feedback_list(request):
     feedbacks = Feedback.objects.all().order_by("-requested_datetime")
     page = request.GET.get("page")
     feedbacks = paginate_query_set(feedbacks, 20, page)
-    return render(request, "feedback_list.html", {"feedbacks": feedbacks})
+    servicename = Feedback.objects.values_list('service_name', flat=True).distinct() 
+    return render(request, "feedback_list.html", {"feedbacks": feedbacks, "service_name":servicename})
 
 
 def vote_feedback(request):
+    """Process vote requests. Increases vote count of a feedback if the session data
+    does not contain the id for that feedback. Ie. let the user vote only once.
+    """ 
     if request.method == "POST":
         try:
             id = request.POST["id"]
-            feedback = Feedback.objects.get(service_request_id=id)
+            feedback = Feedback.objects.get(pk=id)
         except KeyError:
-            return JsonResponse({'status': 'No id parameter!'})
+            return JsonResponse({"status": "error", "message": "Ääntä ei voitu tallentaa. Väärä parametri!"})
         except Feedback.DoesNotExist:
-            return JsonResponse({'status': 'No such feedback!'})
+            return JsonResponse({"status": "error", "message": "Ääntä ei voitu tallentaa. Palautetta ei löydetty!"})
         else:
+            if "vote_id_list" in request.session:
+                if id in request.session["vote_id_list"]:
+                    return JsonResponse({"status": "error", "message": "Voit äänestää palautetta vain kerran!"})
+            else:
+                request.session["vote_id_list"] = [] 
             feedback.vote_counter += 1
             feedback.save()
-            return JsonResponse({'status': 'success'})
+            list = request.session["vote_id_list"]
+            list.append(id)
+            request.session["vote_id_list"] = list
+            return JsonResponse({"status": "success", "message": "Kiitos, äänesi on rekisteröity!"})
     else:
         return redirect("feedback_list")
 
@@ -148,14 +160,16 @@ class FeedbackWizard(SessionWizardView):
         data["title"] = form_dict["basic_info"].cleaned_data["title"]
         data["description"] = form_dict["basic_info"].cleaned_data["description"]
         data["service_code"] = form_dict["category"].cleaned_data["service_code"]
+        data["service_name"] = get_service_name(data["service_code"])
         latitude = form_dict["closest"].cleaned_data["latitude"]
         longitude = form_dict["closest"].cleaned_data["longitude"]
-        data["location"] = location=GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
+        data["location"] = GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
+        image = form_dict["basic_info"].cleaned_data["image"]
+        if image:
+            handle_uploaded_file(image)
+            data["media_url"] = "/media/" + image.name
         new_feedback = Feedback(**data)
-        print(new_feedback)
         new_feedback.save()
-
-        handle_uploaded_file(form_dict["basic_info"].cleaned_data["image"])
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
 
 def instructions(request):
@@ -164,19 +178,14 @@ def instructions(request):
 
 # Now only saves the submitted file into MEDIA_ROOT directory
 def handle_uploaded_file(file):
-    if file:
-        with open(os.path.join(settings.MEDIA_ROOT,file.name), 'wb+') as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
+    with open(os.path.join(settings.MEDIA_ROOT,file.name), 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
 
 # Retrieve correct service_name from service_code
-def get_service_name(code_string):
-    try:
-        code = int(code_string)
-    except ValueError:
-        return "ERROR"
+def get_service_name(service_code):
     data = get_services()
     for item in data:
-        if item.service_code == code:
-            return item.service_code
+        if item["service_code"] == service_code:
+            return item["service_name"]
     return None

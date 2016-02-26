@@ -43,8 +43,6 @@ INSTALLED_APPS = [
     'frontend',
 ]
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-
 # Use nose to run all tests
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
@@ -136,6 +134,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles/")
+MEDIA_URL = "/media/"
 
 # Default formatting
 DATETIME_FORMAT = "j.n.Y - G:i"
