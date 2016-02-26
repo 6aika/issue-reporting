@@ -88,9 +88,6 @@
                         </div>
 
                         <div class="xs-col-3">
-                        <span class="glyphicon glyphicon-exclamation-sign feedback_list_vote_icon"
-                              id="{{ item.service_request_id }}"></span>
-                            <span class="badge feedback_list_vote_badge">76</span>
                             <span class="glyphicon glyphicon-exclamation-sign feedback_list_vote_icon" id="{{item.pk}}"></span>
                             <span class="badge feedback_list_vote_badge">{{item.vote_counter}}</span>
                         </div>
@@ -139,48 +136,6 @@
     </span>
 </div>
 -->
-    <script type="text/javascript">
-        $.notifyDefaults({
-            type: "success",
-            animate: {
-                enter: 'animated bounceIn',
-                exit: 'animated bounceOut'
-            },
-            placement: {
-                from: "bottom",
-                align: "right"
-            }
-        });
-        $(function () {
-            // Voting. Do a POST request to record the vote
-            $(".feedback_list_vote_icon").click(function () {
-                var id = $(this).attr("id");
-                var data = {id: id, csrfmiddlewaretoken: "{{ csrf_token }}"};
-                $.post("{% url 'vote_feedback' %}", data, function (data) {
-                    if (data.status === "success") {
-                        value = parseInt($(this).next().text()) + 1;
-                        $(this).next().text(value);
-                        $.notify({
-                            message: "Kiitos, äänesi on rekisteröity!"
-                        }, {
-                            type: "success"
-                        });
-                    }
-                    else {
-                        var message = "Virhe, ääntäsi ei voitu tallentaa! [" + data.status + "]";
-                        $.notify({
-                            message: message
-                        }, {
-                            type: "danger"
-                        });
-                    }
-                }.bind(this));
-            });
-        });
-    </script>
-    <script>
-
-    </script>
 <script type="text/javascript">
     $.notifyDefaults({
         type: "success",
