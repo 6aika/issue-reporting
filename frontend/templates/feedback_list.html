@@ -122,13 +122,13 @@
                     value = parseInt($(this).next().text()) + 1;
                     $(this).next().text(value);
                     $.notify({
-                      message: "Kiitos, äänesi on rekisteröity!"
+                      message: data.message
                     },{
                       type: "success"
                     });
                 }
                 else {
-                    var message = "Virhe, ääntäsi ei voitu tallentaa! [" + data.status + "]";
+                    var message = "Virhe, ääntäsi ei voitu tallentaa! [" + data.message + "]";
                     $.notify({
                         message: message
                     },{

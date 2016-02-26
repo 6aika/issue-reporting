@@ -51,13 +51,21 @@ def vote_feedback(request):
             id = request.POST["id"]
             feedback = Feedback.objects.get(pk=id)
         except KeyError:
-            return JsonResponse({'status': 'No id parameter!'})
+            return JsonResponse({"status": "error", "message": "Väärä parametri!"})
         except Feedback.DoesNotExist:
-            return JsonResponse({'status': 'No such feedback!'})
+            return JsonResponse({"status": "error", "message": "Palautetta ei löydetty!"})
         else:
+            if "vote_id_list" in request.session:
+                if id in request.session["vote_id_list"]:
+                    return JsonResponse({"status": "error", "message": "Voit äänestää vain kerran!"})
+            else:
+                request.session["vote_id_list"] = [] 
             feedback.vote_counter += 1
             feedback.save()
-            return JsonResponse({'status': 'success'})
+            list = request.session["vote_id_list"]
+            list.append(id)
+            request.session["vote_id_list"] = list
+            return JsonResponse({"status": "success", "message": "Kiitos, äänesi on rekisteröity!"})
     else:
         return redirect("feedback_list")
 
