@@ -52,13 +52,13 @@ def vote_feedback(request):
             id = request.POST["id"]
             feedback = Feedback.objects.get(pk=id)
         except KeyError:
-            return JsonResponse({"status": "error", "message": "Väärä parametri!"})
+            return JsonResponse({"status": "error", "message": "Ääntä ei voitu tallentaa. Väärä parametri!"})
         except Feedback.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "Palautetta ei löydetty!"})
+            return JsonResponse({"status": "error", "message": "Ääntä ei voitu tallentaa. Palautetta ei löydetty!"})
         else:
             if "vote_id_list" in request.session:
                 if id in request.session["vote_id_list"]:
-                    return JsonResponse({"status": "error", "message": "Voit äänestää vain kerran!"})
+                    return JsonResponse({"status": "error", "message": "Voit äänestää palautetta vain kerran!"})
             else:
                 request.session["vote_id_list"] = [] 
             feedback.vote_counter += 1

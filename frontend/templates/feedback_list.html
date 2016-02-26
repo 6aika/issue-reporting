@@ -133,9 +133,8 @@
                     });
                 }
                 else {
-                    var message = "Virhe, ääntäsi ei voitu tallentaa! [" + data.message + "]";
                     $.notify({
-                        message: message
+                        message: data.message
                     },{
                         type: "danger"
                     });
