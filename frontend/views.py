@@ -13,7 +13,7 @@ from formtools.wizard.views import SessionWizardView
 from django.db.models import Count
 import datetime
 from api.models import Feedback
-from api.views import get_feedbacks
+from api.services import get_feedbacks
 from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
 from django.db.models import F, ExpressionWrapper,fields
 
