@@ -115,7 +115,7 @@
     $.getJSON("/api/v1/feedbacks?status=open", function (data) {
         var items = [];
         $.each(data, function (key, feedback) {
-            var marker = L.marker([feedback.lat, feedback.long]).addTo(map);
+            var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).addTo(map);
             marker.feedback = feedback;
             marker.on('click', function(e) {
                 $('#feedback_title').text(e.target.feedback.title);

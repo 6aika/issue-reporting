@@ -11,7 +11,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
 class FeedbackSerializer(serializers.ModelSerializer):
     distance = serializers.SerializerMethodField()
-    extended_attribute = serializers.SerializerMethodField()
+    extended_attributes = serializers.SerializerMethodField()
     media_urls = serializers.SlugRelatedField(
             many=True,
             read_only=True,
@@ -28,7 +28,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
         else:
             return ''
 
-    def get_extended_attribute(self, instance):
+    def get_extended_attributes(self, instance):
 
         media_urls = self.fields['media_urls']
         media_urls_value = media_urls.to_representation(
@@ -79,10 +79,10 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
         extensions = self.context.get('extensions')
         if extensions and extensions[0].upper() == 'T':
-            ext_attribute = self.fields['extended_attribute']
+            ext_attribute = self.fields['extended_attributes']
             ext_attribute_value = ext_attribute.to_representation(
                     ext_attribute.get_attribute(instance)
             )
-            representation['extended_attribute'] = ext_attribute_value
+            representation['extended_attributes'] = ext_attribute_value
 
         return representation

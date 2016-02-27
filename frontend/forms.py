@@ -9,7 +9,7 @@ class FeedbackFormClosest(forms.Form):
 
 
 class FeedbackForm2(forms.Form):
-    service_code = forms.IntegerField(required=True, widget=forms.HiddenInput(
+    service_code = forms.CharField(required=True, widget=forms.HiddenInput(
         attrs={'class': 'form-control', 'placeholder': "Enter category..."}))
 
 

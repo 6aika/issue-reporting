@@ -1,0 +1,44 @@
+<div class="feedback_list_filters">	
+	<div class="row">
+	
+		<div class="col-sm-2 col-md-2">
+			
+				<form id="dummy_placeholder" method="get" action="">
+		        From: <input type="text" class="form-control" id="formGroupExampleInput" placeholder=" / /">
+				</form>  <br>
+				<form id="dummy_placeholder" method="get" action="">
+		        To: <input type="text" class="form-control" id="formGroupExampleInput" placeholder=" / /">
+				</form>	<br>
+
+		</div>
+		<div class="col-sm-2 col-md-2">
+			<br>
+				<form id="status" method="get" action="">
+				<select class="c-select">
+				<option selected="selected">Status</option>
+				<option>Open</option>
+				<option>Closed</option>
+			</select><br><br>
+			</form>
+			<form action="">
+				<input type="checkbox" name="distance" value="Distance">Sort by distance from me<br>
+			</form>
+		</div>
+		<div class="col-sm-3 col-md-3">
+			<br><select class="c-select">
+				<option selected="selected">Service name</option>
+				{% for servicename in service_name %}
+				<option>{{ servicename }}</option>
+				{% endfor %}
+			</select><br>
+		</div>
+		<div class="col-sm-5 col-md-5">
+			<form id="feedbacklist_searchbar" method="get" action="">
+		        <br><input type="text" class="form-control" id="formGroupExampleInput" placeholder="Search"><br>
+				<input type="submit" value="Search">
+			</form><br>
+			
+		</div>
+	</div>
+
+</div>

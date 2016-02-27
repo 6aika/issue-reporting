@@ -6,7 +6,7 @@ class Feedback(models.Model):
     class Meta:
         db_table = 'feedbacks'
 
-    service_request_id = models.CharField(max_length=254, db_index=True, unique=True)
+    service_request_id = models.CharField(max_length=254, db_index=True, unique=False)
     status_notes = models.TextField(null=True)
     status = models.TextField(null=True)
     service_code = models.TextField(null=True)
@@ -36,6 +36,9 @@ class Feedback(models.Model):
 
     # Keeps track of votes users have given to the feedback
     vote_counter = models.IntegerField(default=0)
+
+    # synchronized with external Open311 service
+    synchronized = models.BooleanField(default=False)
 
     @property
     def lon(self):
