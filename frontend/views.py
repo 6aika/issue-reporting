@@ -12,10 +12,11 @@ from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
 from django.db.models import Count
 import datetime
+from django.db.models import Avg
 from api.models import Feedback
 from api.services import get_feedbacks
 from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
-from django.db.models import F, ExpressionWrapper,fields
+from django.db.models import F, ExpressionWrapper, fields
 
 FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
 TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/step2.html",
@@ -98,14 +99,20 @@ def get_services():
     data = json.loads(response.read().decode("utf8"))
     return data
 
-def statistic_page(request):
 
-    feedback_category = Feedback.objects.exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
-    closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
-    duration = ExpressionWrapper((F('updated_datetime') - F('requested_datetime')), output_field=fields.DurationField())
-    avg = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(duration=duration)
-    zipped = zip(feedback_category,closed,avg)
-    return render(request, "statistic_page.html",{'feedback':zipped})
+def statistic_page(request):
+    context = {}
+    duration = ExpressionWrapper(Avg((F('updated_datetime') - F('requested_datetime'))),
+                                 output_field=fields.DurationField())
+    feedback_category = Feedback.objects.all().exclude(service_name__exact='').exclude(
+        service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
+    closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(
+        service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).annotate(
+        duration=duration).order_by('-total')
+    context["feedback_category"] = feedback_category
+    context["closed"] = closed
+    return render(request, "statistic_page.html", context)
+
 
 class FeedbackWizard(SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp'))
