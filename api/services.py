@@ -38,7 +38,7 @@ def get_feedbacks(service_codes, service_request_ids,
 
     if lat and lon:
         point = fromstr('SRID=4326;POINT(%s %s)' % (lon, lat))
-        queryset = Feedback.objects.annotate(distance=Distance('location', point))
+        queryset = queryset.annotate(distance=Distance('location', point))
 
         if radius:
             queryset = queryset.filter(location__distance_lte=(point, D(m=radius)))

@@ -6,133 +6,123 @@
 {% endblock %}
 
 {% block content %}
-    {% include "feedback_list_filter.html" %}
+{% include "feedback_list_filter.html" %}
 
-    <div class="row">
-        <div class="col-xs-6 col-xs-offset-4 col-md-offset-5 centered">
-            <ul class="pagination nav navbar-nav">
-                {% if feedbacks.has_previous %}
-                    <li><a href="?page={{ feedbacks.previous_page_number }}">Prev</a></li>
-                {% endif %}
-                <li><a href="?page={{ feedbacks.number }}">Page {{ feedbacks.number }}
-                    of {{ feedbacks.paginator.num_pages }}</a></li>
-                {% if feedbacks.has_next %}
-                    <li><a href="?page={{ feedbacks.next_page_number }}">Next</a></li>
-                {% endif %}
-            </ul>
-        </div>
+{% if feedbacks %}
+<div class="row">
+    <div class="col-xs-6 col-xs-offset-4 col-md-offset-5 centered">
+        <ul class="pagination nav navbar-nav">
+            {% if feedbacks.has_previous %}
+            <li><a href="?page={{ feedbacks.previous_page_number }}">Prev</a></li>
+            {% endif %}
+            <li><a href="?page={{ feedbacks.number }}">Page {{ feedbacks.number }}
+                of {{ feedbacks.paginator.num_pages }}</a></li>
+            {% if feedbacks.has_next %}
+            <li><a href="?page={{ feedbacks.next_page_number }}">Next</a></li>
+            {% endif %}
+        </ul>
     </div>
+</div>
 
 
-    {% for item in feedbacks %}
-        <div class="feedback_list_item">
-            <div class="row feedback_list_row">
+{% for item in feedbacks %}
+<div class="feedback_list_item">
+    <div class="row feedback_list_row">
 
-                <div class="col-xs-6 col-md-3 feedback_list_img ">
-                    <img class="img-thumbnail img-responsive center-cropped"
-                         src="{{ item.media_url|default:'https://placehold.it/240x240' }}" alt="Feedback image"/>
+        <div class="col-xs-6 col-md-3 feedback_list_img ">
+            <img class="img-thumbnail img-responsive center-cropped"
+                 src="{{ item.media_url|default:'https://placehold.it/240x240' }}" alt="Feedback image"/>
+        </div>
+
+        <div class="col-xs-6 col-md-2 feedback_list_details col-md-push-7">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h4 {% if item.status == 'closed' %}class="text-danger" {% else %} class="text-success"{% endif %}>
+                    {{ item.status|capfirst }}<br/>
+                    <small>{{ item.updated_datetime|default_if_none:"" }}</small>
+                    </h4>
                 </div>
-
-                <div class="col-xs-6 col-md-2 feedback_list_details col-md-push-7">
-                    <div class="row">
-                        <div class="col-sm-12">
-                                <h4 {% if item.status == 'closed' %}class="text-danger" {% else %} class="text-success"{% endif %}>
-                                    {{ item.status|capfirst }}<br/>
-                                    <small>{{ item.updated_datetime|default_if_none:"" }}</small>
-                                </h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12 text-info">
-                            {% if item.expected_datetime %}
-                            <p>Arvio: <br/>
-                                <small>{{ item.expected_datetime }}</small>
-                            </p>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <p>Etäisyys: 600 m</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <p>
-                                <small>{{ item.address_string|default:'No Address' }}</small>
-                            </p>
-                        </div>
-                    </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-info">
+                    {% if item.expected_datetime %}
+                    <p>Arvio: <br/>
+                        <small>{{ item.expected_datetime }}</small>
+                    </p>
+                    {% endif %}
                 </div>
-
-                <div class="col-xs-12 col-md-7 feedback_list_content  col-md-pull-2">
-                    <div class="row">
-                        <div class="col-sm-9">
-                            <div class=row>
-                                <div class="col-sm-12">
-                                    <a href="{% url 'feedback_details' item.id %}"><h4>{{ item.title|default:'NO TITLE' }}</h4></a>
-                                </div>
-                            </div>
-                            <div class=row>
-                                <div class="col-sm-12">
-                                    <p>{{ item.service_name }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-12 text-info">
-                            <p>Luotu:
-                                <small>{{ item.requested_datetime }}</small>
-                            </p>
-                        </div>
-
-                        <div class="xs-col-3">
-                            <span class="glyphicon glyphicon-exclamation-sign feedback_list_vote_icon" id="{{item.pk}}"></span>
-                            <span class="badge feedback_list_vote_badge">{{item.vote_counter}}</span>
-                        </div>
-                    </div>
-                    <div class=row>
-                        <div class="col-sm-12 feedback_list_content_desc">
-                            <p>{{ item.description | truncatechars:300 }}</p>
-                        </div>
-                    </div>
+            </div>
+            {% if item.distance %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <p>Etäisyys: {{ item.distance }}</p>
+                </div>
+            </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <p>
+                        <small>{{ item.address_string|default:'No Address' }}</small>
+                    </p>
                 </div>
             </div>
         </div>
-    {% endfor %}
 
-    <div class="row">
-        <div class="col-xs-6 col-xs-offset-4 col-md-offset-5 centered">
-            <ul class="pagination nav navbar-nav">
-                {% if feedbacks.has_previous %}
-                    <li><a href="?page={{ feedbacks.previous_page_number }}">Prev</a></li>
-                {% endif %}
-                <li><a href="?page={{ feedbacks.number }}">Page {{ feedbacks.number }}
-                    of {{ feedbacks.paginator.num_pages }}</a></li>
-                {% if feedbacks.has_next %}
-                    <li><a href="?page={{ feedbacks.next_page_number }}">Next</a></li>
-                {% endif %}
-            </ul>
+        <div class="col-xs-12 col-md-7 feedback_list_content  col-md-pull-2">
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class=row>
+                        <div class="col-sm-12">
+                            <a href="{% url 'feedback_details' item.id %}"><h4>{{ item.title|default:'NO TITLE' }}</h4>
+                            </a>
+                        </div>
+                    </div>
+                    <div class=row>
+                        <div class="col-sm-12">
+                            <p>{{ item.service_name }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 text-info">
+                    <p>Luotu:
+                        <small>{{ item.requested_datetime }}</small>
+                    </p>
+                </div>
+
+                <div class="xs-col-3">
+                    <span class="glyphicon glyphicon-exclamation-sign feedback_list_vote_icon" id="{{item.pk}}"></span>
+                    <span class="badge feedback_list_vote_badge">{{item.vote_counter}}</span>
+                </div>
+            </div>
+            <div class=row>
+                <div class="col-sm-12 feedback_list_content_desc">
+                    <p>{{ item.description | truncatechars:300 }}</p>
+                </div>
+            </div>
         </div>
     </div>
-
-    <!--
-    <div class="pagination">
-    <span class="step-links pagination nav navbar-nav">
-        {% if feedbacks.has_previous %}
-            <a href="?page={{ feedbacks.previous_page_number }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ feedbacks.number }} of {{ feedbacks.paginator.num_pages }}.
-        </span>
-
-        {% if feedbacks.has_next %}
-            <a href="?page={{ feedbacks.next_page_number }}">next</a>
-        {% endif %}
-    </span>
 </div>
--->
+{% endfor %}
+
+<div class="row">
+    <div class="col-xs-6 col-xs-offset-4 col-md-offset-5 centered">
+        <ul class="pagination nav navbar-nav">
+            {% if feedbacks.has_previous %}
+            <li><a href="?page={{ feedbacks.previous_page_number }}">Prev</a></li>
+            {% endif %}
+            <li><a href="?page={{ feedbacks.number }}">Page {{ feedbacks.number }}
+                of {{ feedbacks.paginator.num_pages }}</a></li>
+            {% if feedbacks.has_next %}
+            <li><a href="?page={{ feedbacks.next_page_number }}">Next</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% else %}
+<h3>No feedbacks to show!</h3>
+{% endif %}
+
 <script type="text/javascript">
     //TODO: move somewhere to avoid duplication
     $.notifyDefaults({
@@ -146,25 +136,25 @@
             align: "right"
         }
     });
-    $(function(){
+    $(function () {
         // Voting. Do a POST request to record the vote
         $(".feedback_list_vote_icon").click(function () {
             var id = $(this).attr("id");
             var data = {id: id, csrfmiddlewaretoken: "{{ csrf_token }}"};
-            $.post("{% url 'vote_feedback' %}", data, function(data){
-                if(data.status === "success"){
+            $.post("{% url 'vote_feedback' %}", data, function (data) {
+                if (data.status === "success") {
                     var value = parseInt($(this).next().text()) + 1;
                     $(this).next().text(value);
                     $.notify({
-                      message: data.message
-                    },{
-                      type: "success"
+                        message: data.message
+                    }, {
+                        type: "success"
                     });
                 }
                 else {
                     $.notify({
                         message: data.message
-                    },{
+                    }, {
                         type: "danger"
                     });
                 }

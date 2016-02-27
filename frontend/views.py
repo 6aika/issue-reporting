@@ -56,6 +56,12 @@ def feedback_list(request):
     filter_lat = request.GET.get("lat")
     filter_lon = request.GET.get("lon")
 
+    if filter_start_date:
+        filter_start_date = datetime.datetime.strptime(filter_start_date, "%d.%m.%Y").isoformat()
+
+    if filter_end_date:
+        filter_end_date = datetime.datetime.strptime(filter_end_date, "%d.%m.%Y").isoformat()
+
     feedbacks = get_feedbacks(service_codes=filter_service_code, service_request_ids=None,
                               start_date=filter_start_date, end_date=filter_end_date,
                               statuses=filter_status, description=filter_description,
