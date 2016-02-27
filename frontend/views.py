@@ -52,14 +52,14 @@ def feedback_list(request):
     filter_status = request.GET.get("status")
     filter_distance = request.GET.get("distance")
     filter_service_name = request.GET.get("service_name")
-    filter_searchterm = request.GET.get("searchterm")
+    filter_description = request.GET.get("description")
 
     feedbacks = Feedback.objects.all().order_by("-requested_datetime")
     page = request.GET.get("page")
     feedbacks = paginate_query_set(feedbacks, 20, page)
     servicename = Feedback.objects.values_list('service_name', flat=True).distinct()
 
-    return render(request, "feedback_list.html", {"feedbacks": feedbacks, "service_name":servicename})
+    return render(request, "feedback_list.html", {"feedbacks": feedbacks, "service_name" : servicename})
 
 
 def feedback_details(request, feedback_id):
