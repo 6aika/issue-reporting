@@ -38,19 +38,19 @@
 			<br>
 			
 			<!--<input type="checkbox" name="distance" value="Distance">Sort by distance from my location<br>-->
-			<select class="form-control" name="orderby">
-				<option value="">Distance</option>
-				<option value="">Votes</option>
-				<option value="">Requested time</option>
+			<select class="form-control" name="order_by">
+				<option value="distance">Distance</option>
+				<option value="vote_counter">Votes</option>
+				<option value="requested_datetime">Creation datetime</option>
 			</select>
 			
 		</div>
 		<div class="col-sm-3 col-md-3">
 			<br>
-			<select class="form-control" name="service_name">
-				<option selected="selected">Service name</option>
-				{% for servicename in service_name %}
-				<option value="">{{ servicename }}</option>
+			<select class="form-control" name="service_code">
+				<option selected="">Service name</option>
+				{% for service in services %}
+				<option value="{{service.service_code}}">{{ service.service_name }}</option>
 				{% endfor %}
 			</select>
 			<br>
