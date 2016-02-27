@@ -73,10 +73,14 @@
     var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
     var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "m"});
 
-    map.on('click', updateMarker);
 
-    var userLocation = new L.marker([HelsinkiCoord.lat, HelsinkiCoord.lng], {icon: center_icon}).addTo(map);
+    var userLocation = new L.marker(map.getCenter(), {icon: center_icon}).addTo(map);
     storeLocation(userLocation.getLatLng());
+    
+    map.on('move', function(e) {
+        userLocation.setLatLng(map.getCenter());
+        storeLocation(userLocation.getLatLng());
+    });
 
     function getUserLocation(e) {
         console.log("getUserLocation");
