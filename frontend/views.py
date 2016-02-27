@@ -17,6 +17,7 @@ from django.db.models import Avg
 from api.models import Feedback
 from api.services import get_feedbacks
 from api.analysis import calc_fixing_time
+from api.geocoding.geocoding import reverse_geocode
 from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
 from django.db.models import F, ExpressionWrapper, fields
 
@@ -194,7 +195,8 @@ class FeedbackWizard(SessionWizardView):
         data["service_name"] = get_service_name(data["service_code"])
         latitude = form_dict["closest"].cleaned_data["latitude"]
         longitude = form_dict["closest"].cleaned_data["longitude"]
-        data["location"] = GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
+        data["location"] = GEOSGeometry('SRID=4326;POINT(' + str(longitude) + ' ' + str(latitude) + ')')
+        data["address_string"] = reverse_geocode(latitude, longitude)
         image = form_dict["basic_info"].cleaned_data["image"]
         
         if image:
