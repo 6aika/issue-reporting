@@ -142,6 +142,7 @@ DATE_FORMAT = "j.n.Y"
 
 # OPEN311 synchronization options
 OPEN311_URL = "https://asiointi.hel.fi/palautews/rest/v1/requests.json"
+OPEN311_SERVICE_URL = "https://asiointi.hel.fi/palautews/rest/v1/services.json?locale={}"
 SYNCHRONIZATION_START_DATETIME = '2014-09-07T00:00:00'
 OPEN311_FEEDBACKS_PER_RESPONSE_LIMIT = 500
 OPEN311_RANGE_LIMIT_DAYS = 90

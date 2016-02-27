@@ -67,3 +67,16 @@ class Task(models.Model):
     owner_name = models.TextField(null=True)
     task_modified = models.DateTimeField(null=True)
     task_created = models.DateTimeField(null=True)
+
+
+class Service(models.Model):
+    class Meta:
+        db_table = 'services'
+
+    service_code = models.IntegerField(null=False)
+    service_name = models.TextField(null=False)
+    description = models.TextField(null=False)
+    metadata = models.BooleanField(null=False)
+    type = models.TextField(null=False)
+    keywords = models.TextField(null=False)
+    group = models.TextField(null=False)

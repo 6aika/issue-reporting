@@ -11,9 +11,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         feedbacks = Feedback.objects.filter(Q(address_string__isnull=True) | Q(address_string__exact=''))
         for f in feedbacks:
-            address = reverse_geocode(f.lat, f.lon)
             if f.lat == 0 or f.lon == 0:
                 continue
+            address = reverse_geocode(f.lat, f.lon)
             f.address_string = address
             f.save()
         print('reverse geocoding complete')
