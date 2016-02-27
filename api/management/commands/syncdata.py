@@ -7,13 +7,23 @@ from dateutil import parser as datetime_parser
 from django.conf import settings
 from django.contrib.gis.geos import GEOSGeometry
 from django.core.management import BaseCommand
+from django.db import transaction
 from django.db.models import Max
 
 from api.models import Feedback, Task, MediaURL
 
 
-def insert_feedback(f):
-    feedback = Feedback(
+def get_existing_feedback(service_request_id):
+    try:
+        return Feedback.objects.get(service_request_id=service_request_id)
+    except Feedback.DoesNotExist:
+        return None
+
+
+@transaction.atomic
+def save_feedback(f):
+    existing_feedback = get_existing_feedback(f['service_request_id'])
+    updated_feedback = Feedback(
             service_request_id=f['service_request_id'],
             status_notes=f.get('status_notes', ''),
             status=f['status'],
@@ -36,28 +46,35 @@ def insert_feedback(f):
             service_object_id=f.get('service_object_id', ''),
             service_object_type=f.get('service_object_type', ''),
 
-            location=GEOSGeometry('SRID=4326;POINT(' + str(f.get('long', 0)) + ' ' + str(f.get('lat', 0)) + ')')
+            location=GEOSGeometry('SRID=4326;POINT(' + str(f.get('long', 0)) + ' ' + str(f.get('lat', 0)) + ')'),
+
+            synchronized=True
     )
+
+    if existing_feedback:
+        updated_feedback.id = existing_feedback.id
+        Task.objects.filter(feedback_id=existing_feedback.id).delete()
+        MediaURL.objects.filter(feedback_id=existing_feedback.id).delete()
 
     extended_attributes = f.get('extended_attributes', None)
     if extended_attributes:
-        feedback.title = extended_attributes.get('title', '')
-        feedback.detailed_status = extended_attributes.get('detailed_status', '')
+        updated_feedback.title = extended_attributes.get('title', '')
+        updated_feedback.detailed_status = extended_attributes.get('detailed_status', '')
 
-    feedback.save()
+    updated_feedback.save()
 
     if extended_attributes:
         media_urls_json = extended_attributes.get('media_urls', None)
         if media_urls_json:
             for media_url_json in media_urls_json:
-                media_url = MediaURL(feedback_id=feedback.id, media_url=media_url_json)
+                media_url = MediaURL(feedback_id=updated_feedback.id, media_url=media_url_json)
                 media_url.save()
 
         tasks_json = extended_attributes.get('tasks', None)
         if tasks_json:
             for task_json in tasks_json:
                 task = Task(
-                        feedback_id=feedback.id,
+                        feedback_id=updated_feedback.id,
                         task_state=task_json.get('task_state', ''),
                         task_type=task_json.get('task_type', ''),
                         owner_name=task_json.get('owner_name', ''),
@@ -100,7 +117,7 @@ def sync_open311_data(start_datetime):
             time_interval_days = settings.OPEN311_RANGE_LIMIT_DAYS
 
         for feedback_json in json_data:
-            insert_feedback(feedback_json)
+            save_feedback(feedback_json)
 
         start_datetime = end_datetime
         end_datetime = start_datetime + timedelta(days=settings.OPEN311_RANGE_LIMIT_DAYS)
@@ -112,7 +129,7 @@ def sync_all_data():
 
 
 def sync_new_data():
-    start_datetime = Feedback.objects.all().aggregate(Max('updated_datetime'))['updated_datetime__max']\
+    start_datetime = Feedback.objects.all().aggregate(Max('updated_datetime'))['updated_datetime__max'] \
         .replace(tzinfo=None)
     sync_open311_data(start_datetime)
 
@@ -121,7 +138,7 @@ class Command(BaseCommand):
     help = 'Synchronize data with Open311 Server provided in settings.py.'
 
     def handle(self, *args, **options):
-        request_count = Feedback.objects.count()
+        request_count = Feedback.objects.filter(synchronized=True).count()
         if request_count == 0:
             sync_all_data()
         else:
