@@ -132,6 +132,18 @@ body {
     background-repeat: no-repeat;
 }
 
+.center-cropped-details-page {
+    width: 320px;
+    /* min-width: 160px;*/
+    height: 320px;
+    padding: 10px;
+    /*object-fit: cover;  <-- croppes the image in*/
+    object-fit: scale-down;
+    object-position: center;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
 .feedback_list_details {
     /* width: 160px;*/
     height: 240px;

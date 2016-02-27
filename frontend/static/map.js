@@ -7,7 +7,7 @@ var map = L.map('map').setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 14);
 
 // Try to get CartoDB's Positron/light basemap into use
 // https://cartodb.com/basemaps/
-L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
     maxZoom: 18,
 }).addTo(map);

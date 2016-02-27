@@ -137,6 +137,7 @@
 </div>
 -->
 <script type="text/javascript">
+    //TODO: move somewhere to avoid duplication
     $.notifyDefaults({
         type: "success",
         animate: {
@@ -155,7 +156,7 @@
             var data = {id: id, csrfmiddlewaretoken: "{{ csrf_token }}"};
             $.post("{% url 'vote_feedback' %}", data, function(data){
                 if(data.status === "success"){
-                    value = parseInt($(this).next().text()) + 1;
+                    var value = parseInt($(this).next().text()) + 1;
                     $(this).next().text(value);
                     $.notify({
                       message: data.message
