@@ -8,11 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment-with-locales.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{% static 'bootstrap-datetimepicker.min.css' %}">
+    <script src="{% static 'bootstrap-datetimepicker.min.js' %}"</script>
+    <!-- Locale file for moment.js -->
+    <script src="{% static 'fi.js' %}"></script>
     {% block head %}
-        <!-- Custom CDN and CSS links here -->
+        <!-- Custom CDN and CSS links here for the HTML HEAD section -->
     {% endblock head %}
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"/>
+    <script src="{% static 'calendar.js' %}"></script>
 </head>
 <body>
 {% include "navbar.html" %} <!-- This block for special cases where full width is needed -->

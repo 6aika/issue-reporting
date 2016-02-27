@@ -4,9 +4,10 @@
         <div class="col-xs-12 short-text shadow">
             <a href="#"><h5>{{ feedback.title|default:"NO TITLE" }}</h5></a>
             <h5 class="text-muted">{{ feedback.service_name }}</h5>
-            <span>Avattu: {{ feedback.requested_datetime }}</span>
-            <span>Ratkaistu: {{ feedback.updated_datetime }}</span>
-            <span>Arvio: {{ feedback.expected_datetime }}</span>
+            <span>Avattu: {{ feedback.requested_datetime }}</span><br>
+            <span>Ratkaistu: {{ feedback.updated_datetime }}</span><br>
+            <span>Arvio: {{ feedback.expected_datetime }}</span><br>
+            <span>Osoite: {{ feedback.address_string }}</span>
         </div>
     </div>
     <!--

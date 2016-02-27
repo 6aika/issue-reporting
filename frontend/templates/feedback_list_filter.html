@@ -1,44 +1,65 @@
 <div class="feedback_list_filters">	
+<form role="form" method="get" class="form-horizontal" enctype="multipart/form-data">
+{% csrf_token %}
 	<div class="row">
-	
 		<div class="col-sm-2 col-md-2">
-			
-				<form id="dummy_placeholder" method="get" action="">
-		        From: <input type="text" class="form-control" id="formGroupExampleInput" placeholder=" / /">
-				</form>  <br>
-				<form id="dummy_placeholder" method="get" action="">
-		        To: <input type="text" class="form-control" id="formGroupExampleInput" placeholder=" / /">
-				</form>	<br>
+			<label for="datepicker-start">Alku</label>
+			<div class="calendar">
+				<div class="form-group">
+					<div class='input-group date' id='datepicker-start'>
+						<span class="input-group-addon" style="cursor:pointer">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+						<input type='text' class="form-control" name="datepicker-start" />
+					</div>
+				</div>
+			</div>
 
+			<label for="datepicker-end">Loppu</label>
+			 <div class="calendar">
+				 <div class="form-group">
+					<div class='input-group date' id='datepicker-end'>
+						<span class="input-group-addon" style="cursor:pointer">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+						<input type='text' class="form-control" name="datepicker-end" />
+					</div>
+				</div>
+			</div>
 		</div>
+
 		<div class="col-sm-2 col-md-2">
 			<br>
-				<form id="status" method="get" action="">
-				<select class="c-select">
+			<select class="form-control" name="status">
 				<option selected="selected">Status</option>
 				<option>Open</option>
 				<option>Closed</option>
-			</select><br><br>
-			</form>
-			<form action="">
-				<input type="checkbox" name="distance" value="Distance">Sort by distance from me<br>
-			</form>
+			</select>
+			<br>
+			
+			<input type="checkbox" name="distance" value="Distance">Sort by distance from my location<br>
+			
 		</div>
 		<div class="col-sm-3 col-md-3">
-			<br><select class="c-select">
+			<br>
+			<select class="form-control" name="service_name">
 				<option selected="selected">Service name</option>
 				{% for servicename in service_name %}
 				<option>{{ servicename }}</option>
 				{% endfor %}
-			</select><br>
+			</select>
+			<br>
 		</div>
 		<div class="col-sm-5 col-md-5">
-			<form id="feedbacklist_searchbar" method="get" action="">
-		        <br><input type="text" class="form-control" id="formGroupExampleInput" placeholder="Search"><br>
-				<input type="submit" value="Search">
-			</form><br>
-			
+	        <br>
+	        <input type="text" class="form-control" name="searchterm" placeholder="Search"><br>
+
+			<button class="btn btn-primary" type="submit" value="Search">
+				<span class="glyphicon glyphicon-search"></span>
+				Search
+			</button>
+			<br>
 		</div>
 	</div>
-
+</form>
 </div>

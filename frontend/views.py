@@ -25,8 +25,12 @@ TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form
 def mainpage(request):
     context = {}
     fixed_feedbacks = Feedback.objects.filter(status="closed")[0:4]
+    fixed_feedbacks_count = Feedback.objects.filter(status="closed").count()
     recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
+    feedbacks_count = Feedback.objects.count()
+    context["feedbacks_count"] = feedbacks_count
     context["fixed_feedbacks"] = fixed_feedbacks
+    context["fixed_feedbacks_count"] = fixed_feedbacks_count
     context["recent_feedbacks"] = recent_feedbacks
     return render(request, "mainpage.html", context)
 
@@ -39,10 +43,18 @@ def locations_demo(request):
 
 
 def feedback_list(request):
+    filter_start_date = request.GET.get("datepicker-start")
+    filter_end_date = request.GET.get("datepicker-end")
+    filter_status = request.GET.get("status")
+    filter_distance = request.GET.get("distance")
+    filter_service_name = request.GET.get("service_name")
+    filter_searchterm = request.GET.get("searchterm")
+
     feedbacks = Feedback.objects.all().order_by("-requested_datetime")
     page = request.GET.get("page")
     feedbacks = paginate_query_set(feedbacks, 20, page)
-    servicename = Feedback.objects.values_list('service_name', flat=True).distinct() 
+    servicename = Feedback.objects.values_list('service_name', flat=True).distinct()
+    
     return render(request, "feedback_list.html", {"feedbacks": feedbacks, "service_name":servicename})
 
 
