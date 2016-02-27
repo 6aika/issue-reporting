@@ -58,6 +58,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
         )
 
         representation = {
+            'id': instance.id,
             'distance': distance_value,
             'service_request_id': instance.service_request_id,
             'status_notes': instance.status_notes,

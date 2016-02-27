@@ -2,6 +2,8 @@
 {% load staticfiles %}
 
 {% block head %}
+<link rel="stylesheet" href="{% static 'animate.css' %}"/>
+<script type="text/javascript" src="{% static 'bootstrap-notify.min.js' %}"></script>
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 
@@ -43,6 +45,10 @@
                 </div>
                 <div id="feedback_info" class="col-md-3" style="visibility: hidden">
                     <h3 id="feedback_title"></h3>
+                    <div class="xs-col-3">
+                        <span class="glyphicon glyphicon-exclamation-sign feedback_list_vote_icon" id=""></span>
+                        <span class="badge feedback_list_vote_badge"></span>
+                    </div>
                     <p>
                         <img id="feedback_image" class="img-thumbnail img-responsive center-cropped"
                              src="https://placehold.it/240x240"/>
@@ -65,7 +71,7 @@
 
     var map = L.map('map').setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 14);
 
-    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
         maxZoom: 18,
     }).addTo(map);
@@ -123,6 +129,8 @@
             marker.feedback = feedback;
             marker.on('click', function(e) {
                 $('#feedback_title').text(e.target.feedback.title);
+                $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
+                $('.feedback_list_vote_icon').attr("id", e.target.feedback.id);
                 $('#feedback_service_name').text(e.target.feedback.service_name);
                 $('#feedback_requested_datetime').text(e.target.feedback.requested_datetime);
                 $('#feedback_description').text(e.target.feedback.description);
@@ -134,6 +142,44 @@
             "class": "my-new-list",
             html: items.join("")
         }).appendTo("body");
+    });
+
+    //TODO: move somewhere to avoid duplication
+    $.notifyDefaults({
+        type: "success",
+        animate: {
+            enter: 'animated bounceIn',
+            exit: 'animated bounceOut'
+        },
+        placement: {
+            from: "bottom",
+            align: "right"
+        }
+    });
+    $(function(){
+        // Voting. Do a POST request to record the vote
+        $(".feedback_list_vote_icon").click(function () {
+            var id = $(this).attr("id");
+            var data = {id: id, csrfmiddlewaretoken: "{{ csrf_token }}"};
+            $.post("{% url 'vote_feedback' %}", data, function(data){
+                if(data.status === "success"){
+                    var value = parseInt($(this).next().text()) + 1;
+                    $(this).next().text(value);
+                    $.notify({
+                        message: data.message
+                    },{
+                        type: "success"
+                    });
+                }
+                else {
+                    $.notify({
+                        message: data.message
+                    },{
+                        type: "danger"
+                    });
+                }
+            }.bind(this));
+        });
     });
 </script>
 {% endblock %}
