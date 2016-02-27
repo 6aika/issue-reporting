@@ -43,14 +43,14 @@ def feedback_list(request):
     feedbacks = Feedback.objects.all().order_by("-requested_datetime")
     page = request.GET.get("page")
     feedbacks = paginate_query_set(feedbacks, 20, page)
-    servicename = Feedback.objects.values_list('service_name', flat=True).distinct() 
+    servicename = Feedback.objects.values_list('service_name', flat=True).distinct()
     return render(request, "feedback_list.html", {"feedbacks": feedbacks, "service_name":servicename})
 
 
 def vote_feedback(request):
     """Process vote requests. Increases vote count of a feedback if the session data
     does not contain the id for that feedback. Ie. let the user vote only once.
-    """ 
+    """
     if request.method == "POST":
         try:
             id = request.POST["id"]
@@ -64,7 +64,7 @@ def vote_feedback(request):
                 if id in request.session["vote_id_list"]:
                     return JsonResponse({"status": "error", "message": "Voit äänestää palautetta vain kerran!"})
             else:
-                request.session["vote_id_list"] = [] 
+                request.session["vote_id_list"] = []
             feedback.vote_counter += 1
             feedback.save()
             list = request.session["vote_id_list"]
@@ -99,7 +99,6 @@ def get_services():
     data = json.loads(response.read().decode("utf8"))
     return data
 
-
 def statistic_page(request):
     context = {}
     duration = ExpressionWrapper(Avg((F('updated_datetime') - F('requested_datetime'))),
@@ -109,6 +108,7 @@ def statistic_page(request):
     closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(
         service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).annotate(
         duration=duration).order_by('-total')
+
     context["feedback_category"] = feedback_category
     context["closed"] = closed
     return render(request, "statistic_page.html", context)
