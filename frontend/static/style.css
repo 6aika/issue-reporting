@@ -175,6 +175,10 @@ body {
     box-shadow: 1px 1px 3px 1px #aaa;
 }
 
+.feedback_list_filters label {
+    
+}
+
 /* Color for item under mouse in category selection */
 .feedback_form_category_item:hover {
     background-color: #eee
