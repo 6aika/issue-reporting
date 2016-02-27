@@ -14,7 +14,7 @@ from django.db.models import Count
 import datetime
 from datetime import timedelta
 from django.db.models import Avg
-from api.models import Feedback
+from api.models import Feedback, Service
 from api.services import get_feedbacks
 from api.analysis import calc_fixing_time
 from api.geocoding.geocoding import reverse_geocode
@@ -50,16 +50,24 @@ def feedback_list(request):
     filter_start_date = request.GET.get("datepicker-start")
     filter_end_date = request.GET.get("datepicker-end")
     filter_status = request.GET.get("status")
-    filter_distance = request.GET.get("distance")
-    filter_service_name = request.GET.get("service_name")
+    filter_order_by = request.GET.get("order_by")
+    filter_service_code = request.GET.get("service_code")
     filter_description = request.GET.get("description")
+    filter_lat = request.GET.get("lat")
+    filter_lon = request.GET.get("lon")
 
-    feedbacks = Feedback.objects.all().order_by("-requested_datetime")
+    feedbacks = get_feedbacks(service_codes=filter_service_code, service_request_ids=None,
+                              start_date=filter_start_date, end_date=filter_end_date,
+                              statuses=filter_status, description=filter_description,
+                              service_object_type=None, service_object_id=None,
+                              updated_after=None, updated_before=None,
+                              lat=filter_lat, lon=filter_lon, radius=None, order_by=filter_order_by)
+
     page = request.GET.get("page")
     feedbacks = paginate_query_set(feedbacks, 20, page)
-    servicename = Feedback.objects.values_list('service_name', flat=True).distinct()
+    services = Service.objects.all()
 
-    return render(request, "feedback_list.html", {"feedbacks": feedbacks, "service_name" : servicename})
+    return render(request, "feedback_list.html", {"feedbacks": feedbacks, "services" : services})
 
 
 def feedback_details(request, feedback_id):

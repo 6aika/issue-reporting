@@ -37,14 +37,13 @@
 					<option>Closed</option>
 				</select>
 			</div>
-			<!--<input type="checkbox" name="distance" value="Distance">Sort by distance from my location<btn-primary>-->
 			<div>
-				<label for="orderby">Järjestä</label>
-				<select class="form-control" name="orderby" id="orderby">
-					<option value="">Distance</option>
-					<option value="">Votes</option>
-					<option value="">Requested time</option>
-				</select>
+				<label for="order_by">Järjestä</label>
+				<select class="form-control" name="order_by">
+					<option value="distance">Distance</option>
+					<option value="vote_counter">Votes</option>
+				<option value="requested_datetime">Creation datetime</option>
+			</select>
 			</div>
 			
 		</div>
@@ -52,8 +51,8 @@
 			<label for="service_name">Aihealue</label>
 			<select class="form-control" name="service_name">
 				<option selected="selected">Service name</option>
-				{% for servicename in service_name %}
-				<option value="">{{ servicename }}</option>
+				{% for service in services %}
+				<option value="{{service.service_code}}">{{ service.service_name }}</option>
 				{% endfor %}
 			</select>
 		</div>
@@ -79,9 +78,12 @@ function submitForm(e) {
 	e.preventDefault();
 	if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
+        	// TODO : check that the hidden input fields are populated for submit!
         	$("#lat").val(position.coords.latitude);
        		$("#lon").val(position.coords.longitude);
-
+			// TODO : use e.g. moment(startDate, "MM.DD.YYYY");
+			//var startDate = $( "[name='datepicker-start']" ).val();
+       		//$( "[name='datepicker-start']" ).val();
        		
             $("#feedback-filter").submit();
         }.bind(this));

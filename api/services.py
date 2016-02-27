@@ -36,10 +36,12 @@ def get_feedbacks(service_codes, service_request_ids,
     if updated_before:
         queryset = queryset.filter(updated_datetime__lt=updated_before)
 
-    if lat and lon and radius:
+    if lat and lon:
         point = fromstr('SRID=4326;POINT(%s %s)' % (lon, lat))
-        queryset = Feedback.objects.annotate(distance=Distance('location', point)) \
-            .filter(location__distance_lte=(point, D(m=radius)))
+        queryset = Feedback.objects.annotate(distance=Distance('location', point))
+
+        if radius:
+            queryset = queryset.filter(location__distance_lte=(point, D(m=radius)))
 
     # end CitySDK Helsinki specific filtration
 
