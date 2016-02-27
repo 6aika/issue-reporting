@@ -76,7 +76,7 @@ def feedback_list(request):
     feedbacks = paginate_query_set(feedbacks, 20, page)
     services = Service.objects.all()
 
-    return render(request, "feedback_list.html", {"feedbacks": feedbacks, "services" : services})
+    return render(request, "feedback_list.html", {"feedbacks": feedbacks, "services": services})
 
 
 def feedback_details(request, feedback_id):
@@ -134,22 +134,15 @@ def map(request):
     return render(request, "map.html", {"feedbacks": feedbacks})
 
 
-# Returns all Helsinki services as a python object
-def get_services():
-    url = "https://asiointi.hel.fi/palautews/rest/v1/services.json?locale=fi_FI"
-    response = urllib.request.urlopen(url)
-    data = json.loads(response.read().decode("utf8"))
-    return data
-
 def statistic_page(request):
     context = {}
     duration = ExpressionWrapper(Avg((F('updated_datetime') - F('requested_datetime'))),
                                  output_field=fields.DurationField())
     feedback_category = Feedback.objects.all().exclude(service_name__exact='').exclude(
-        service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
+            service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
     closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(
-        service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).annotate(
-        duration=duration).order_by('-total')
+            service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).annotate(
+            duration=duration).order_by('-total')
 
     context["feedback_category"] = feedback_category
     context["closed"] = closed
@@ -186,21 +179,23 @@ class FeedbackWizard(SessionWizardView):
 
         if self.steps.current == 'category':
             categories = []
-            data = get_services()
+            data = Service.objects.all()
 
             GLYPHICONS = ["glyphicon-wrench", "glyphicon-road", "glyphicon-euro", "glyphicon-music", "glyphicon-glass",
                           "glyphicon-heart", "glyphicon-star", "glyphicon-user", "glyphicon-film", "glyphicon-home"]
 
-            for idx, item in enumerate(data):
+            idx = 0
+            for item in data:
                 category = {}
-                category["name"] = item["service_name"]
-                category["description"] = item["description"]
+                category["name"] = item.service_name
+                category["description"] = item.description
                 category["src"] = "https://placehold.it/150x150"
                 category["alt"] = "Category image"
                 category["glyphicon"] = GLYPHICONS[idx]
-                category["service_code"] = item["service_code"]
+                category["service_code"] = item.service_code
                 categories.append(category)
                 context.update({'categories': categories})
+                idx += 1
         return context
 
     def done(self, form_list, form_dict, **kwargs):
@@ -209,13 +204,13 @@ class FeedbackWizard(SessionWizardView):
         data["title"] = form_dict["basic_info"].cleaned_data["title"]
         data["description"] = form_dict["basic_info"].cleaned_data["description"]
         data["service_code"] = form_dict["category"].cleaned_data["service_code"]
-        data["service_name"] = get_service_name(data["service_code"])
+        data["service_name"] = Service.objects.get(service_code=data["service_code"]).service_code
         latitude = form_dict["closest"].cleaned_data["latitude"]
         longitude = form_dict["closest"].cleaned_data["longitude"]
         data["location"] = GEOSGeometry('SRID=4326;POINT(' + str(longitude) + ' ' + str(latitude) + ')')
         data["address_string"] = reverse_geocode(latitude, longitude)
         image = form_dict["basic_info"].cleaned_data["image"]
-        
+
         if image:
             handle_uploaded_file(image)
             data["media_url"] = "/media/" + image.name
@@ -228,22 +223,17 @@ class FeedbackWizard(SessionWizardView):
         new_feedback.expected_datetime = expected_datetime
         new_feedback.save()
 
-        return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list], 'expected_datetime': expected_datetime})
+        return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
+                                                              'expected_datetime': expected_datetime})
+
 
 def instructions(request):
     context = {}
     return render(request, "instructions.html", context)
 
+
 # Now only saves the submitted file into MEDIA_ROOT directory
 def handle_uploaded_file(file):
-    with open(os.path.join(settings.MEDIA_ROOT,file.name), 'wb+') as destination:
+    with open(os.path.join(settings.MEDIA_ROOT, file.name), 'wb+') as destination:
         for chunk in file.chunks():
             destination.write(chunk)
-
-# Retrieve correct service_name from service_code
-def get_service_name(service_code):
-    data = get_services()
-    for item in data:
-        if item["service_code"] == service_code:
-            return item["service_name"]
-    return None
