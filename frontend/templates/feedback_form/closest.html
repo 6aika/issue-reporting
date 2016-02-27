@@ -89,7 +89,6 @@
     });
 
     function getUserLocation(e) {
-        console.log("getUserLocation");
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
                 var newLocation = L.latLng(position.coords.latitude, position.coords.longitude);

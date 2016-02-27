@@ -1,5 +1,5 @@
 <div class="feedback_list_filters">	
-<form role="form" method="get" class="form-horizontal" enctype="multipart/form-data">
+<form role="form" id="feedback-filter" method="get" class="form-horizontal" enctype="multipart/form-data">
 {% csrf_token %}
 	<div class="row">
 		<div class="col-sm-2 col-md-2">
@@ -16,7 +16,7 @@
 			</div>
 
 			<label for="datepicker-end">Loppu</label>
-			 <div class="calendar">
+			<div class="calendar">
 				 <div class="form-group">
 					<div class='input-group date' id='datepicker-end'>
 						<span class="input-group-addon" style="cursor:pointer">
@@ -29,41 +29,66 @@
 		</div>
 
 		<div class="col-sm-2 col-md-2">
-			<br>
-			<select class="form-control" name="status">
-				<option selected="selected">Status</option>
-				<option>Open</option>
-				<option>Closed</option>
-			</select>
-			<br>
-			
-			<!--<input type="checkbox" name="distance" value="Distance">Sort by distance from my location<br>-->
-			<select class="form-control" name="orderby">
-				<option value="">Distance</option>
-				<option value="">Votes</option>
-				<option value="">Requested time</option>
-			</select>
+			<div>
+				<label for="status">Tila</label>
+				<select class="form-control" name="status" id="status">
+					<option selected="selected">Status</option>
+					<option>Open</option>
+					<option>Closed</option>
+				</select>
+			</div>
+			<!--<input type="checkbox" name="distance" value="Distance">Sort by distance from my location<btn-primary>-->
+			<div>
+				<label for="orderby">Järjestä</label>
+				<select class="form-control" name="orderby" id="orderby">
+					<option value="">Distance</option>
+					<option value="">Votes</option>
+					<option value="">Requested time</option>
+				</select>
+			</div>
 			
 		</div>
 		<div class="col-sm-3 col-md-3">
-			<br>
+			<label for="service_name">Aihealue</label>
 			<select class="form-control" name="service_name">
 				<option selected="selected">Service name</option>
 				{% for servicename in service_name %}
 				<option value="">{{ servicename }}</option>
 				{% endfor %}
 			</select>
-			<br>
 		</div>
 		<div class="col-sm-5 col-md-5">
-	        <br>
-	        <input type="text" class="form-control" name="description" placeholder="Description"><br>
+	        <label for="description">Kuvaus</label>
+	        <input type="text" class="form-control" name="description" id="description" placeholder="Kuvaus" />
 
-			<button class="btn btn-primary" type="submit" value="Search">
+			<button class="btn btn-primary" type="submit" value="Search" onclick="submitForm()">
 				Apply
 			</button>
-			<br>
 		</div>
+
+		<div>
+			<input type="text" name="lat" id="lat" style="display: none;" />
+			<input type="text" name="lon" id="lon" style="display: none;" />
+		<div>
+
 	</div>
 </form>
 </div>
+<script type="text/javascript">
+function submitForm(e) {
+	e.preventDefault();
+	if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+        	$("#lat").val(position.coords.latitude);
+       		$("#lon").val(position.coords.longitude);
+
+       		
+            $("#feedback-filter").submit();
+        }.bind(this));
+    }
+    else {
+        console.error("Geolocation is not supported by this browser.");
+    }
+
+}
+</script>
