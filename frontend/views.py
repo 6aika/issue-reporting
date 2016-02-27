@@ -12,9 +12,11 @@ from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
 from django.db.models import Count
 import datetime
+from datetime import timedelta
 from django.db.models import Avg
 from api.models import Feedback
 from api.services import get_feedbacks
+from api.analysis import calc_fixing_time
 from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
 from django.db.models import F, ExpressionWrapper, fields
 
@@ -194,12 +196,20 @@ class FeedbackWizard(SessionWizardView):
         longitude = form_dict["closest"].cleaned_data["longitude"]
         data["location"] = GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
         image = form_dict["basic_info"].cleaned_data["image"]
+        
         if image:
             handle_uploaded_file(image)
             data["media_url"] = "/media/" + image.name
+
         new_feedback = Feedback(**data)
         new_feedback.save()
-        return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
+
+        fixing_time = calc_fixing_time(data["service_code"])
+        expected_datetime = new_feedback.requested_datetime + timedelta(milliseconds=fixing_time)
+        new_feedback.expected_datetime = expected_datetime
+        new_feedback.save()
+
+        return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list], 'expected_datetime': expected_datetime})
 
 def instructions(request):
     context = {}

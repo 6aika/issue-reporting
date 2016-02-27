@@ -6,6 +6,13 @@
 		<h1>Kiitos palautteesta!</h1>
 	</div>
 </div>
+
+<div class="row text-center">
+	<div class="col-sm-6 col-sm-offset-3">
+		Arvioitu korjausaika on: {{ expected_datetime|date:"d.m.Y" }}
+	</div>
+</div>
+
 <div class="row">
 	<div class="col-sm-4 col-sm-offset-4">
 		<img class="img-responsive" src="https://s-media-cache-ak0.pinimg.com/564x/26/69/f9/2669f9640e9072f06b72ef0c6ad853e0.jpg" />
@@ -18,4 +25,5 @@
 		</p>
 	</div>
 </div>
+
 {% endblock %}
