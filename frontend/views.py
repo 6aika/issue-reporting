@@ -12,10 +12,11 @@ from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
 from django.db.models import Count
 import datetime
+from django.db.models import Avg
 from api.models import Feedback
 from api.views import get_feedbacks
 from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
-from django.db.models import F, ExpressionWrapper,fields
+from django.db.models import F, ExpressionWrapper, fields
 
 FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
 TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/step2.html",
@@ -86,14 +87,21 @@ def get_services():
     data = json.loads(response.read().decode("utf8"))
     return data
 
-def statistic_page(request):
 
-    feedback_category = Feedback.objects.exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
-    closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
-    duration = ExpressionWrapper((F('updated_datetime') - F('requested_datetime')), output_field=fields.DurationField())
-    avg = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(duration=duration)
-    zipped = zip(feedback_category,closed,avg)
-    return render(request, "statistic_page.html",{'feedback':zipped})
+def statistic_page(request):
+    context = {}
+    duration = ExpressionWrapper(Avg((F('updated_datetime') - F('requested_datetime'))),
+                                 output_field=fields.DurationField())
+    feedback_category = Feedback.objects.all().exclude(service_name__exact='').exclude(
+        service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
+    closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(
+        service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).annotate(
+        duration=duration).order_by('-total')
+
+    context["feedback_category"] = feedback_category
+    context["closed"] = closed
+    return render(request, "statistic_page.html", context)
+
 
 class FeedbackWizard(SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp'))
@@ -106,20 +114,20 @@ class FeedbackWizard(SessionWizardView):
         if self.steps.current == 'closest':
             print('duplicates step')
             closest = get_feedbacks(
-                    service_request_ids=None,
-                    service_codes=None,
-                    start_date=None,
-                    end_date=None,
-                    statuses='Open',
-                    service_object_type=None,
-                    service_object_id=None,
-                    lat=60.17067,
-                    lon=24.94152,
-                    radius=3000,
-                    updated_after=None,
-                    updated_before=None,
-                    description=None,
-                    order_by='distance')[:10]
+                service_request_ids=None,
+                service_codes=None,
+                start_date=None,
+                end_date=None,
+                statuses='Open',
+                service_object_type=None,
+                service_object_id=None,
+                lat=60.17067,
+                lon=24.94152,
+                radius=3000,
+                updated_after=None,
+                updated_before=None,
+                description=None,
+                order_by='distance')[:10]
 
             context.update({'closest': closest})
 
@@ -150,7 +158,7 @@ class FeedbackWizard(SessionWizardView):
         data["service_code"] = form_dict["category"].cleaned_data["service_code"]
         latitude = form_dict["closest"].cleaned_data["latitude"]
         longitude = form_dict["closest"].cleaned_data["longitude"]
-        data["location"] = location=GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
+        data["location"] = location = GEOSGeometry('SRID=4326;POINT(' + str(latitude) + ' ' + str(longitude) + ')')
         new_feedback = Feedback(**data)
         print(new_feedback)
         new_feedback.save()
@@ -158,16 +166,19 @@ class FeedbackWizard(SessionWizardView):
         handle_uploaded_file(form_dict["basic_info"].cleaned_data["image"])
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list]})
 
+
 def instructions(request):
     context = {}
     return render(request, "instructions.html", context)
 
+
 # Now only saves the submitted file into MEDIA_ROOT directory
 def handle_uploaded_file(file):
     if file:
-        with open(os.path.join(settings.MEDIA_ROOT,file.name), 'wb+') as destination:
+        with open(os.path.join(settings.MEDIA_ROOT, file.name), 'wb+') as destination:
             for chunk in file.chunks():
                 destination.write(chunk)
+
 
 # Retrieve correct service_name from service_code
 def get_service_name(code_string):
