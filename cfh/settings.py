@@ -146,6 +146,7 @@ OPEN311_SERVICE_URL = "https://asiointi.hel.fi/palautews/rest/v1/services.json?l
 SYNCHRONIZATION_START_DATETIME = '2014-09-07T00:00:00'
 OPEN311_FEEDBACKS_PER_RESPONSE_LIMIT = 500
 OPEN311_RANGE_LIMIT_DAYS = 90
+OPEN311_API_KEY = 'f1301b1ded935eabc5faa6a2ce975f6'
 
 # geocoding options
 
