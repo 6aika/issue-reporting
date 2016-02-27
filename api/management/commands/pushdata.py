@@ -20,6 +20,10 @@ def send_feedback_to_open311(f):
             service_object_type=f.service_object_type,
             service_object_id=f.service_object_id,
             address_string=f.address_string,
+            email=f.email,
+            first_name=f.first_name,
+            last_name=f.last_name,
+            phone=f.phone,
             media_url=f.media_url
     )
 
