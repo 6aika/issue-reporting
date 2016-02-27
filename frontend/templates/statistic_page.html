@@ -10,19 +10,45 @@
                 <tr>
                     <th>Services</th>
                     <th>Total</th>
-                    <th>Processed</th>
-                    <th>Average time</th>
+
                 </tr>
                 </thead>
                 <tbody>
-                {% for every, closed,avg in feedback %}
+                {% for every in feedback_category %}
                     <tr>
                         <td>{{ every.service_name }}</td>
                         <td>{{ every.total }}</td>
-                        <td>{{ closed.total }}</td>
-                        <td>{{ avg.duration }}</td>
+
+
                     </tr>
                 {% endfor %}
+
+
+                </tbody>
+            </table>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Services</th>
+                    <th>Closed Cases</th>
+                    <th>Average Time in Days</th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for every in closed %}
+                    <tr>
+                        <td>{{ every.service_name }}</td>
+                        <td>{{ every.total }}</td>
+                        <td>{{ every.duration.days }} days</td>
+
+
+                    </tr>
+                {% endfor %}
+
+
                 </tbody>
             </table>
         </div>

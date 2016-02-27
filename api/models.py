@@ -37,6 +37,9 @@ class Feedback(models.Model):
     # Keeps track of votes users have given to the feedback
     vote_counter = models.IntegerField(default=0)
 
+    # synchronized with external Open311 service
+    synchronized = models.BooleanField(default=False)
+
     @property
     def lon(self):
         return self.location[0]

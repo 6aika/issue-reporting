@@ -12,10 +12,11 @@ from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
 from django.db.models import Count
 import datetime
+from django.db.models import Avg
 from api.models import Feedback
-from api.views import get_feedbacks
+from api.services import get_feedbacks
 from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
-from django.db.models import F, ExpressionWrapper,fields
+from django.db.models import F, ExpressionWrapper, fields
 
 FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
 TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/step2.html",
@@ -54,14 +55,24 @@ def feedback_list(request):
     page = request.GET.get("page")
     feedbacks = paginate_query_set(feedbacks, 20, page)
     servicename = Feedback.objects.values_list('service_name', flat=True).distinct()
-    
+
     return render(request, "feedback_list.html", {"feedbacks": feedbacks, "service_name":servicename})
+
+
+def feedback_details(request, feedback_id):
+    try:
+        feedback = Feedback.objects.get(pk=feedback_id)
+    except Feedback.DoesNotExist:
+        return render(request, "simple_message.html", {"title": "No such feedback!"})
+    context = {'feedback': feedback, 'tasks': feedback.tasks.all(), 'media_urls': feedback.media_urls.all()}
+
+    return render(request, 'feedback_details.html', context)
 
 
 def vote_feedback(request):
     """Process vote requests. Increases vote count of a feedback if the session data
     does not contain the id for that feedback. Ie. let the user vote only once.
-    """ 
+    """
     if request.method == "POST":
         try:
             id = request.POST["id"]
@@ -75,7 +86,7 @@ def vote_feedback(request):
                 if id in request.session["vote_id_list"]:
                     return JsonResponse({"status": "error", "message": "Voit äänestää palautetta vain kerran!"})
             else:
-                request.session["vote_id_list"] = [] 
+                request.session["vote_id_list"] = []
             feedback.vote_counter += 1
             feedback.save()
             list = request.session["vote_id_list"]
@@ -111,13 +122,19 @@ def get_services():
     return data
 
 def statistic_page(request):
+    context = {}
+    duration = ExpressionWrapper(Avg((F('updated_datetime') - F('requested_datetime'))),
+                                 output_field=fields.DurationField())
+    feedback_category = Feedback.objects.all().exclude(service_name__exact='').exclude(
+        service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
+    closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(
+        service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).annotate(
+        duration=duration).order_by('-total')
 
-    feedback_category = Feedback.objects.exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
-    closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
-    duration = ExpressionWrapper((F('updated_datetime') - F('requested_datetime')), output_field=fields.DurationField())
-    avg = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(service_name__isnull=True).values('service_name').annotate(duration=duration)
-    zipped = zip(feedback_category,closed,avg)
-    return render(request, "statistic_page.html",{'feedback':zipped})
+    context["feedback_category"] = feedback_category
+    context["closed"] = closed
+    return render(request, "statistic_page.html", context)
+
 
 class FeedbackWizard(SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp'))

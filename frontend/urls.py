@@ -7,6 +7,7 @@ import frontend.views
 urlpatterns = [
     url(r'^$', frontend.views.mainpage, name='mainpage'),
     url(r'^feedbacks/$', frontend.views.feedback_list, name="feedback_list"),
+    url(r'^feedbacks/(?P<feedback_id>\d+)/$', frontend.views.feedback_details, name='feedback_details'),
     url(r'^feedback_form/$', frontend.views.FeedbackWizard.as_view(frontend.views.FORMS), name="feedback_form"),
     url(r'^map/$', frontend.views.map, name="map"),
     url(r'^locations_demo/$', frontend.views.locations_demo, name="locations_demo"),
