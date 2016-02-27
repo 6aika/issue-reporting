@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>{{feedback.id}} {{feedback.title}}</h1>
+
+<p>{{feedback.address_string}}</p>
+
+<p>{{tasks|length}}</p>
+<p>{{media_urls|length}}</p>
+
+{% endblock %}

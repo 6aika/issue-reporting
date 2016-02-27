@@ -47,6 +47,16 @@ def feedback_list(request):
     return render(request, "feedback_list.html", {"feedbacks": feedbacks, "service_name":servicename})
 
 
+def feedback_details(request, feedback_id):
+    try:
+        feedback = Feedback.objects.get(pk=feedback_id)
+    except Feedback.DoesNotExist:
+        return render(request, "simple_message.html", {"title": "No such feedback!"})
+    context = {'feedback': feedback, 'tasks': feedback.tasks.all(), 'media_urls': feedback.media_urls.all()}
+
+    return render(request, 'feedback_details.html', context)
+
+
 def vote_feedback(request):
     """Process vote requests. Increases vote count of a feedback if the session data
     does not contain the id for that feedback. Ie. let the user vote only once.
