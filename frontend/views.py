@@ -62,6 +62,9 @@ def feedback_list(request):
     if filter_end_date:
         filter_end_date = datetime.datetime.strptime(filter_end_date, "%d.%m.%Y").isoformat()
 
+    if filter_order_by is None:
+        filter_order_by = "-requested_datetime"
+
     feedbacks = get_feedbacks(service_codes=filter_service_code, service_request_ids=None,
                               start_date=filter_start_date, end_date=filter_end_date,
                               statuses=filter_status, description=filter_description,
