@@ -19,6 +19,9 @@
     {% endblock head %}
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
     <script src="{% static 'calendar.js' %}"></script>
+
+    <!-- Load global defaults for bootstrap-notify plugin -->
+    <script type="text/javascript" src="{% static 'notify_defaults.js' %}"></script>
 </head>
 <body>
 {% include "navbar.html" %} <!-- This block for special cases where full width is needed -->
