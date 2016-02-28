@@ -13,12 +13,12 @@
     <div class="col-xs-6 col-xs-offset-4 col-md-offset-5 centered">
         <ul class="pagination nav navbar-nav">
             {% if feedbacks.has_previous %}
-            <li><a href="?page={{ feedbacks.previous_page_number }}">Prev</a></li>
+            <li><a href="?{{queries.urlencode}}&amp;page={{ feedbacks.previous_page_number }}">Prev</a></li>
             {% endif %}
-            <li><a href="?page={{ feedbacks.number }}">Page {{ feedbacks.number }}
+            <li><a href="?{{queries.urlencode}}&amp;page={{ feedbacks.number }}">Page {{ feedbacks.number }}
                 of {{ feedbacks.paginator.num_pages }}</a></li>
             {% if feedbacks.has_next %}
-            <li><a href="?page={{ feedbacks.next_page_number }}">Next</a></li>
+            <li><a href="?{{queries.urlencode}}&amp;page={{ feedbacks.next_page_number }}">Next</a></li>
             {% endif %}
         </ul>
     </div>

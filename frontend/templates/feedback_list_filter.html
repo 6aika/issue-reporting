@@ -1,6 +1,5 @@
 <div class="feedback_list_filters">
     <form role="form" id="feedback-filter" method="get" class="form-horizontal" enctype="multipart/form-data">
-        {% csrf_token %}
         <div class="row">
             <div class="col-sm-2 col-md-2">
                 <label for="datepicker-start">Alku</label>
@@ -10,7 +9,7 @@
 						<span class="input-group-addon" style="cursor:pointer">
 							<span class="glyphicon glyphicon-calendar"></span>
 						</span>
-                            <input type='text' class="form-control" name="datepicker-start"/>
+                            <input type='text' class="form-control" name="start_date" value="{{queries.start_date}}"/>
                         </div>
                     </div>
                 </div>
@@ -22,7 +21,7 @@
 						<span class="input-group-addon" style="cursor:pointer">
 							<span class="glyphicon glyphicon-calendar"></span>
 						</span>
-                            <input type='text' class="form-control" name="datepicker-end"/>
+                            <input type='text' class="form-control" name="end_date" value="{{queries.end_date}}"/>
                         </div>
                     </div>
                 </div>
@@ -40,6 +39,7 @@
                 <div>
                     <label for="order_by">Järjestä</label>
                     <select class="form-control" name="order_by" id="order_by">
+                        <option selected="selected" value="">Order by</option>
                         <option value="-requested_datetime">Creation datetime</option>
                         <option value="distance">Distance</option>
                         <option value="-vote_counter">Votes</option>
@@ -48,9 +48,9 @@
             </div>
 
             <div class="col-sm-3 col-md-3">
-                <label for="service_name">Aihealue</label>
-                <select class="form-control" name="service_name" id="service_name">
-                    <option selected="selected">Service name</option>
+                <label for="service_code">Aihealue</label>
+                <select class="form-control" name="service_code" id="service_code">
+                    <option selected="selected" value="">Service name</option>
                     {% for service in services %}
                     <option value="{{service.service_code}}">{{ service.service_name }}</option>
                     {% endfor %}
@@ -74,6 +74,16 @@
     </form>
 </div>
 <script type="text/javascript">
+
+    var status = "{{queries.status}}";
+    var order_by = "{{queries.order_by}}";
+    var service_code = "{{queries.service_code}}";
+    var description = "{{queries.description}}";
+
+    $("#status").val(status);
+    $("#order_by").val(order_by);
+    $("#service_code").val(service_code);
+    $("#description").val(description);
 
     function dateStrToIso(dateStr) {
         var dateParts = dateStr.split(".");

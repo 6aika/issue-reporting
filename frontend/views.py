@@ -47,8 +47,12 @@ def locations_demo(request):
 
 
 def feedback_list(request):
-    filter_start_date = request.GET.get("datepicker-start")
-    filter_end_date = request.GET.get("datepicker-end")
+    queries_without_page = request.GET.copy()
+    if 'page' in queries_without_page:
+        del queries_without_page['page']
+
+    filter_start_date = request.GET.get("start_date")
+    filter_end_date = request.GET.get("end_date")
     filter_status = request.GET.get("status")
     filter_order_by = request.GET.get("order_by")
     filter_service_code = request.GET.get("service_code")
@@ -73,10 +77,14 @@ def feedback_list(request):
                               lat=filter_lat, lon=filter_lon, radius=None, order_by=filter_order_by)
 
     page = request.GET.get("page")
-    feedbacks = paginate_query_set(feedbacks, 20, page)
-    services = Service.objects.all()
 
-    return render(request, "feedback_list.html", {"feedbacks": feedbacks, "services": services})
+    context = {
+        'feedbacks': paginate_query_set(feedbacks, 20, page),
+        'services': Service.objects.all(),
+        'queries': queries_without_page
+    }
+
+    return render(request, "feedback_list.html", context)
 
 
 def feedback_details(request, feedback_id):
