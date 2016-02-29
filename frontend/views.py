@@ -212,7 +212,7 @@ class FeedbackWizard(SessionWizardView):
         data["title"] = form_dict["basic_info"].cleaned_data["title"]
         data["description"] = form_dict["basic_info"].cleaned_data["description"]
         data["service_code"] = form_dict["category"].cleaned_data["service_code"]
-        data["service_name"] = Service.objects.get(service_code=data["service_code"]).service_code
+        data["service_name"] = Service.objects.get(service_code=data["service_code"]).service_name
         latitude = form_dict["closest"].cleaned_data["latitude"]
         longitude = form_dict["closest"].cleaned_data["longitude"]
         data["location"] = GEOSGeometry('SRID=4326;POINT(' + str(longitude) + ' ' + str(latitude) + ')')
