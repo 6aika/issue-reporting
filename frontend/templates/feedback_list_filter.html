@@ -94,17 +94,19 @@
     $("#feedback-filter").submit(function (event) {
         event.preventDefault();
 
-        if (navigator.geolocation) {
+        if ($("#order_by").val() === 'distance') {
+          if (navigator.geolocation) {
+            console.log("getting geoloc");
             var that = this;
-            navigator.geolocation.getCurrentPosition(function (position) {
-                $("#lat").val(position.coords.latitude);
-                $("#lon").val(position.coords.longitude);
+              navigator.geolocation.getCurrentPosition(function (position) {
+                  $("#lat").val(position.coords.latitude);
+                  $("#lon").val(position.coords.longitude);
 
-                that.submit();
-            });
-        } else if ($("$order_by").val() === 'distance') {
-            alert("Ordering by distance is not allowed with disabled geolocation API");
-            return;
+                  that.submit();
+              }, function() {alert("Ordering by distance is not allowed with disabled geolocation");});
+          } else {
+            alert("Geolocation is not supported by this browser");
+          }
         } else {
             this.submit();
         }
