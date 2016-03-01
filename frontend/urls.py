@@ -12,6 +12,6 @@ urlpatterns = [
     url(r'^map/$', frontend.views.map, name="map"),
     url(r'^locations_demo/$', frontend.views.locations_demo, name="locations_demo"),
     url(r'^instructions/$', frontend.views.instructions, name="instructions"),
-    url(r'^statistic/$', frontend.views.statistic_page, name="statistic"),
+    url(r'^statistic/$', frontend.views.statistics2, name="statistic"),
     url(r'^vote_feedback/$', frontend.views.vote_feedback, name="vote_feedback")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,4 +1,5 @@
 import json
+import operator
 import os
 import urllib.request
 from django.conf import settings
@@ -10,10 +11,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
-from django.db.models import Count
+from django.db.models import Count, Avg
 import datetime
 from datetime import timedelta
-from django.db.models import Avg
 from api.models import Feedback, Service
 from api.services import get_feedbacks
 from api.analysis import calc_fixing_time
@@ -155,6 +155,45 @@ def statistic_page(request):
     context["feedback_category"] = feedback_category
     context["closed"] = closed
     return render(request, "statistic_page.html", context)
+
+# Idea for statistic implementation.
+def statistics2(request):
+    data = []
+    for service in Service.objects.all():
+        item = {}
+        service_code = service.service_code
+        item["service_name"] = service.service_name
+        item["total"] = get_total(service_code)
+        item["closed"] = get_closed(service_code)
+        item["avg"] = get_avg_duration(service_code)
+        item["median"] = get_avg_median(service_code)
+        data.append(item)
+
+    # Sort the rows by "total" column
+    data.sort(key=operator.itemgetter('total'), reverse=True)
+    return render(request, "statistics2.html", {"data": data})
+
+def get_total(service_code):
+    return Feedback.objects.filter(service_code=service_code).count()
+
+def get_closed(service_code):
+    return Feedback.objects.filter(service_code=service_code, status="closed").count()
+
+# Returns average duration of closed feedbacks (updated_datetime - requested_datetime)
+# from given category. Returns a tuple (days, hours)
+def get_avg_duration(service_code):
+    duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
+    duration_list = Feedback.objects.filter(service_code=service_code, status="closed").annotate(duration=duration).values_list("duration", flat=True)
+    average_timedelta = sum(duration_list, datetime.timedelta(0)) / len(duration_list)
+    return (average_timedelta.days, average_timedelta.seconds//3600)
+
+# Returns median duration of closed feedbacks (updated_datetime - requested_datetime)
+# from given category. Returns a tuple (days, hours)
+def get_avg_median(service_code):
+    duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
+    duration_list = sorted(Feedback.objects.filter(service_code=service_code, status="closed").annotate(duration=duration).values_list("duration", flat=True))
+    median_duration = duration_list[(len(duration_list)-1)//2]
+    return (median_duration.days, median_duration.seconds//3600)
 
 
 class FeedbackWizard(SessionWizardView):

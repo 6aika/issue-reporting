@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="text-center">Statistics</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Aihe</th>
+                    <th>Yhteensä</th>
+                    <th>Suljettu</th>
+                    <th>Keskiarvo</th>
+                    <th>Mediaani</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in data %}
+                    <tr>
+                        <td>{{ item.service_name }}</td>
+                        <td>{{ item.total }}</td>
+                        <td>{{ item.closed }}</td>
+                        <td>{{ item.avg.0 }} pv {{item.avg.1}} h</td>
+                        <td>{{ item.median.0 }} pv {{item.median.1}} h</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
