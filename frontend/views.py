@@ -196,6 +196,9 @@ def get_avg_median(service_code):
     return (median_duration.days, median_duration.seconds//3600)
 
 
+def heatmap(request):
+    return render(request, "heatmap.html", {})
+
 class FeedbackWizard(SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp'))
 
