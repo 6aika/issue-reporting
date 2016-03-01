@@ -10,6 +10,7 @@
 <div id="heatmap">
 </div>
 
+
 <script type="text/javascript">
 $(function() {
     var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
@@ -52,32 +53,30 @@ $(function() {
     map.addControl(new MyControl());
 
     var heatlayer = null;
+    update_map()
 
     $("#service").change(function() {
+        update_map($(this).val());
+    });
+
+    function update_map(service_code) {
         var url = "/api/v1/feedbacks?status=open";
-        if($(this).val()) {
-            url += "&service_code="+$(this).val();
+        if(service_code) {
+            url += "&service_code=" + service_code;
         }
-        if(heatlayer)
-            map.removeLayer(heatlayer);
+
         $.getJSON(url, function (data) {
             var items = [];
             $.each(data, function (key, feedback) {
                 items.push([feedback.lat, feedback.long]);
             });
+            if(heatlayer)
+                map.removeLayer(heatlayer);
             heatlayer = L.heatLayer(items, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
         });
-    });
-
-
-    $.getJSON("/api/v1/feedbacks?status=open", function (data) {
-        var items = [];
-        $.each(data, function (key, feedback) {
-            items.push([feedback.lat, feedback.long]);
-        });
-        heatlayer = L.heatLayer(items, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
-    });
-
+    }
 });
+
+
 </script>
 {% endblock %}
