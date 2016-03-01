@@ -10,5 +10,5 @@ $.notifyDefaults({
         from: "bottom",
         align: "right"
     },
-    delay: 2000
+    delay: 1500
 });
