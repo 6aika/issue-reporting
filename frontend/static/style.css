@@ -7,15 +7,15 @@ body {
 }
 
 .feedback_list_vote_icon {
-    font-size: 2.5em;
+    font-size: 3em;
     vertical-align: middle;
-    color: #fb0;
+    color: #68d;
     padding: 5px;
 
 }
 
 .feedback_list_vote_icon:hover {
-    color: #e90;
+    color: #57c;
     cursor: pointer;
 }
 
