@@ -11,7 +11,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
-from django.db.models import Count, Avg, Sum
+from django.db.models import Count, Avg
 import datetime
 from datetime import timedelta
 from api.models import Feedback, Service
@@ -169,6 +169,7 @@ def statistics2(request):
         item["median"] = get_avg_median(service_code)
         data.append(item)
 
+    # Sort the rows by "total" column
     data.sort(key=operator.itemgetter('total'), reverse=True)
     return render(request, "statistics2.html", {"data": data})
 
@@ -178,12 +179,16 @@ def get_total(service_code):
 def get_closed(service_code):
     return Feedback.objects.filter(service_code=service_code, status="closed").count()
 
+# Returns average duration of closed feedbacks (updated_datetime - requested_datetime)
+# from given category. Returns a tuple (days, hours)
 def get_avg_duration(service_code):
     duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
     duration_list = Feedback.objects.filter(service_code=service_code, status="closed").annotate(duration=duration).values_list("duration", flat=True)
     average_timedelta = sum(duration_list, datetime.timedelta(0)) / len(duration_list)
     return (average_timedelta.days, average_timedelta.seconds//3600)
 
+# Returns median duration of closed feedbacks (updated_datetime - requested_datetime)
+# from given category. Returns a tuple (days, hours)
 def get_avg_median(service_code):
     duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
     duration_list = sorted(Feedback.objects.filter(service_code=service_code, status="closed").annotate(duration=duration).values_list("duration", flat=True))
