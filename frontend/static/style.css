@@ -93,6 +93,11 @@ body {
     width: 100%;
 }
 
+#heatmap {
+    height: 500px;
+    margin-top: 1%;
+}
+
 /* Color for item under mouse in category selection */
 .feedback_form_category_item:hover {
     background-color: #eee
