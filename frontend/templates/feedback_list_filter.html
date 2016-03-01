@@ -1,78 +1,76 @@
-<div class="feedback_list_filters">
-    <form role="form" id="feedback-filter" method="get" class="form-horizontal" enctype="multipart/form-data">
-        <div class="row">
-            <div class="col-sm-2 col-md-2">
-                <label for="datepicker-start">Alku</label>
-                <div class="calendar">
-                    <div class="form-group">
-                        <div class='input-group date' id='datepicker-start'>
-						<span class="input-group-addon" style="cursor:pointer">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-                            <input type='text' class="form-control" name="start_date" value="{{queries.start_date}}"/>
-                        </div>
-                    </div>
-                </div>
-
-                <label for="datepicker-end">Loppu</label>
-                <div class="calendar">
-                    <div class="form-group">
-                        <div class='input-group date' id='datepicker-end'>
-						<span class="input-group-addon" style="cursor:pointer">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-                            <input type='text' class="form-control" name="end_date" value="{{queries.end_date}}"/>
-                        </div>
+<form id="feedback-filter" method="get" class="form-horizontal" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-sm-2 col-md-2">
+            <label>Alku</label>
+            <div class="calendar">
+                <div class="form-group">
+                    <div class='input-group date' id='datepicker-start'>
+					<span class="input-group-addon" style="cursor:pointer">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+                        <input type='text' class="form-control" name="start_date" value="{{queries.start_date}}"/>
                     </div>
                 </div>
             </div>
 
-            <div class="col-sm-2 col-md-2">
-                <div>
-                    <label for="status">Tila</label>
-                    <select class="form-control" name="status" id="status">
-                        <option selected="selected" value="">Status</option>
-                        <option value="open">Open</option>
-                        <option value="closed">Closed</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="order_by">Järjestä</label>
-                    <select class="form-control" name="order_by" id="order_by">
-                        <option selected="selected" value="">Order by</option>
-                        <option value="-requested_datetime">Creation datetime</option>
-                        <option value="distance">Distance</option>
-                        <option value="-vote_counter">Votes</option>
-                    </select>
+            <label>Loppu</label>
+            <div class="calendar">
+                <div class="form-group">
+                    <div class='input-group date' id='datepicker-end'>
+					<span class="input-group-addon" style="cursor:pointer">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+                        <input type='text' class="form-control" name="end_date" value="{{queries.end_date}}"/>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="col-sm-3 col-md-3">
-                <label for="service_code">Aihealue</label>
-                <select class="form-control" name="service_code" id="service_code">
-                    <option selected="selected" value="">Service name</option>
-                    {% for service in services %}
-                    <option value="{{service.service_code}}">{{ service.service_name }}</option>
-                    {% endfor %}
+        <div class="col-sm-2 col-md-2">
+            <div>
+                <label for="status">Tila</label>
+                <select class="form-control" name="status" id="status">
+                    <option selected="selected" value="">Status</option>
+                    <option value="open">Open</option>
+                    <option value="closed">Closed</option>
                 </select>
             </div>
-
-            <div class="col-sm-5 col-md-5">
-                <label for="description">Kuvaus</label>
-                <input type="text" class="form-control" name="description" id="description" placeholder="Kuvaus"/>
-
-                <button class="btn btn-primary" type="submit" value="apply">
-                    Apply
-                </button>
-            </div>
-
             <div>
-                <input type="text" name="lat" id="lat" style="display: none;"/>
-                <input type="text" name="lon" id="lon" style="display: none;"/>
-                <div>
-                </div>
-    </form>
-</div>
+                <label for="order_by">Järjestä</label>
+                <select class="form-control" name="order_by" id="order_by">
+                    <option selected="selected" value="">Order by</option>
+                    <option value="-requested_datetime">Creation datetime</option>
+                    <option value="distance">Distance</option>
+                    <option value="-vote_counter">Votes</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-sm-3 col-md-3">
+            <label for="service_code">Aihealue</label>
+            <select class="form-control" name="service_code" id="service_code">
+                <option selected="selected" value="">Service name</option>
+                {% for service in services %}
+                <option value="{{service.service_code}}">{{ service.service_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-sm-5 col-md-5">
+            <label for="description">Kuvaus</label>
+            <input type="text" class="form-control" name="description" id="description" placeholder="Kuvaus"/>
+
+            <button class="btn btn-primary" type="submit" value="apply">
+                Apply
+            </button>
+        </div>
+
+        <div>
+            <input type="text" name="lat" id="lat" style="display: none;"/>
+            <input type="text" name="lon" id="lon" style="display: none;"/>
+        </div>
+    </div>
+</form>
 <script type="text/javascript">
 
     var status = "{{queries.status}}";

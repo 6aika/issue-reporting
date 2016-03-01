@@ -6,11 +6,6 @@ body {
     font-family: 'Lato', sans-serif !important;
 }
 
-.feedback_list_item {
-    margin: 2em;
-    border-color: #ddd;
-}
-
 .feedback_list_vote_icon {
     font-size: 2.5em;
     vertical-align: middle;
@@ -167,9 +162,10 @@ body {
 }
 
 .feedback_list_row {
-    padding: 15px;
     border-radius: 4px;
     box-shadow: 1px 1px 3px 1px #aaa;
+    margin: 2em;
+    border-color: #ddd;
 }
 
 .feedback_list_filters label {
