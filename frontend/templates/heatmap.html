@@ -14,7 +14,7 @@
     $(function() {
         var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
 
-        var map = L.map("heatmap").setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 14);
+        var map = L.map("heatmap").setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 13);
 
         // L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         //     attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
@@ -24,16 +24,15 @@
         L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
             subdomains: 'abcd',
-            maxZoom: 19
+            maxZoom: 18
         }).addTo(map);
 
         $.getJSON("/api/v1/feedbacks?status=open", function (data) {
             var items = [];
             $.each(data, function (key, feedback) {
-                items.push([feedback.lat, feedback.long, 10.0]);
+                items.push([feedback.lat, feedback.long]);
             });
-            console.log(items.length);
-            var heat = L.heatLayer(items, {minOpacity: 0.5}).addTo(map);
+            var heat = L.heatLayer(items, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
         });
 
     });
