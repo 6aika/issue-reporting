@@ -8,17 +8,14 @@ body {
 
 .feedback_list_item {
     margin: 2em;
-    padding-bottom: 20px;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
     border-color: #ddd;
 }
 
 .feedback_list_vote_icon {
-    font-size: 2em;
+    font-size: 2.5em;
     vertical-align: middle;
     color: #fb0;
-    padding: 15px;
+    padding: 5px;
 
 }
 
