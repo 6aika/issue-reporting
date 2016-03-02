@@ -101,6 +101,13 @@ body {
     width: 100%;
 }
 
+/* css to customize Leaflet default styles  */
+.custom .leaflet-popup-tip,
+.custom .leaflet-popup-content-wrapper {
+    background: #0072C6;
+    color: #ffffff;
+}
+
 /* Color for item under mouse in category selection */
 .feedback_form_category_item:hover {
     background-color: #eee

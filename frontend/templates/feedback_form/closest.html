@@ -70,14 +70,36 @@
 
     var map = L.map('map').setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 14);
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    /*L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+        maxZoom: 18,
+    }).addTo(map);*/
+
+
+
+    L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png", {
         attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
         maxZoom: 18,
     }).addTo(map);
 
     var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
-    var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "m"});
+    var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
+    var highlight_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "m"});
 
+
+    // Variable to keep track of highlighted marker
+    var highlight = null;
+
+    // Function for removing highlight 
+    function removeHighlight () {
+        // Check for highlight
+        if (highlight !== null) {
+            // Set default icon
+            highlight.setIcon(feedback_icon);
+            // Unset highlight
+            highlight = null;
+        }
+    }
 
     var userLocation = new L.marker(map.getCenter(), {icon: center_icon}).addTo(map);
     storeLocation(userLocation.getLatLng());
@@ -120,12 +142,40 @@
         $("#{{ form.longitude.id_for_label }}").val(latlng.lng);
     }
 
+
+
     $.getJSON("/api/v1/feedbacks?status=open", function (data) {
         var items = [];
         $.each(data, function (key, feedback) {
-            var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).addTo(map);
+
+            // specify popup options 
+            var customOptions =
+                {
+                    'maxWidth': '300',
+                    'className' : 'custom'
+                }
+
+            var popupContent = feedback.description;
+
+            var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(map);
             marker.feedback = feedback;
             marker.on('click', function(e) {
+                if (highlight !== null) {
+                    // is highlighted, store id of marker
+                    var id = highlight._leaflet_id;
+                }
+
+                removeHighlight();
+
+                if (id !== marker._leaflet_id) {
+                    // Set highlight icon
+                    marker.setIcon(highlight_icon);
+                    // Assign highlight
+                    highlight = marker;
+                }
+
+
+
                 $('#feedback_title').text(e.target.feedback.title);
                 $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
                 $('.feedback_list_vote_icon').attr("id", e.target.feedback.id);
