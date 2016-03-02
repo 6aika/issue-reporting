@@ -18,12 +18,12 @@ from api.models import Feedback, Service
 from api.services import get_feedbacks
 from api.analysis import calc_fixing_time
 from api.geocoding.geocoding import reverse_geocode
-from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
+from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3, FeedbackFormContact
 from django.db.models import F, ExpressionWrapper, fields
 
-FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
+FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3), ("contact", FeedbackFormContact) ]
 TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/step2.html",
-             "basic_info": "feedback_form/step3.html"}
+             "basic_info": "feedback_form/step3.html", "contact": "feedback_form/contact.html"}
 
 
 def mainpage(request):
@@ -264,6 +264,11 @@ class FeedbackWizard(SessionWizardView):
         if image:
             handle_uploaded_file(image)
             data["media_url"] = "/media/" + image.name
+
+        data["first_name"] = form_dict["contact"].cleaned_data["first_name"]
+        data["last_name"] = form_dict["contact"].cleaned_data["last_name"]
+        data["email"] = form_dict["contact"].cleaned_data["email"]
+        data["phone"] = form_dict["contact"].cleaned_data["phone"]
 
         new_feedback = Feedback(**data)
         new_feedback.save()

@@ -102,8 +102,9 @@ $(function() {
 
     function onLocationFound(event) {
         console.log("Found you using GPS!");
-        var user_location = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
-        L.marker(event.latlng, {icon: user_location}).addTo(map);
+        var marker_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "m"});
+        var user_marker = L.marker(event.latlng, {icon: marker_icon}).addTo(map);
+        user_marker.bindPopup("Sijaintisi", {closeButton: false});
     }
 });
 
