@@ -1,25 +1,25 @@
-import json
+import datetime
 import operator
 import os
-import urllib.request
+from datetime import timedelta
+
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count, Avg
+from django.db.models import F, ExpressionWrapper, fields
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
-from django.db.models import Count, Avg
-import datetime
-from datetime import timedelta
-from api.models import Feedback, Service
-from api.services import get_feedbacks
+
 from api.analysis import calc_fixing_time
 from api.geocoding.geocoding import reverse_geocode
+from api.models import Feedback, Service
+from api.services import get_feedbacks, get_feedbacks_count
 from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
-from django.db.models import F, ExpressionWrapper, fields
 
 FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
 TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/step2.html",
@@ -31,7 +31,7 @@ def mainpage(request):
     fixed_feedbacks = Feedback.objects.filter(status="closed")[0:4]
     fixed_feedbacks_count = Feedback.objects.filter(status="closed").count()
     recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
-    feedbacks_count = Feedback.objects.count()
+    feedbacks_count = get_feedbacks_count()
     context["feedbacks_count"] = feedbacks_count
     context["fixed_feedbacks"] = fixed_feedbacks
     context["fixed_feedbacks_count"] = fixed_feedbacks_count
@@ -250,7 +250,7 @@ class FeedbackWizard(SessionWizardView):
 
     def done(self, form_list, form_dict, **kwargs):
         data = {}
-        data["status"] = "open"
+        data["status"] = "moderation"
         data["title"] = form_dict["basic_info"].cleaned_data["title"]
         data["description"] = form_dict["basic_info"].cleaned_data["description"]
         data["service_code"] = form_dict["category"].cleaned_data["service_code"]
