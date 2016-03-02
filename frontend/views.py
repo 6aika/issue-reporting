@@ -183,7 +183,7 @@ def get_closed(service_code):
 # from given category. Returns a tuple (days, hours)
 def get_avg_duration(service_code):
     duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
-    duration_list = Feedback.objects.filter(service_code=service_code, status="closed", synchronized=True).annotate(duration=duration).values_list("duration", flat=True)
+    duration_list = Feedback.objects.filter(service_code=service_code, status="closed").annotate(duration=duration).values_list("duration", flat=True)
     average_timedelta = sum(duration_list, datetime.timedelta(0)) / len(duration_list)
     return (average_timedelta.days, average_timedelta.seconds//3600)
 
@@ -191,7 +191,7 @@ def get_avg_duration(service_code):
 # from given category. Returns a tuple (days, hours)
 def get_avg_median(service_code):
     duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
-    duration_list = sorted(Feedback.objects.filter(service_code=service_code, status="closed", synchronized=True).annotate(duration=duration).values_list("duration", flat=True))
+    duration_list = sorted(Feedback.objects.filter(service_code=service_code, status="closed").annotate(duration=duration).values_list("duration", flat=True))
     median_duration = duration_list[(len(duration_list)-1)//2]
     return (median_duration.days, median_duration.seconds//3600)
 
@@ -278,8 +278,9 @@ class FeedbackWizard(SessionWizardView):
         new_feedback.expected_datetime = expected_datetime
         new_feedback.save()
 
+        waiting_time = fixing_time/1000/3600/24
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
-                                                              'expected_datetime': expected_datetime})
+                                                              'waiting_time': waiting_time})
 
 
 def instructions(request):
