@@ -174,16 +174,16 @@ def statistics2(request):
     return render(request, "statistics2.html", {"data": data})
 
 def get_total(service_code):
-    return Feedback.objects.filter(service_code=service_code).count()
+    return Feedback.objects.filter(service_code=service_code, synchronized=True).count()
 
 def get_closed(service_code):
-    return Feedback.objects.filter(service_code=service_code, status="closed").count()
+    return Feedback.objects.filter(service_code=service_code, status="closed", synchronized=True).count()
 
 # Returns average duration of closed feedbacks (updated_datetime - requested_datetime)
 # from given category. Returns a tuple (days, hours)
 def get_avg_duration(service_code):
     duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
-    duration_list = Feedback.objects.filter(service_code=service_code, status="closed").annotate(duration=duration).values_list("duration", flat=True)
+    duration_list = Feedback.objects.filter(service_code=service_code, status="closed", synchronized=True).annotate(duration=duration).values_list("duration", flat=True)
     average_timedelta = sum(duration_list, datetime.timedelta(0)) / len(duration_list)
     return (average_timedelta.days, average_timedelta.seconds//3600)
 
@@ -191,7 +191,7 @@ def get_avg_duration(service_code):
 # from given category. Returns a tuple (days, hours)
 def get_avg_median(service_code):
     duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
-    duration_list = sorted(Feedback.objects.filter(service_code=service_code, status="closed").annotate(duration=duration).values_list("duration", flat=True))
+    duration_list = sorted(Feedback.objects.filter(service_code=service_code, status="closed", synchronized=True).annotate(duration=duration).values_list("duration", flat=True))
     median_duration = duration_list[(len(duration_list)-1)//2]
     return (median_duration.days, median_duration.seconds//3600)
 
