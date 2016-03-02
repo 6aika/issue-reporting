@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block head %}
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
+<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script src="{% static 'leaflet-heat.js' %}"></script>
+{% endblock %}
+{% block content %}
+{%include "statistics_menu.html" with heatmap_active="active"%}
+<div id="heatmap">
+</div>
+
+
+<script type="text/javascript">
+$(function() {
+    var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
+
+    var map = L.map("heatmap").setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 13);
+
+    // L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    //     attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+    //     maxZoom: 18,
+    // }).addTo(map);
+
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+        subdomains: 'abcd',
+        maxZoom: 18
+    }).addTo(map);
+
+    var MyControl = L.Control.extend({
+        options: {
+            position: 'topright'
+        },
+
+        onAdd: function (map) {
+            // create the control container with a particular class name
+            var div = L.DomUtil.create('div', 'my-custom-control');
+
+            // ... initialize other DOM elements, add listeners, etc.
+            div.className = "form-group";
+            html_string = "";
+            html_string += "<option value=''>Kaikki</option>";
+            {% for service in services %}
+                html_string += "<option value={{service.service_code}}>{{service.service_name}}</option>";
+            {% endfor %} 
+
+            div.innerHTML = '<label for="service">Aihe:</label><select class="form-control" id="service">' + html_string + '</select>';
+            return div;
+        }
+    });
+
+    map.addControl(new MyControl());
+
+    var heatlayer = null;
+    update_map()
+
+    $("#service").change(function() {
+        update_map($(this).val());
+    });
+
+    function update_map(service_code) {
+        var url = "/api/v1/feedbacks?status=open";
+        if(service_code) {
+            url += "&service_code=" + service_code;
+        }
+
+        $.getJSON(url, function (data) {
+            var items = [];
+            $.each(data, function (key, feedback) {
+                items.push([feedback.lat, feedback.long]);
+            });
+            if(heatlayer)
+                map.removeLayer(heatlayer);
+            heatlayer = L.heatLayer(items, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
+        });
+    }
+});
+
+
+</script>
+{% endblock %}

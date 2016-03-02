@@ -9,5 +9,6 @@ $.notifyDefaults({
     placement: {
         from: "bottom",
         align: "right"
-    }
+    },
+    delay: 1500
 });

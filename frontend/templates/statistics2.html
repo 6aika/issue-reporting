@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
+{%include "statistics_menu.html" with statistics_active="active"%}
     <div class="row">
         <div class="col-sm-12">
             <h3 class="text-center">Statistics</h3>
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Services</th>
+                    <th>Aihe</th>
                     <th>Yhteensä</th>
                     <th>Suljettu</th>
                     <th>Keskiarvo</th>
