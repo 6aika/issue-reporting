@@ -1,29 +1,29 @@
-import datetime
+import json
 import operator
 import os
-from datetime import timedelta
-
+import urllib.request
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Count, Avg
-from django.db.models import F, ExpressionWrapper, fields
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
-
-from api.analysis import calc_fixing_time
-from api.geocoding.geocoding import reverse_geocode
+from django.db.models import Count, Avg
+import datetime
+from datetime import timedelta
 from api.models import Feedback, Service
 from api.services import get_feedbacks, get_feedbacks_count
-from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
+from api.analysis import calc_fixing_time
+from api.geocoding.geocoding import reverse_geocode
+from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3, FeedbackFormContact
+from django.db.models import F, ExpressionWrapper, fields
 
-FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
+FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3), ("contact", FeedbackFormContact) ]
 TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/step2.html",
-             "basic_info": "feedback_form/step3.html"}
+             "basic_info": "feedback_form/step3.html", "contact": "feedback_form/contact.html"}
 
 
 def mainpage(request):
@@ -264,6 +264,11 @@ class FeedbackWizard(SessionWizardView):
         if image:
             handle_uploaded_file(image)
             data["media_url"] = "/media/" + image.name
+
+        data["first_name"] = form_dict["contact"].cleaned_data["first_name"]
+        data["last_name"] = form_dict["contact"].cleaned_data["last_name"]
+        data["email"] = form_dict["contact"].cleaned_data["email"]
+        data["phone"] = form_dict["contact"].cleaned_data["phone"]
 
         new_feedback = Feedback(**data)
         new_feedback.save()
