@@ -8,7 +8,7 @@ class FeedbackFormClosest(forms.Form):
         attrs={'class': 'form-control', 'placeholder': "Longitude"}))
 
 
-class FeedbackForm2(forms.Form):
+class FeedbackFormCategory(forms.Form):
     service_code = forms.CharField(widget=forms.HiddenInput(
         attrs={'class': 'form-control', 'placeholder': "Enter category..."}))
 

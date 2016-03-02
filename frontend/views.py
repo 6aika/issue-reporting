@@ -18,11 +18,11 @@ from api.models import Feedback, Service
 from api.services import get_feedbacks, get_feedbacks_count
 from api.analysis import calc_fixing_time
 from api.geocoding.geocoding import reverse_geocode
-from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3, FeedbackFormContact
+from frontend.forms import FeedbackFormClosest, FeedbackFormCategory, FeedbackForm3, FeedbackFormContact
 from django.db.models import F, ExpressionWrapper, fields
 
-FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3), ("contact", FeedbackFormContact) ]
-TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/step2.html",
+FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackForm3), ("contact", FeedbackFormContact) ]
+TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/category.html",
              "basic_info": "feedback_form/step3.html", "contact": "feedback_form/contact.html"}
 
 
@@ -174,10 +174,10 @@ def statistics2(request):
     return render(request, "statistics2.html", {"data": data})
 
 def get_total(service_code):
-    return Feedback.objects.filter(service_code=service_code, synchronized=True).count()
+    return Feedback.objects.filter(service_code=service_code, status__in=["open", "closed"]).count()
 
 def get_closed(service_code):
-    return Feedback.objects.filter(service_code=service_code, status="closed", synchronized=True).count()
+    return Feedback.objects.filter(service_code=service_code, status="closed").count()
 
 # Returns average duration of closed feedbacks (updated_datetime - requested_datetime)
 # from given category. Returns a tuple (days, hours)

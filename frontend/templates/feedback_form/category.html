@@ -6,7 +6,11 @@
 {% csrf_token %}
 {{ wizard.management_form }}
 	{{form.service_code}}
-	<button type="submit" class="btn btn-primary">Submit</button>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-2 col-xs-2">
+			<button type="submit" class="btn btn-primary">Seuraava <span class="glyphicon glyphicon-triangle-right"></span></button>
+		</div>
+	</div>
 </form>
 
 <script>
