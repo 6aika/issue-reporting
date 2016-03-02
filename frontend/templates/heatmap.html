@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 <script src="{% static 'leaflet-heat.js' %}"></script>
+<script src="{% static 'Leaflet.MakiMarkers.js' %}"></script>
 {% endblock %}
 {% block content %}
 {%include "statistics_menu.html" with heatmap_active="active"%}
@@ -75,6 +76,7 @@ $(function() {
     });
 
     map.locate();
+    map.on('locationfound', onLocationFound);
 
     function update_map() {
         var url = "/api/v1/feedbacks?";
@@ -99,9 +101,9 @@ $(function() {
     }
 
     function onLocationFound(event) {
-        console.log("Found you!");
-        L.marker(event.latlng).addTo(map);
-        //var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
+        console.log("Found you using GPS!");
+        var user_location = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
+        L.marker(event.latlng, {icon: user_location}).addTo(map);
     }
 });
 
