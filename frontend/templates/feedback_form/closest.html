@@ -118,7 +118,7 @@
         $("#{{ form.longitude.id_for_label }}").val(latlng.lng);
     }
 
-    $.getJSON("/api/v1/feedbacks?status=open", function (data) {
+    $.getJSON("/api/v1/feedbacks/?status=open", function (data) {
         var items = [];
         $.each(data, function (key, feedback) {
             var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).addTo(map);
