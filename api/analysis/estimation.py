@@ -43,6 +43,8 @@ def get_closed_by_service_code(service_code):
 def get_avg_duration(query_set):
     duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
     duration_list = query_set.annotate(duration=duration).values_list("duration", flat=True)
+    if not duration_list:
+        return datetime.timedelta(0)
     return sum(duration_list, datetime.timedelta(0)) / len(duration_list)
 
 # Returns median duration of closed feedbacks (updated_datetime - requested_datetime)
