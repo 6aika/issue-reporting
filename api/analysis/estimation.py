@@ -24,7 +24,7 @@ from django.db.models import ExpressionWrapper, F, fields
 #     return timedelta_milliseconds(average_time)
 
 def calc_fixing_time(service_code):
-    return timedelta_milliseconds(get_avg_duration(service_code))
+    return timedelta_milliseconds(get_avg_duration(get_closed_by_service_code(service_code)))
 
 # Return total number of feedbacks with either "open" or "closed" status-
 def get_total(service_code):
