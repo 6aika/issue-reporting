@@ -176,7 +176,7 @@ body {
 }
 
 .feedback_list_filters label {
-    
+
 }
 
 /* Color for item under mouse in category selection */
@@ -212,9 +212,9 @@ body {
         min-height: 160px;
     }
 
-    .feedback_list_content {
-        border-right-style: solid;
-        border-right-width: 1px;
+    .feedback_list_details {
+        border-left-style: solid;
+        border-left-width: 1px;
         border-color: #ddd;
     }
 
@@ -262,7 +262,3 @@ body {
     text-decoration: solid;
     padding-left: 10px;
 }
-
-
-
-

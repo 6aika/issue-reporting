@@ -7,7 +7,7 @@ from api.models import Feedback
 
 def get_feedbacks(service_codes, service_request_ids,
                   start_date, end_date,
-                  statuses, description,
+                  statuses, search,
                   service_object_type, service_object_id,
                   updated_after, updated_before,
                   lat, lon, radius,
@@ -25,8 +25,8 @@ def get_feedbacks(service_codes, service_request_ids,
         queryset = queryset.filter(status__in=statuses.split(','))
 
     # start CitySDK Helsinki specific filtration
-    if description:
-        queryset = queryset.filter(description__icontains=description)
+    if search:
+        queryset = queryset.filter(description__icontains=search) | queryset.filter(title__icontains=search) | queryset.filter(address_string__icontains=search) | queryset.filter(agency_responsible__icontains=search)
     if service_object_type:
         queryset = queryset.filter(service_object_type__icontains=service_object_type)
     if service_object_id:

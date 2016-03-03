@@ -44,6 +44,10 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-sm-12">
+                  <p>Vastuullinen taho: <br/>
+                    <small>{{ item.agency_responsible }}</small></p>
+                </div>
                 <div class="col-sm-12 text-info">
                     {% if item.expected_datetime %}
                     <p>Arvio: <br/>
@@ -68,7 +72,7 @@
             </div>
         </div>
 
-        <div class="col-xs-12 col-md-7 feedback_list_content  col-md-pull-2">
+        <div class="col-xs-12 col-md-7 feedback_list_content col-md-pull-2">
             <div class="row">
                 <div class="col-sm-9">
                     <div class=row>
@@ -78,8 +82,8 @@
                         </div>
                     </div>
                     <div class=row>
-                        <div class="col-sm-12">
-                            <p>{{ item.service_name }}</p>
+                        <div class="col-sm-6">
+                            <p>Aihealue: {{ item.service_name }}</p>
                         </div>
                     </div>
                 </div>

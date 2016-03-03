@@ -3,27 +3,23 @@
         <div class="row">
             <div class="col-sm-2 col-md-2">
                 <label for="datepicker-start">Alku</label>
-                <div class="calendar">
-                    <div class="form-group">
-                        <div class='input-group date' id='datepicker-start'>
-						<span class="input-group-addon" style="cursor:pointer">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-                            <input type='text' class="form-control" name="start_date" value="{{queries.start_date}}"/>
-                        </div>
+                    <div class="calendar form-group">
+                      <div class='input-group date' id='datepicker-start'>
+            						<span class="input-group-addon" style="cursor:pointer">
+            							<span class="glyphicon glyphicon-calendar"></span>
+            						</span>
+                        <input type='text' class="form-control" name="start_date" value="{{queries.start_date}}"/>
+                      </div>
                     </div>
-                </div>
 
                 <label for="datepicker-end">Loppu</label>
-                <div class="calendar">
-                    <div class="form-group">
-                        <div class='input-group date' id='datepicker-end'>
-						<span class="input-group-addon" style="cursor:pointer">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-                            <input type='text' class="form-control" name="end_date" value="{{queries.end_date}}"/>
-                        </div>
-                    </div>
+                <div class="calendar form-group">
+                  <div class='input-group date' id='datepicker-end'>
+        						<span class="input-group-addon" style="cursor:pointer">
+        							<span class="glyphicon glyphicon-calendar"></span>
+        						</span>
+                    <input type='text' class="form-control" name="end_date" value="{{queries.end_date}}"/>
+                  </div>
                 </div>
             </div>
 
@@ -58,8 +54,8 @@
             </div>
 
             <div class="col-sm-5 col-md-5">
-                <label for="description">Kuvaus</label>
-                <input type="text" class="form-control" name="description" id="description" placeholder="Kuvaus"/>
+                <label for="search">Sanahaku</label>
+                <input type="text" class="form-control" name="search" id="search" placeholder="Esim. polkupyörä, Annankatu, rakennusvirasto..."/>
 
                 <button class="btn btn-primary" type="submit" value="apply">
                     Apply
@@ -69,8 +65,8 @@
             <div>
                 <input type="text" name="lat" id="lat" style="display: none;"/>
                 <input type="text" name="lon" id="lon" style="display: none;"/>
-                <div>
-                </div>
+            <div>
+        </div>
     </form>
 </div>
 <script type="text/javascript">
@@ -78,12 +74,12 @@
     var status = "{{queries.status}}";
     var order_by = "{{queries.order_by}}";
     var service_code = "{{queries.service_code}}";
-    var description = "{{queries.description}}";
+    var search = "{{queries.search}}";
 
     $("#status").val(status);
     $("#order_by").val(order_by);
     $("#service_code").val(service_code);
-    $("#description").val(description);
+    $("#search").val(search);
 
     function dateStrToIso(dateStr) {
         var dateParts = dateStr.split(".");

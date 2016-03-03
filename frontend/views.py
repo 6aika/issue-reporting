@@ -56,7 +56,7 @@ def feedback_list(request):
     filter_status = request.GET.get("status")
     filter_order_by = request.GET.get("order_by")
     filter_service_code = request.GET.get("service_code")
-    filter_description = request.GET.get("description")
+    filter_search = request.GET.get("search")
     filter_lat = request.GET.get("lat")
     filter_lon = request.GET.get("lon")
 
@@ -71,7 +71,7 @@ def feedback_list(request):
 
     feedbacks = get_feedbacks(service_codes=filter_service_code, service_request_ids=None,
                               start_date=filter_start_date, end_date=filter_end_date,
-                              statuses=filter_status, description=filter_description,
+                              statuses=filter_status, search=filter_search,
                               service_object_type=None, service_object_id=None,
                               updated_after=None, updated_before=None,
                               lat=filter_lat, lon=filter_lon, radius=None, order_by=filter_order_by)
@@ -219,7 +219,7 @@ class FeedbackWizard(SessionWizardView):
                     radius=3000,
                     updated_after=None,
                     updated_before=None,
-                    description=None,
+                    search=None,
                     order_by='distance')[:10]
 
             context.update({'closest': closest})

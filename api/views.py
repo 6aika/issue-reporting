@@ -32,7 +32,7 @@ class FeedbackViewSet(viewsets.ViewSet):
                 radius=request.query_params.get('radius', None),
                 updated_after=request.query_params.get('updated_after', None),
                 updated_before=request.query_params.get('updated_before', None),
-                description=request.query_params.get('description', None),
+                search=request.query_params.get('search', None),
                 order_by=request.query_params.get('order_by', None)
         )
 
