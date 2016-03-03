@@ -6,6 +6,8 @@
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 <script type="text/javascript" src="{% static 'proj4-compressed.js' %}" ></script>
 <script type="text/javascript" src="{% static 'proj4leaflet.js' %}" ></script>
+<link rel="stylesheet" href="{% static 'easy-button.css' %}" />
+<script type="text/javascript" src="{% static 'easy-button.js' %}" ></script>
 
 {% endblock %}
 
@@ -21,6 +23,7 @@
 
     <div class="row">
         <div class="col-md-12">
+            <!--
             <div class="row">
                 <div class="col-md-2">
                     <button type="button" class="btn btn-block btn-success" onclick="getUserLocation()">
@@ -28,20 +31,22 @@
                         Oma sijainti
                     </button>
                 </div>
-
-                <div class="col-md-8">
-
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-block btn-primary">
-                        Seuraava
-                        <span class="glyphicon glyphicon-triangle-right"></span>
-                    </button>
-                </div>
             </div>
+            -->
+
             <div class="row">
                 <div class="col-md-12" style="padding-top: 20px">
                     <div id="map"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10"></div>
+                <div class="col-md-2 text-right" style="padding-top: 20px">
+                    <button type="submit" class="btn btn-block  btn-primary">
+                        Seuraava
+                        <span class="glyphicon glyphicon-triangle-right"></span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -53,6 +58,9 @@
     "use strict";
 
     var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
+
+    
+
     // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
     var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
 
@@ -78,6 +86,10 @@
         maxZoom: 18,
         continuousWorld: true,
         tms: false
+    }).addTo(map);
+
+    L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function(){
+        getUserLocation();
     }).addTo(map);
 
     var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
