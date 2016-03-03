@@ -100,6 +100,10 @@ body {
     color: #ffffff;
 }
 
+.custom .leaflet-popup-content-wrapper {
+    width: 300px;
+}
+
 #heatmap {
     width: auto;
     height: 500px;
