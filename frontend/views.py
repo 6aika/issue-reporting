@@ -237,11 +237,12 @@ class FeedbackWizard(SessionWizardView):
         longitude = form_dict["closest"].cleaned_data["longitude"]
         data["location"] = GEOSGeometry('SRID=4326;POINT(' + str(longitude) + ' ' + str(latitude) + ')')
         data["address_string"] = reverse_geocode(latitude, longitude)
-        image = form_dict["basic_info"].cleaned_data["image"]
 
-        if image:
-            handle_uploaded_file(image)
-            data["media_url"] = "/media/" + image.name
+        print(form_dict["basic_info"].cleaned_data["attachments"])
+        for file in form_dict["basic_info"].cleaned_data["attachments"]:
+            print("File found!")
+            handle_uploaded_file(file)
+            data["media_url"] = "/media/" + file.name
 
         data["first_name"] = form_dict["contact"].cleaned_data["first_name"]
         data["last_name"] = form_dict["contact"].cleaned_data["last_name"]
@@ -249,7 +250,7 @@ class FeedbackWizard(SessionWizardView):
         data["phone"] = form_dict["contact"].cleaned_data["phone"]
 
         new_feedback = Feedback(**data)
-        new_feedback.save()
+        #new_feedback.save()
 
         fixing_time = calc_fixing_time(data["service_code"])
         expected_datetime = new_feedback.requested_datetime + timedelta(milliseconds=fixing_time)
