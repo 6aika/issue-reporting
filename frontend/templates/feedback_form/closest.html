@@ -40,22 +40,8 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-9" style="padding-top: 20px">
+                <div class="col-md-12" style="padding-top: 20px">
                     <div id="map"></div>
-                </div>
-                <div id="feedback_info" class="col-md-3" style="visibility: hidden">
-                    <h3 id="feedback_title"></h3>
-                    <div class="xs-col-3">
-                        <span class="glyphicon glyphicon-exclamation-sign feedback_list_vote_icon" id=""></span>
-                        <span class="badge feedback_list_vote_badge"></span>
-                    </div>
-                    <p>
-                        <img id="feedback_image" class="img-thumbnail img-responsive center-cropped"
-                             src="https://placehold.it/240x240"/>
-                    </p>
-                    <p id="feedback_service_name"></p>
-                    <p id="feedback_requested_datetime"> date</p>
-                    <p id="feedback_description"></p>
                 </div>
             </div>
         </div>
@@ -109,6 +95,7 @@
             highlight.setIcon(feedback_icon);
             // Unset highlight
             highlight = null;
+            $('#feedback_info').css("visibility", "hidden");
         }
     }
 
@@ -164,7 +151,13 @@
                     'className' : 'custom'
                 }
 
-            var popupContent = feedback.description;
+            var popupContent = "";
+
+            popupContent += "<h3 id=\"feedback_title\"></h3>" +
+                "<p id=\"feedback_service_name\"><b></b></p>" +
+                "<p id=\"feedback_requested_datetime\">[feedback.requested_datetime]</p>" +
+                "<p id=\"feedback_description\">[feedback.feedback_description]</p>";
+                       
 
             var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(map);
             marker.feedback = feedback;
@@ -183,8 +176,7 @@
                     highlight = marker;
                 }
 
-
-
+                // @TODO : Additional id's left, remove if not required
                 $('#feedback_title').text(e.target.feedback.title);
                 $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
                 $('.feedback_list_vote_icon').attr("id", e.target.feedback.id);
@@ -192,6 +184,7 @@
                 $('#feedback_requested_datetime').text(e.target.feedback.requested_datetime);
                 $('#feedback_description').text(e.target.feedback.description);
                 $('#feedback_info').css("visibility", "visible");
+                
             });
         });
 
