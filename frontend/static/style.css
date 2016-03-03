@@ -1,9 +1,15 @@
 /* Enough space for navbar. */
 
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 body {
     padding-top: 60px;
     -webkit-font-smoothing: antialiased;
     font-family: 'Lato', sans-serif !important;
+    margin: 0 0 200px;
 }
 
 .feedback_list_vote_icon {
@@ -189,7 +195,7 @@ body {
 }
 
 .feedback_list_filters label {
-    
+
 }
 
 /* Color for item under mouse in category selection */
@@ -212,12 +218,17 @@ body {
 }
 
 .main_footer {
-    text-align: center;
+    text-align: left;
     margin-top: 30px;
     padding: 15px;
+    padding-left: 200px;
     color: #9d9d9d;
     background-color: #333;
-    max-height: 400px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+
 }
 
 @media (min-width: 992px) {
@@ -225,9 +236,9 @@ body {
         min-height: 160px;
     }
 
-    .feedback_list_content {
-        border-right-style: solid;
-        border-right-width: 1px;
+    .feedback_list_details {
+        border-left-style: solid;
+        border-left-width: 1px;
         border-color: #ddd;
     }
 
@@ -275,7 +286,3 @@ body {
     text-decoration: solid;
     padding-left: 10px;
 }
-
-
-
-
