@@ -2,18 +2,24 @@ from django import forms
 
 
 class FeedbackFormClosest(forms.Form):
-    latitude = forms.FloatField(required=True, widget=forms.HiddenInput(
+    latitude = forms.FloatField(widget=forms.HiddenInput(
         attrs={'class': 'form-control', 'placeholder': "Latitude"}))
-    longitude = forms.FloatField(required=True, widget=forms.HiddenInput(
+    longitude = forms.FloatField(widget=forms.HiddenInput(
         attrs={'class': 'form-control', 'placeholder': "Longitude"}))
 
 
-class FeedbackForm2(forms.Form):
-    service_code = forms.CharField(required=True, widget=forms.HiddenInput(
+class FeedbackFormCategory(forms.Form):
+    service_code = forms.CharField(widget=forms.HiddenInput(
         attrs={'class': 'form-control', 'placeholder': "Enter category..."}))
 
 
 class FeedbackForm3(forms.Form):
-	title = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Anna otsikko..."}))
-	description = forms.CharField(required=True, widget=forms.Textarea(attrs={'rows': 8, 'maxlength': 5000, 'class': 'form-control', 'placeholder': "Kirjoita tarkka kuvaus..."}))
+	title = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Anna otsikko..."}))
+	description = forms.CharField(widget=forms.Textarea(attrs={'rows': 8, 'maxlength': 5000, 'class': 'form-control', 'placeholder': "Kirjoita tarkka kuvaus..."}))
 	image = forms.FileField(required=False, allow_empty_file=True)
+
+class FeedbackFormContact(forms.Form):
+	first_name = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Etunimesi..."}))
+	last_name = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Sukunimesi..."}))
+	email = forms.EmailField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Sähköpostiosoitteesi..."}))
+	phone = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Puhelinnumerosi..."}))

@@ -101,6 +101,7 @@ body {
 }
 
 #heatmap {
+    width: auto;
     height: 500px;
     margin-top: 1%;
 

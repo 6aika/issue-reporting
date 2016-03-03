@@ -140,6 +140,9 @@ MEDIA_URL = "/media/"
 DATETIME_FORMAT = "j.n.Y - G:i"
 DATE_FORMAT = "j.n.Y"
 
+# option is used to hide feedbacks with status "moderation"
+SHOW_ONLY_MODERATED = False
+
 # OPEN311 synchronization options
 OPEN311_URL = "https://asiointi.hel.fi/palautews/rest/v1/requests.json"
 OPEN311_SERVICE_URL = "https://asiointi.hel.fi/palautews/rest/v1/services.json?locale={}"
@@ -149,7 +152,6 @@ OPEN311_RANGE_LIMIT_DAYS = 90
 OPEN311_API_KEY = 'f1301b1ded935eabc5faa6a2ce975f6'
 
 # geocoding options
-
 REVERSE_GEO_URL = 'http://api.hel.fi/servicemap/v1/address/?lat={}&lon={}&page=1'
 
 # Set CFH environment variable to apply the path

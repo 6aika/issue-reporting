@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 <script src="{% static 'leaflet-heat.js' %}"></script>
+<script src="{% static 'Leaflet.MakiMarkers.js' %}"></script>
 {% endblock %}
 {% block content %}
 {%include "statistics_menu.html" with heatmap_active="active"%}
@@ -28,19 +29,16 @@ $(function() {
         maxZoom: 18
     }).addTo(map);
 
-    var MyControl = L.Control.extend({
+    var ServiceSelector = L.Control.extend({
         options: {
             position: 'topright'
         },
 
         onAdd: function (map) {
-            // create the control container with a particular class name
-            var div = L.DomUtil.create('div', 'my-custom-control');
+            var div = L.DomUtil.create('div', 'service-selector-div');
 
-            // ... initialize other DOM elements, add listeners, etc.
             div.className = "form-group";
-            html_string = "";
-            html_string += "<option value=''>Kaikki</option>";
+            html_string = "<option value=''>Kaikki</option>";
             {% for service in services %}
                 html_string += "<option value={{service.service_code}}>{{service.service_name}}</option>";
             {% endfor %} 
@@ -50,17 +48,43 @@ $(function() {
         }
     });
 
-    map.addControl(new MyControl());
+    var StatusSelector = L.Control.extend({
+        options: {
+            position: 'topright'
+        },
+
+        onAdd: function (map) {
+            var div = L.DomUtil.create('div', 'service-selector-div');
+
+            div.className = "form-group";
+            html_string = "<option value='open'>Avoin</option>";
+            html_string += "<option value='closed'>Suljettu</option>";
+
+            div.innerHTML = '<label for="service">Tila:</label><select class="form-control" id="status">' + html_string + '</select>';
+            return div;
+        }
+    });
+
+    map.addControl(new ServiceSelector());
+    map.addControl(new StatusSelector());
 
     var heatlayer = null;
     update_map()
 
-    $("#service").change(function() {
-        update_map($(this).val());
+    $("#service,#status").change(function() {
+        update_map();
     });
 
-    function update_map(service_code) {
-        var url = "/api/v1/feedbacks?status=open";
+    map.locate();
+    map.on('locationfound', onLocationFound);
+
+    function update_map() {
+        var url = "/api/v1/feedbacks?";
+        
+        var status = $("#status").val();
+        url += "status=" + status;
+
+        var service_code = $("#service").val();
         if(service_code) {
             url += "&service_code=" + service_code;
         }
@@ -74,6 +98,13 @@ $(function() {
                 map.removeLayer(heatlayer);
             heatlayer = L.heatLayer(items, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
         });
+    }
+
+    function onLocationFound(event) {
+        console.log("Found you using GPS!");
+        var marker_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "m"});
+        var user_marker = L.marker(event.latlng, {icon: marker_icon}).addTo(map);
+        user_marker.bindPopup("Sijaintisi", {closeButton: false});
     }
 });
 

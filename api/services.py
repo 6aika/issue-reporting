@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
@@ -24,6 +25,9 @@ def get_feedbacks(service_codes, service_request_ids,
     if statuses:
         queryset = queryset.filter(status__in=statuses.split(','))
 
+    if settings.SHOW_ONLY_MODERATED:
+        queryset = queryset.exclude(status__iexact='MODERATION')
+
     # start CitySDK Helsinki specific filtration
     if description:
         queryset = queryset.filter(description__icontains=description)
@@ -49,3 +53,10 @@ def get_feedbacks(service_codes, service_request_ids,
         queryset = queryset.order_by(order_by)
 
     return queryset
+
+
+def get_feedbacks_count():
+    queryset = Feedback.objects
+    if settings.SHOW_ONLY_MODERATED:
+        queryset = queryset.exclude(status__iexact='MODERATION')
+    return queryset.count()
