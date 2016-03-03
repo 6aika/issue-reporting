@@ -32,18 +32,19 @@
                     </h4>
                 {% endif %}
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                  <p>Vastuullinen taho: <br/>
-                    <small>{{ item.agency_responsible }}</small></p>
-                </div>
-                <div class="col-sm-12 text-info">
-                    {% if item.expected_datetime %}
-                    <p>Arvio: <br/>
-                        <small>{{ item.expected_datetime }}</small>
-                    </p>
-                    {% endif %}
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+              <p>Vastuullinen taho: <br/>
+                  <small>{{ item.agency_responsible }}</small>
+              </p>
+            </div>
+            <div class="col-sm-12 text-info">
+                {% if item.expected_datetime %}
+                <p>Arvio: <br/>
+                    <small>{{ item.expected_datetime }}</small>
+                </p>
+                {% endif %}
             </div>
         </div>
         {% if item.distance %}
@@ -62,21 +63,6 @@
         </div>
     </div>
 
-<<<<<<< HEAD
-        <div class="col-xs-12 col-md-7 feedback_list_content col-md-pull-2">
-            <div class="row">
-                <div class="col-sm-9">
-                    <div class=row>
-                        <div class="col-sm-12">
-                            <a href="{% url 'feedback_details' item.id %}"><h4>{{ item.title|default:'NO TITLE' }}</h4>
-                            </a>
-                        </div>
-                    </div>
-                    <div class=row>
-                        <div class="col-sm-6">
-                            <p>Aihealue: {{ item.service_name }}</p>
-                        </div>
-=======
     <div class="col-xs-12 col-md-7 feedback_list_content col-md-pull-2">
         <div class="row">
             <div class="col-xs-8">
@@ -84,12 +70,11 @@
                     <div class="col-sm-12">
                         <a href="{% url 'feedback_details' item.id %}"><h4>{{ item.title|default:'NO TITLE' }}</h4>
                         </a>
->>>>>>> 1b04a05c9710ca68a2e96584876d3a3a1dd5a244
                     </div>
                 </div>
                 <div class=row>
                     <div class="col-sm-12">
-                        <p><strong>{{ item.service_name }}</strong></p>
+                        <p><strong>Aihealue: {{ item.service_name }}</strong></p>
                     </div>
                 </div>
             </div>

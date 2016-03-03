@@ -22,7 +22,6 @@
                   </div>
                 </div>
             </div>
-        </div>
 
         <div class="col-sm-2 col-md-2">
             <div>
@@ -44,11 +43,6 @@
             </div>
         </div>
 
-<<<<<<< HEAD
-            <div class="col-sm-5 col-md-5">
-                <label for="search">Sanahaku</label>
-                <input type="text" class="form-control" name="search" id="search" placeholder="Esim. polkupyörä, Annankatu, rakennusvirasto..."/>
-=======
         <div class="col-sm-3 col-md-3">
             <label for="service_code">Aihealue</label>
             <select class="form-control" name="service_code" id="service_code">
@@ -58,33 +52,25 @@
                 {% endfor %}
             </select>
         </div>
->>>>>>> 1b04a05c9710ca68a2e96584876d3a3a1dd5a244
 
         <div class="col-sm-5 col-md-5">
-            <label for="description">Kuvaus</label>
-            <input type="text" class="form-control" name="description" id="description" placeholder="Kuvaus"/>
+          <label for="search">Sanahaku</label>
+          <input type="text" class="form-control" name="search" id="search" placeholder="Esim. polkupyörä, Annankatu, rakennusvirasto..."/>
 
-<<<<<<< HEAD
-            <div>
-                <input type="text" name="lat" id="lat" style="display: none;"/>
-                <input type="text" name="lon" id="lon" style="display: none;"/>
-            <div>
-        </div>
-    </form>
-</div>
-=======
-            <button class="btn btn-primary" type="submit" value="apply">
-                Apply
-            </button>
+          <button class="btn btn-primary" type="submit" value="apply">
+              Apply
+          </button>
         </div>
 
         <div>
             <input type="text" name="lat" id="lat" style="display: none;"/>
             <input type="text" name="lon" id="lon" style="display: none;"/>
         </div>
-    </div>
-</form>
->>>>>>> 1b04a05c9710ca68a2e96584876d3a3a1dd5a244
+      </div>
+    </form>
+</div>
+
+
 <script type="text/javascript">
 
     var status = "{{queries.status}}";
