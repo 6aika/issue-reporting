@@ -35,7 +35,7 @@ $(function() {
         return new L.Proj.CRS(crsName, projDef, crsOpts);
     }
     
-    var map = L.map('map', {
+    var map = L.map('heatmap', {
         crs : crs()
     }).setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 11);
 
