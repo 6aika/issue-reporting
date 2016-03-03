@@ -21,6 +21,8 @@
     <script src="{% static 'calendar.js' %}"></script>
 
     <!-- Load global defaults for bootstrap-notify plugin -->
+    <link rel="stylesheet" href="{% static 'animate.css' %}"/>
+    <script type="text/javascript" src="{% static 'bootstrap-notify.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'notify_defaults.js' %}"></script>
 </head>
 <body>
@@ -32,6 +34,7 @@
         {% endblock %}
     </div>
 {% endblock %}
+{% block footer %}
 <footer>
     <div class="container-fluid main_footer">
         <div class="row">
@@ -69,5 +72,6 @@
         </div>
     </div>
 </footer>
+{% endblock %}
 </body>
 </html>

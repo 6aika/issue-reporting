@@ -1,47 +1,36 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block head %}
-<link rel="stylesheet" href="{% static 'animate.css' %}"/>
-<script type="text/javascript" src="{% static 'bootstrap-notify.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 {% include "feedback_list_filter.html" %}
 
 {% if feedbacks %}
-<div class="row">
-    <div class="col-xs-6 col-xs-offset-4 col-md-offset-5 centered">
-        <ul class="pagination nav navbar-nav">
-            {% if feedbacks.has_previous %}
-            <li><a href="?{{queries.urlencode}}&amp;page={{ feedbacks.previous_page_number }}">Prev</a></li>
-            {% endif %}
-            <li><a href="?{{queries.urlencode}}&amp;page={{ feedbacks.number }}">Page {{ feedbacks.number }}
-                of {{ feedbacks.paginator.num_pages }}</a></li>
-            {% if feedbacks.has_next %}
-            <li><a href="?{{queries.urlencode}}&amp;page={{ feedbacks.next_page_number }}">Next</a></li>
-            {% endif %}
-        </ul>
-    </div>
-</div>
+
 
 
 {% for item in feedbacks %}
-<div class="feedback_list_item">
-    <div class="row feedback_list_row">
+<div class="row feedback_list_row">
+    <div class="col-xs-6 col-md-3 feedback_list_img ">
+        <img class="img img-responsive center-cropped"
+             src="{{ item.media_url|default:'https://placehold.it/240x240' }}" alt="Feedback image"/>
+    </div>
 
-        <div class="col-xs-6 col-md-3 feedback_list_img ">
-            <img class="img-thumbnail img-responsive center-cropped"
-                 src="{{ item.media_url|default:'https://placehold.it/240x240' }}" alt="Feedback image"/>
-        </div>
-
-        <div class="col-xs-6 col-md-2 feedback_list_details col-md-push-7">
-            <div class="row">
-                <div class="col-sm-12">
-                    <h4 {% if item.status == 'closed' %}class="text-danger" {% else %} class="text-success"{% endif %}>
+    <div class="col-xs-6 col-md-2 feedback_list_details col-md-push-7">
+        <div class="row">
+            <div class="col-sm-12">
+                {% if item.status == 'open' %}
+                    <h4 class="text-success">
+                    {{ item.status|capfirst }}<br/>
+                    <small>{{ item.requested_datetime|default_if_none:"" }}</small>
+                    </h4>
+                {% else %}
+                    <h4 class="text-danger">
                     {{ item.status|capfirst }}<br/>
                     <small>{{ item.updated_datetime|default_if_none:"" }}</small>
                     </h4>
-                </div>
+                {% endif %}
             </div>
             <div class="row">
                 <div class="col-sm-12">
@@ -56,22 +45,24 @@
                     {% endif %}
                 </div>
             </div>
-            {% if item.distance %}
-            <div class="row">
-                <div class="col-sm-12">
-                    <p>Etäisyys: {{ item.distance }}</p>
-                </div>
-            </div>
-            {% endif %}
-            <div class="row">
-                <div class="col-sm-12">
-                    <p>
-                        <small>{{ item.address_string|default:'No Address' }}</small>
-                    </p>
-                </div>
+        </div>
+        {% if item.distance %}
+        <div class="row">
+            <div class="col-sm-12">
+                <p>Etäisyys: {{ item.distance }}</p>
             </div>
         </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-sm-12">
+                <p>
+                    <small>{{ item.address_string|default:'No Address' }}</small>
+                </p>
+            </div>
+        </div>
+    </div>
 
+<<<<<<< HEAD
         <div class="col-xs-12 col-md-7 feedback_list_content col-md-pull-2">
             <div class="row">
                 <div class="col-sm-9">
@@ -85,24 +76,34 @@
                         <div class="col-sm-6">
                             <p>Aihealue: {{ item.service_name }}</p>
                         </div>
+=======
+    <div class="col-xs-12 col-md-7 feedback_list_content col-md-pull-2">
+        <div class="row">
+            <div class="col-xs-8">
+                <div class=row>
+                    <div class="col-sm-12">
+                        <a href="{% url 'feedback_details' item.id %}"><h4>{{ item.title|default:'NO TITLE' }}</h4>
+                        </a>
+>>>>>>> 1b04a05c9710ca68a2e96584876d3a3a1dd5a244
                     </div>
                 </div>
-
-                <div class="col-sm-12 text-info">
-                    <p>Luotu:
-                        <small>{{ item.requested_datetime }}</small>
-                    </p>
-                </div>
-
-                <div class="xs-col-3">
-                    <span class="glyphicon glyphicon-exclamation-sign feedback_list_vote_icon" id="{{item.pk}}"></span>
-                    <span class="badge feedback_list_vote_badge">{{item.vote_counter}}</span>
+                <div class=row>
+                    <div class="col-sm-12">
+                        <p><strong>{{ item.service_name }}</strong></p>
+                    </div>
                 </div>
             </div>
-            <div class=row>
-                <div class="col-sm-12 feedback_list_content_desc">
-                    <p>{{ item.description | truncatechars:300 }}</p>
-                </div>
+
+            <div class="col-xs-4 text-right">
+                <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon" id="{{item.pk}}"></span>
+                <span class="badge feedback_list_vote_badge">{{item.vote_counter}}</span>
+            </div>
+        </div>
+
+        <!--Description-->
+        <div class=row>
+            <div class="col-sm-12 feedback_list_content_desc">
+                <p>{{ item.description | truncatechars:300 }}</p>
             </div>
         </div>
     </div>

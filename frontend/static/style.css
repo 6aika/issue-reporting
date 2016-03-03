@@ -6,24 +6,16 @@ body {
     font-family: 'Lato', sans-serif !important;
 }
 
-.feedback_list_item {
-    margin: 2em;
-    padding-bottom: 20px;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-color: #ddd;
-}
-
 .feedback_list_vote_icon {
-    font-size: 2em;
+    font-size: 3em;
     vertical-align: middle;
-    color: #fb0;
-    padding: 15px;
+    color: #68d;
+    padding: 5px;
 
 }
 
 .feedback_list_vote_icon:hover {
-    color: #e90;
+    color: #57c;
     cursor: pointer;
 }
 
@@ -97,8 +89,26 @@ body {
 }
 
 #map {
-    height: 400px;
+    height: 500px;
     width: 100%;
+}
+
+/* css to customize Leaflet default styles  */
+.custom .leaflet-popup-tip,
+.custom .leaflet-popup-content-wrapper {
+    background: #0072C6;
+    color: #ffffff;
+}
+
+.custom .leaflet-popup-content-wrapper {
+    width: 300px;
+}
+
+#heatmap {
+    width: auto;
+    height: 500px;
+    margin-top: 1%;
+
 }
 
 /* Color for item under mouse in category selection */
@@ -170,9 +180,12 @@ body {
 }
 
 .feedback_list_row {
-    padding: 15px;
     border-radius: 4px;
     box-shadow: 1px 1px 3px 1px #aaa;
+    margin: 2em;
+    border-color: #ddd;
+    padding-bottom: 20px;
+    padding-top: 20px;
 }
 
 .feedback_list_filters label {

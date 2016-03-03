@@ -1,28 +1,33 @@
 "use strict";
 
 var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
+// Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
+var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
 
-var map = L.map('map').setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 14);
+var crs = function() {
+    var bounds, crsName, crsOpts, originNw, projDef;
+    crsName = 'EPSG:3067';
+    projDef = '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
+    bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
+    originNw = [bounds.min.x, bounds.max.y];
+    crsOpts = {
+        resolutions: [8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125],
+        bounds: bounds,
+        transformation: new L.Transformation(1, -originNw[0], -1, originNw[1])
+    };
+    return new L.Proj.CRS(crsName, projDef, crsOpts);
+}
+var map = L.map('map', {
+    crs : crs()
+}).setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 11);
 
-
-// Try to get CartoDB's Positron/light basemap into use
-// https://cartodb.com/basemaps/
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png", {
     attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
     maxZoom: 18,
+    continuousWorld: true,
+    tms: false
 }).addTo(map);
-map.on('click', addMarker);
 
-
-/*
-// Add basemap and map settings.
-L.tileLayer( 'http://{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright" title="OpenStreetMap" target="_blank">OpenStreetMap</a> contributors | Tiles Courtesy of <a href="http://www.mapquest.com/" title="MapQuest" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png" width="16" height="16">',
-    subdomains: ['otile1','otile2','otile3','otile4'],
-    minZoom: 11,
-    maxZoom: 18,
-}).addTo(map);
-*/
 var userLocation;
 
 function addMarker(e){

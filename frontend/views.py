@@ -15,15 +15,15 @@ from django.db.models import Count, Avg
 import datetime
 from datetime import timedelta
 from api.models import Feedback, Service
-from api.services import get_feedbacks
-from api.analysis import calc_fixing_time
+from api.services import get_feedbacks, get_feedbacks_count
+from api.analysis import *
 from api.geocoding.geocoding import reverse_geocode
-from frontend.forms import FeedbackFormClosest, FeedbackForm2, FeedbackForm3
+from frontend.forms import FeedbackFormClosest, FeedbackFormCategory, FeedbackForm3, FeedbackFormContact
 from django.db.models import F, ExpressionWrapper, fields
 
-FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackForm2), ("basic_info", FeedbackForm3)]
-TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/step2.html",
-             "basic_info": "feedback_form/step3.html"}
+FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackForm3), ("contact", FeedbackFormContact) ]
+TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/category.html",
+             "basic_info": "feedback_form/step3.html", "contact": "feedback_form/contact.html"}
 
 
 def mainpage(request):
@@ -31,7 +31,7 @@ def mainpage(request):
     fixed_feedbacks = Feedback.objects.filter(status="closed")[0:4]
     fixed_feedbacks_count = Feedback.objects.filter(status="closed").count()
     recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
-    feedbacks_count = Feedback.objects.count()
+    feedbacks_count = get_feedbacks_count()
     context["feedbacks_count"] = feedbacks_count
     context["fixed_feedbacks"] = fixed_feedbacks
     context["fixed_feedbacks_count"] = fixed_feedbacks_count
@@ -165,36 +165,17 @@ def statistics2(request):
         item["service_name"] = service.service_name
         item["total"] = get_total(service_code)
         item["closed"] = get_closed(service_code)
-        item["avg"] = get_avg_duration(service_code)
-        item["median"] = get_avg_median(service_code)
+        item["avg"] = timedelta_days_hours(get_avg_duration(get_closed_by_service_code(service_code)))
+        item["median"] = timedelta_days_hours(get_median_duration(get_closed_by_service_code(service_code)))
         data.append(item)
 
     # Sort the rows by "total" column
     data.sort(key=operator.itemgetter('total'), reverse=True)
     return render(request, "statistics2.html", {"data": data})
 
-def get_total(service_code):
-    return Feedback.objects.filter(service_code=service_code).count()
 
-def get_closed(service_code):
-    return Feedback.objects.filter(service_code=service_code, status="closed").count()
-
-# Returns average duration of closed feedbacks (updated_datetime - requested_datetime)
-# from given category. Returns a tuple (days, hours)
-def get_avg_duration(service_code):
-    duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
-    duration_list = Feedback.objects.filter(service_code=service_code, status="closed").annotate(duration=duration).values_list("duration", flat=True)
-    average_timedelta = sum(duration_list, datetime.timedelta(0)) / len(duration_list)
-    return (average_timedelta.days, average_timedelta.seconds//3600)
-
-# Returns median duration of closed feedbacks (updated_datetime - requested_datetime)
-# from given category. Returns a tuple (days, hours)
-def get_avg_median(service_code):
-    duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
-    duration_list = sorted(Feedback.objects.filter(service_code=service_code, status="closed").annotate(duration=duration).values_list("duration", flat=True))
-    median_duration = duration_list[(len(duration_list)-1)//2]
-    return (median_duration.days, median_duration.seconds//3600)
-
+def heatmap(request):
+    return render(request, "heatmap.html", {"services": Service.objects.all()})
 
 class FeedbackWizard(SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp'))
@@ -247,7 +228,7 @@ class FeedbackWizard(SessionWizardView):
 
     def done(self, form_list, form_dict, **kwargs):
         data = {}
-        data["status"] = "open"
+        data["status"] = "moderation"
         data["title"] = form_dict["basic_info"].cleaned_data["title"]
         data["description"] = form_dict["basic_info"].cleaned_data["description"]
         data["service_code"] = form_dict["category"].cleaned_data["service_code"]
@@ -256,22 +237,29 @@ class FeedbackWizard(SessionWizardView):
         longitude = form_dict["closest"].cleaned_data["longitude"]
         data["location"] = GEOSGeometry('SRID=4326;POINT(' + str(longitude) + ' ' + str(latitude) + ')')
         data["address_string"] = reverse_geocode(latitude, longitude)
-        image = form_dict["basic_info"].cleaned_data["image"]
 
-        if image:
-            handle_uploaded_file(image)
-            data["media_url"] = "/media/" + image.name
+        print(form_dict["basic_info"].cleaned_data["attachments"])
+        for file in form_dict["basic_info"].cleaned_data["attachments"]:
+            print("File found!")
+            handle_uploaded_file(file)
+            data["media_url"] = "/media/" + file.name
+
+        data["first_name"] = form_dict["contact"].cleaned_data["first_name"]
+        data["last_name"] = form_dict["contact"].cleaned_data["last_name"]
+        data["email"] = form_dict["contact"].cleaned_data["email"]
+        data["phone"] = form_dict["contact"].cleaned_data["phone"]
 
         new_feedback = Feedback(**data)
-        new_feedback.save()
+        #new_feedback.save()
 
         fixing_time = calc_fixing_time(data["service_code"])
         expected_datetime = new_feedback.requested_datetime + timedelta(milliseconds=fixing_time)
         new_feedback.expected_datetime = expected_datetime
         new_feedback.save()
 
+        waiting_time = fixing_time/1000/3600/24
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
-                                                              'expected_datetime': expected_datetime})
+                                                              'waiting_time': waiting_time})
 
 
 def instructions(request):

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block head %}
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
+<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script type="text/javascript" src="{% static 'proj4-compressed.js' %}" ></script>
+<script type="text/javascript" src="{% static 'proj4leaflet.js' %}" ></script>
+<script src="{% static 'leaflet-heat.js' %}"></script>
+<script src="{% static 'Leaflet.MakiMarkers.js' %}"></script>
+{% endblock %}
+{% block content %}
+{%include "statistics_menu.html" with heatmap_active="active"%}
+<div id="heatmap">
+</div>
+
+
+<script type="text/javascript">
+$(function() {
+
+    var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
+    // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
+    var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
+
+    var crs = function() {
+        var bounds, crsName, crsOpts, originNw, projDef;
+        crsName = 'EPSG:3067';
+        projDef = '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
+        bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
+        originNw = [bounds.min.x, bounds.max.y];
+        crsOpts = {
+            resolutions: [8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125],
+            bounds: bounds,
+            transformation: new L.Transformation(1, -originNw[0], -1, originNw[1])
+        };
+        return new L.Proj.CRS(crsName, projDef, crsOpts);
+    }
+    
+    var map = L.map('heatmap', {
+        crs : crs()
+    }).setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 11);
+
+    L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png", {
+        attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+        maxZoom: 18,
+        continuousWorld: true,
+        tms: false
+    }).addTo(map);
+
+    var ServiceSelector = L.Control.extend({
+        options: {
+            position: 'topright'
+        },
+
+        onAdd: function (map) {
+            var div = L.DomUtil.create('div', 'service-selector-div');
+
+            div.className = "form-group";
+            html_string = "<option value=''>Kaikki</option>";
+            {% for service in services %}
+                html_string += "<option value={{service.service_code}}>{{service.service_name}}</option>";
+            {% endfor %} 
+
+            div.innerHTML = '<label for="service">Aihe:</label><select class="form-control" id="service">' + html_string + '</select>';
+            return div;
+        }
+    });
+
+    var StatusSelector = L.Control.extend({
+        options: {
+            position: 'topright'
+        },
+
+        onAdd: function (map) {
+            var div = L.DomUtil.create('div', 'service-selector-div');
+
+            div.className = "form-group";
+            html_string = "<option value='open'>Avoin</option>";
+            html_string += "<option value='closed'>Suljettu</option>";
+
+            div.innerHTML = '<label for="service">Tila:</label><select class="form-control" id="status">' + html_string + '</select>';
+            return div;
+        }
+    });
+
+    map.addControl(new ServiceSelector());
+    map.addControl(new StatusSelector());
+
+    var heatlayer = null;
+    update_map()
+
+    $("#service,#status").change(function() {
+        update_map();
+    });
+
+    map.locate();
+    map.on('locationfound', onLocationFound);
+
+    function update_map() {
+        var url = "/api/v1/feedbacks/?";
+        
+        var status = $("#status").val();
+        url += "status=" + status;
+
+        var service_code = $("#service").val();
+        if(service_code) {
+            url += "&service_code=" + service_code;
+        }
+
+        $.getJSON(url, function (data) {
+            var items = [];
+            $.each(data, function (key, feedback) {
+                items.push([feedback.lat, feedback.long]);
+            });
+            if(heatlayer)
+                map.removeLayer(heatlayer);
+            heatlayer = L.heatLayer(items, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
+        });
+    }
+
+    function onLocationFound(event) {
+        console.log("Found you using GPS!");
+        var marker_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "m"});
+        var user_marker = L.marker(event.latlng, {icon: marker_icon}).addTo(map);
+        user_marker.bindPopup("Sijaintisi", {closeButton: false});
+    }
+});
+
+
+</script>
+{% endblock %}

@@ -19,14 +19,14 @@
 	<div class="form-group">
 		<label for="{{form.image.id_for_label}}" class="col-sm-2 control-label">Liitä kuva:</label>
 		<div class="col-sm-8">
-			{{form.image}}
-		</div>
-	</div>
-	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-2 col-xs-2">
-			<button type="submit" class="btn btn-primary">Seuraava</button>
+			{{form.attachments}}
 		</div>
 		<span class="col-sm-4 col-sm-offset-2 col-xs-6 col-xs-offset-4 text-right" id="char_counter">5000 merkkiä jäljellä</span>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-8 col-sm-2">
+			<button type="submit" class="btn btn-primary pull-right">Seuraava <span class="glyphicon glyphicon-triangle-right"></span></button>
+		</div>
 	</div>
 </form>
 {{form.errors}}

@@ -22,46 +22,49 @@
                   </div>
                 </div>
             </div>
+        </div>
 
-            <div class="col-sm-2 col-md-2">
-                <div>
-                    <label for="status">Tila</label>
-                    <select class="form-control" name="status" id="status">
-                        <option selected="selected" value="">Status</option>
-                        <option value="open">Open</option>
-                        <option value="closed">Closed</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="order_by">Järjestä</label>
-                    <select class="form-control" name="order_by" id="order_by">
-                        <option selected="selected" value="">Order by</option>
-                        <option value="-requested_datetime">Creation datetime</option>
-                        <option value="distance">Distance</option>
-                        <option value="-vote_counter">Votes</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-sm-3 col-md-3">
-                <label for="service_code">Aihealue</label>
-                <select class="form-control" name="service_code" id="service_code">
-                    <option selected="selected" value="">Service name</option>
-                    {% for service in services %}
-                    <option value="{{service.service_code}}">{{ service.service_name }}</option>
-                    {% endfor %}
+        <div class="col-sm-2 col-md-2">
+            <div>
+                <label for="status">Tila</label>
+                <select class="form-control" name="status" id="status">
+                    <option selected="selected" value="">Status</option>
+                    <option value="open">Open</option>
+                    <option value="closed">Closed</option>
                 </select>
             </div>
+            <div>
+                <label for="order_by">Järjestä</label>
+                <select class="form-control" name="order_by" id="order_by">
+                    <option selected="selected" value="">Order by</option>
+                    <option value="-requested_datetime">Creation datetime</option>
+                    <option value="distance">Distance</option>
+                    <option value="-vote_counter">Votes</option>
+                </select>
+            </div>
+        </div>
 
+<<<<<<< HEAD
             <div class="col-sm-5 col-md-5">
                 <label for="search">Sanahaku</label>
                 <input type="text" class="form-control" name="search" id="search" placeholder="Esim. polkupyörä, Annankatu, rakennusvirasto..."/>
+=======
+        <div class="col-sm-3 col-md-3">
+            <label for="service_code">Aihealue</label>
+            <select class="form-control" name="service_code" id="service_code">
+                <option selected="selected" value="">Service name</option>
+                {% for service in services %}
+                <option value="{{service.service_code}}">{{ service.service_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+>>>>>>> 1b04a05c9710ca68a2e96584876d3a3a1dd5a244
 
-                <button class="btn btn-primary" type="submit" value="apply">
-                    Apply
-                </button>
-            </div>
+        <div class="col-sm-5 col-md-5">
+            <label for="description">Kuvaus</label>
+            <input type="text" class="form-control" name="description" id="description" placeholder="Kuvaus"/>
 
+<<<<<<< HEAD
             <div>
                 <input type="text" name="lat" id="lat" style="display: none;"/>
                 <input type="text" name="lon" id="lon" style="display: none;"/>
@@ -69,6 +72,19 @@
         </div>
     </form>
 </div>
+=======
+            <button class="btn btn-primary" type="submit" value="apply">
+                Apply
+            </button>
+        </div>
+
+        <div>
+            <input type="text" name="lat" id="lat" style="display: none;"/>
+            <input type="text" name="lon" id="lon" style="display: none;"/>
+        </div>
+    </div>
+</form>
+>>>>>>> 1b04a05c9710ca68a2e96584876d3a3a1dd5a244
 <script type="text/javascript">
 
     var status = "{{queries.status}}";
