@@ -34,18 +34,22 @@ def get_total(service_code):
 def get_closed(service_code):
     return Feedback.objects.filter(service_code=service_code, status="closed").count()
 
+# TODO: This will be replaced with more generic get_feedbacks() taking a dict
+def get_closed_by_service_code(service_code):
+    return Feedback.objects.filter(service_code=service_code, status="closed")
+
 # Returns average duration of closed feedbacks (updated_datetime - requested_datetime)
 # from given category. Returns a tuple (days, hours)
-def get_avg_duration(service_code):
+def get_avg_duration(query_set):
     duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
-    duration_list = Feedback.objects.filter(service_code=service_code, status="closed").annotate(duration=duration).values_list("duration", flat=True)
+    duration_list = query_set.annotate(duration=duration).values_list("duration", flat=True)
     return sum(duration_list, datetime.timedelta(0)) / len(duration_list)
 
 # Returns median duration of closed feedbacks (updated_datetime - requested_datetime)
 # from given category. Returns a tuple (days, hours)
-def get_avg_median(service_code):
+def get_median_duration(query_set):
     duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
-    duration_list = sorted(Feedback.objects.filter(service_code=service_code, status="closed").annotate(duration=duration).values_list("duration", flat=True))
+    duration_list = sorted(query_set.annotate(duration=duration).values_list("duration", flat=True))
     return duration_list[(len(duration_list)-1)//2]
 
 # Converts timedelta into tuple (days, hours)
