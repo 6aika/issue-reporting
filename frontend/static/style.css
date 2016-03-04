@@ -13,12 +13,20 @@ body {
 }
 
 .feedback_list_vote_icon {
-    font-size: 3em;
+    border-radius: 10px;
+    background-color: #68d;
+    font-size: 2em;
     vertical-align: middle;
-    color: #68d;
+    color: white;
     padding: 5px;
+    margin-left: 15px;
 
 }
+
+.feedback_title {
+    font-weight: bold;
+}
+
 
 .feedback_list_vote_icon:hover {
     color: #57c;
@@ -26,6 +34,7 @@ body {
 }
 
 .feedback_list_vote_badge {
+    font-size: 1em;
     background-color: #68d;
 }
 
@@ -95,8 +104,8 @@ body {
 }
 
 #map {
-    height: 500px;
-    width: 100%;
+    height: 300px;
+    width: 300px;
 }
 
 /* css to customize Leaflet default styles  */
@@ -149,9 +158,9 @@ body {
 }
 
 .center-cropped-details-page {
-    width: 320px;
+    width: 300px;
     /* min-width: 160px;*/
-    height: 320px;
+    height: 300px;
     padding: 10px;
     /*object-fit: cover;  <-- croppes the image in*/
     object-fit: scale-down;
@@ -233,8 +242,6 @@ body {
 
     .main_footer {
         bottom: 0;
-        text-align: left;
-        padding-left: 300px;
     }
     .shadow {
         min-height: 160px;

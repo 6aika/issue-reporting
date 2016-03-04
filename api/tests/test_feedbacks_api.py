@@ -81,10 +81,10 @@ class RequestsAPITest(APITestCase):
             self.assertTrue(feedback['status'] == feedback_status)
 
     def test_by_description(self):
-        description = 'some'
-        response, content = self.client.get('api/v1:feedback-list', {'description': description})
+        search = 'some'
+        response, content = self.client.get('api/v1:feedback-list', {'search': search})
         self.assertTrue(response.status_code == 200)
-        self.assertTrue(description.lower() in content[0]['description'].lower())
+        self.assertTrue(search.lower() in content[0]['description'].lower())
 
     def test_get_with_extensions(self):
         response, content = self.client.get('api/v1:feedback-list',

@@ -142,19 +142,14 @@ def map(request):
     return render(request, "map.html", {"feedbacks": feedbacks})
 
 
-def statistic_page(request):
-    context = {}
-    duration = ExpressionWrapper(Avg((F('updated_datetime') - F('requested_datetime'))),
-                                 output_field=fields.DurationField())
-    feedback_category = Feedback.objects.all().exclude(service_name__exact='').exclude(
-            service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
-    closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(
-            service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).annotate(
-            duration=duration).order_by('-total')
+def department(request):
 
-    context["feedback_category"] = feedback_category
-    context["closed"] = closed
-    return render(request, "statistic_page.html", context)
+    feedback_category = Feedback.objects.all().exclude(agency_responsible__exact='').exclude(
+            agency_responsible__isnull=True).values('agency_responsible').annotate(total=Count('agency_responsible')).order_by('-total')
+
+
+
+    return render(request, "department.html", {"feedbacks_category": feedback_category})
 
 # Idea for statistic implementation.
 def statistics2(request):
