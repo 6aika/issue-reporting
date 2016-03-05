@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^feedbacks/$', frontend.views.feedback_list, name="feedback_list"),
     url(r'^feedbacks/(?P<feedback_id>\d+)/$', frontend.views.feedback_details, name='feedback_details'),
     url(r'^feedback_form/$', frontend.views.FeedbackWizard.as_view(frontend.views.FORMS), name="feedback_form"),
+    url(r'^media_upload/$', frontend.views.media_upload, name="media_upload"),
     url(r'^map/$', frontend.views.map, name="map"),
     url(r'^locations_demo/$', frontend.views.locations_demo, name="locations_demo"),
     url(r'^instructions/$', frontend.views.instructions, name="instructions"),

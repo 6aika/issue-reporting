@@ -248,6 +248,12 @@ class FeedbackWizard(SessionWizardView):
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
                                                               'waiting_time': waiting_time})
 
+# This view handles media uploads from user during submitting a new feedback
+# It receives files, saves them to temporary file storage and attaches an ID
+# to them and returns the ID to caller. This ID is then used to attach the files into ready 
+# feedback in FeedbackWizard.done().
+def media_upload(request):
+    return JsonResponse({"status": "success"});
 
 def instructions(request):
     context = {}

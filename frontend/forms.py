@@ -1,5 +1,4 @@
 from django import forms
-from multiupload.fields import MultiFileField
 
 class FeedbackFormClosest(forms.Form):
     latitude = forms.FloatField(widget=forms.HiddenInput(
