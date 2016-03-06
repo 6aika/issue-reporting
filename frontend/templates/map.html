@@ -5,14 +5,15 @@
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 <script type="text/javascript" src="{% static 'proj4-compressed.js' %}" ></script>
 <script type="text/javascript" src="{% static 'proj4leaflet.js' %}" ></script>
+<link rel="stylesheet" href="{% static 'easy-button.css' %}" />
+<script type="text/javascript" src="{% static 'easy-button.js' %}" ></script>
 {% endblock %}
 {% block content-fluid %}
 
-	<div id="wrapper" class="toggled">
+<div id="wrapper">
 	<!-- Sidebar -->
         <div id="sidebar-wrapper">
-			<ul class="sidebar-nav">
-			<!--
+			
 				<div class="topic">
 					<h1></h1>
 				</div>
@@ -58,57 +59,30 @@
 					<div class="panel panel-primary">
 						<div class="panel-heading">
 							<h4 class="panel-title">
-								<a class="accordion-toggle" data-toggle="collapse" href="#collapseOne">
-									<span class="glyphicon glyphicon-chevron-down"></span>
-									Aihealue
-								</a>
+							<a class="accordion-toggle" data-toggle="collapse" href="#collapseOne">
+								<span class="glyphicon glyphicon-chevron-down"></span>
+								Aihealue
+							</a>
 							</h4>
 						</div>
 						<div id="collapseOne" class="panel-collapse collapse">
 							<div class="panel-body">
-							<div class="boksi">
-								<p><input type="checkbox" checked id="ilkivalta" value="172" /> Ilkivalta<p/>
-								<p><input type="checkbox" checked id="roskaaminen" value="246" /> Roskaaminen<p/>
-								<p><input type="checkbox" checked id="tohryjenpoisto" value="176" /> Töhryjen poisto<p/>
-								<p><input type="checkbox" checked id="katujenkunto" value="171" /> Katujen kunto<p/>
-								<p><input type="checkbox" checked id="liikennemerkit" value="198" /> Liikennemerkit<p/>
-								<p><input type="checkbox" checked id="kyltitjaopasteet" value="199"> Kyltit ja opasteet<p/>
-								<p><input type="checkbox" checked id="puistot" value="174"> Puistot<p/>
-								<p><input type="checkbox" checked id="leikkijaliikuntapuistot" value="211"> Leikki- ja liikuntapuistot<p/>
-								<p><input type="checkbox" checked id="metsat" value="234"> Metsät<p/>
-								<p><input type="checkbox" checked id="muu" value="180"> Muu korjattava asia<p/>
-								<button id="checkAllBtn" type="button" class="btn btn-primary btn-sm" onclick="selectAllCheckboxes">
-									<span class="glyphicon glyphicon-check"></span>
-									Kaikki
-								</button>
-							</div>
+								<div class="boksi">
+
+								</div>
 						</div>
 					</div>
 				</div>
-					
-	
-				<li>
-					<p>
-						Legend
-					</p>
-				</li>
-				<li>
-					<p>
-						Legend
-					</p>
-				</li>
-			-->
-			</ul>
-		</div>	
+			</div>	
+	</div>
 		
 		<button id="toggleButton" class="btn btn-primary toggled" onclick="onToggleMenu()">
 			<span id="toggleButtonIcon" class="glyphicon glyphicon-chevron-right"></span>
 		</button>
-	</div>	
-	<!-- /#wrapper -->
 
 
 <div id="map"></div>
+</div>
 <script src="{% static 'map.js' %}"></script>
 
 {% endblock %}
