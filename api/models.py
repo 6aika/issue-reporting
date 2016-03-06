@@ -80,3 +80,13 @@ class Service(models.Model):
     type = models.TextField(null=False)
     keywords = models.TextField(null=False)
     group = models.TextField(null=False)
+
+
+# Uploaded temporary media files binded to form instance
+# Delete MediaFile objects+files when they are old
+# Delete MediaFile objects and leave files when files
+# are binded to Feedback
+class MediaFile(models.Model):
+    file = models.FileField()
+    form_id = models.CharField(max_length=50)
+    date_created = models.DateTimeField(auto_now_add=True)

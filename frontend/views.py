@@ -2,11 +2,11 @@ import json
 import operator
 import os
 import urllib.request
+import uuid
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
-from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render, render_to_response
@@ -14,7 +14,7 @@ from formtools.wizard.views import SessionWizardView
 from django.db.models import Count, Avg
 import datetime
 from datetime import timedelta
-from api.models import Feedback, Service
+from api.models import Feedback, Service, MediaFile
 from api.services import get_feedbacks, get_feedbacks_count
 from api.analysis import *
 from api.geocoding.geocoding import reverse_geocode
@@ -173,8 +173,6 @@ def heatmap(request):
     return render(request, "heatmap.html", {"services": Service.objects.all()})
 
 class FeedbackWizard(SessionWizardView):
-    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp'))
-
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
 
@@ -197,10 +195,8 @@ class FeedbackWizard(SessionWizardView):
                     updated_before=None,
                     search=None,
                     order_by='distance')[:10]
-
             context.update({'closest': closest})
-
-        if self.steps.current == 'category':
+        elif self.steps.current == 'category':
             categories = []
             data = Service.objects.all()
 
@@ -219,6 +215,9 @@ class FeedbackWizard(SessionWizardView):
                 categories.append(category)
                 context.update({'categories': categories})
                 idx += 1
+        elif self.steps.current == "basic_info":
+            form_id = uuid.uuid4().hex
+            context.update({'form_id': form_id})
         return context
 
     def done(self, form_list, form_dict, **kwargs):
@@ -238,6 +237,14 @@ class FeedbackWizard(SessionWizardView):
         data["email"] = form_dict["contact"].cleaned_data["email"]
         data["phone"] = form_dict["contact"].cleaned_data["phone"]
 
+        form_id = form_dict["basic_info"].cleaned_data["form_id"]
+
+        # Attach media urls to the feedback and delete MediaFile object, leaving the file intact
+        for file in MediaFile.objects.filter(form_id=form_id):
+            # TODO: Add either media_url or create media_url objects, both?
+            # Delete used MediaFile objects - spare the file itself
+            file.delete()
+
         new_feedback = Feedback(**data)
 
         fixing_time = calc_fixing_time(data["service_code"])
@@ -249,19 +256,19 @@ class FeedbackWizard(SessionWizardView):
                                                               'waiting_time': waiting_time})
 
 # This view handles media uploads from user during submitting a new feedback
-# It receives files, saves them to temporary file storage and attaches an ID
-# to them and returns the ID to caller. This ID is then used to attach the files into ready 
-# feedback in FeedbackWizard.done().
+# It receives files with a form_id, saves the file and saves the info to DB so
+# the files can be processed when the form wizard is actually complete in done()
 def media_upload(request):
+    file = request.FILES.getlist("file")[0]
+    form_id = request.POST["form_id"]
+    if(file and form_id):
+        # Create new unique random filename preserving extension
+        extension = os.path.splitext(file.name)[1]
+        file.name = uuid.uuid4().hex + extension
+        f_object = MediaFile(file=file, form_id=form_id)
+        f_object.save()
     return JsonResponse({"status": "success"});
 
 def instructions(request):
     context = {}
     return render(request, "instructions.html", context)
-
-
-# Now only saves the submitted file into MEDIA_ROOT directory
-def handle_uploaded_file(file):
-    with open(os.path.join(settings.MEDIA_ROOT, file.name), 'wb+') as destination:
-        for chunk in file.chunks():
-            destination.write(chunk)

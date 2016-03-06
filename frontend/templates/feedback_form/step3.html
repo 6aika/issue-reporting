@@ -26,12 +26,14 @@
 	<div class="form-group">
 		<span class="col-sm-offset-2 col-sm-4 col-xs-4" id="char_counter">5000 merkkiä jäljellä</span>
 		<div class="col-sm-offset-2 col-sm-2 col-xs-offset-4 col-xs-4">
-			<button type="submit" class="btn btn-primary pull-right">Seuraava <span class="glyphicon glyphicon-triangle-right"></span></button>
+			<button type="submit" class="btn btn-primary pull-right" id="next_button">Seuraava <span class="glyphicon glyphicon-triangle-right"></span></button>
 		</div>
 	</div>
+	{{form.form_id}}
 </form>
 <form class="dropzone" action="{% url 'media_upload' %}" id="dropzone">
 	{% csrf_token %}
+	<input type=hidden name="form_id" value="{{form_id}}">
 </form>
 {{form.errors}}
 <script>
@@ -43,15 +45,22 @@ $(function () {
 	});
 
 	Dropzone.options.dropzone = {
-		url: "{% url 'media_upload' %}"
+		url: "{% url 'media_upload' %}",
+		maxFilesize: 1,
+		acceptedFiles: "image/*",
+		init: function() {
+			// Disable next button during file upload
+			this.on("addedfile", function(file) { 
+				$("#next_button").prop("disabled", true);
+			});
+			// Enable next after all uploads are complete
+			// Also add unique id to form
+			this.on("queuecomplete", function(file) { 
+				$("#next_button").prop("disabled", false);
+				$("#{{form.form_id.id_for_label}}").val("{{form_id}}");
+			});
+		}
 	};
-
-	Dropzone.options.dropzone = {
-	  init: function() {
-	    this.on("success", function(file) { console.log("Added a file ", file.name); });
-	  }
-	};
-
 });
 </script>
 {% include 'footer.html' %}
