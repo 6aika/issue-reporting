@@ -54,10 +54,6 @@ def get_median_duration(query_set):
     duration_list = sorted(query_set.annotate(duration=duration).values_list("duration", flat=True))
     return duration_list[(len(duration_list)-1)//2]
 
-# Converts timedelta into tuple (days, hours)
-def timedelta_days_hours(td):
-    return (td.days, td.seconds//3600)
-
 # Concerts timedelta into millisoconds
 def timedelta_milliseconds(td):
     return int(td.days * 86400000 + td.seconds * 1000 + td.microseconds / 1000)

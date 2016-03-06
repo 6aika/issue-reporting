@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load custom_tags %}
 {% block content %}
 {%include "statistics_menu.html" with statistics_active="active"%}
     <div class="row">
@@ -20,8 +21,8 @@
                         <td>{{ item.service_name }}</td>
                         <td>{{ item.total }}</td>
                         <td>{{ item.closed }}</td>
-                        <td>{{ item.avg.0 }} pv {{item.avg.1}} h</td>
-                        <td>{{ item.median.0 }} pv {{item.median.1}} h</td>
+                        <td>{{ item.avg | td_humanize }}</td>
+                        <td>{{ item.median| td_humanize }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

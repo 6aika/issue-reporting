@@ -160,8 +160,8 @@ def statistics2(request):
         item["service_name"] = service.service_name
         item["total"] = get_total(service_code)
         item["closed"] = get_closed(service_code)
-        item["avg"] = timedelta_days_hours(get_avg_duration(get_closed_by_service_code(service_code)))
-        item["median"] = timedelta_days_hours(get_median_duration(get_closed_by_service_code(service_code)))
+        item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
+        item["median"] = get_median_duration(get_closed_by_service_code(service_code))
         data.append(item)
 
     # Sort the rows by "total" column
