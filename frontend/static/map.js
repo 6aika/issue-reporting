@@ -42,4 +42,8 @@ function addMarker(e){
 	}
 }
 
- 
+ function onToggleMenu(){
+    $("#wrapper").toggleClass("toggled");
+    $("#toggleButton").toggleClass("toggled");
+    $("#toggleButtonIcon").toggleClass("glyphicon-chevron-left glyphicon-chevron-right");    
+}
