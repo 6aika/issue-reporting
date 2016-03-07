@@ -15,7 +15,7 @@ body {
 .feedback_list_vote_icon {
     border-radius: 10px;
     background-color: #68d;
-    font-size: 2em;
+    font-size: 1.5em;
     vertical-align: middle;
     color: white;
     padding: 5px;
@@ -34,8 +34,25 @@ body {
 }
 
 .feedback_list_vote_badge {
-    font-size: 1em;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 1.5em;
     background-color: #68d;
+}
+
+.feedback_list_share {
+    top: 7px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 1.5em;
+}
+
+#feedback_image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #banner-photo {
@@ -120,7 +137,7 @@ body {
     -webkit-transition: all 0.5s ease-in 0s;
     -moz-transition: all 0.5s ease-in 0s;
     -ms-transition: all 0.5s ease-in 0s;
-    -o-transition: all 0.5s ease-in 0s; 
+    -o-transition: all 0.5s ease-in 0s;
 }
 
 #toggleButton.toggled {
@@ -129,16 +146,16 @@ body {
     -webkit-transition: all 0.5s ease-in 0s;
     -moz-transition: all 0.5s ease-in 0s;
     -ms-transition: all 0.5s ease-in 0s;
-    -o-transition: all 0.5s ease-in 0s; 
+    -o-transition: all 0.5s ease-in 0s;
 }
 
 #sidebar-wrapper {
     margin-left: 0px;
     left: -300px;
-    width: 300px;   
+    width: 300px;
     position: fixed;
     padding: 8px 15px;
-    height: 100%;   
+    height: 100%;
     background: #000;
     overflow-y: auto;
     z-index: 2;
@@ -146,7 +163,7 @@ body {
     -webkit-transition: all 0.5s ease-in 0s;
     -moz-transition: all 0.5s ease-in 0s;
     -ms-transition: all 0.5s ease-in 0s;
-    -o-transition: all 0.5s ease-in 0s; 
+    -o-transition: all 0.5s ease-in 0s;
 }
 
 #sidebar-wrapper.toggled {
@@ -156,7 +173,7 @@ body {
     -webkit-transition: all 0.5s ease-in 0s;
     -moz-transition: all 0.5s ease-in 0s;
     -ms-transition: all 0.5s ease-in 0s;
-    -o-transition: all 0.5s ease-in 0s; 
+    -o-transition: all 0.5s ease-in 0s;
 }
 
 .calendar, .dropdown {
@@ -226,7 +243,7 @@ body {
     width: 240px;
     /* min-width: 160px;*/
     height: 240px;
-    padding: 10px;
+    padding: 0 0 0 20px;
     /*object-fit: cover;  <-- croppes the image in*/
     object-fit: scale-down;
     object-position: center;
@@ -373,4 +390,35 @@ body {
     font-size: 18px;
     text-decoration: solid;
     padding-left: 10px;
+}
+
+.feedback_list_title:hover {
+    text-decoration: none;
+}
+
+.feedback_list_filter {
+    margin: 2em;
+    border-color: #ddd;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+.feedback_list_date_picker {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+@media (min-width: 992px) {
+
+    .feedback_list_date_picker {
+        margin-left: 30px;
+    }
+}
+
+.feedback_list_filter_button {
+    margin-top: 25px;
+}
+
+.feedback_list_filter_well {
+    margin-top: 25px;
 }
