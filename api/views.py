@@ -2,8 +2,9 @@ from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
+from api.models import Service
 from api.services import get_feedbacks
-from .serializers import FeedbackSerializer
+from .serializers import FeedbackSerializer, ServiceSerializer
 
 
 class FeedbackViewSet(viewsets.ViewSet):
@@ -38,4 +39,14 @@ class FeedbackViewSet(viewsets.ViewSet):
 
         serializer = FeedbackSerializer(queryset, many=True,
                                         context={'extensions': request.query_params.get('extensions', 'false')})
+        return Response(serializer.data)
+
+
+class ServiceViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Service.objects.all()
+        # TODO: add localization
+        serializer = ServiceSerializer(queryset, many=True,
+                                       context={'extensions': request.query_params.get('locale', 'en')})
+
         return Response(serializer.data)

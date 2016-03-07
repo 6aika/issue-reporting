@@ -1,6 +1,12 @@
 from rest_framework import serializers
 
-from .models import Feedback, Task
+from .models import Feedback, Task, Service
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = ['service_code', 'service_name', 'description', 'metadata', 'type', 'keywords', 'group']
 
 
 class TaskSerializer(serializers.ModelSerializer):
