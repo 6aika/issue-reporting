@@ -16,6 +16,7 @@
                                 <p class="text-muted">Aihealue: {{ feedback.service_name }}</p>
                                 <p class="text-muted">Vastuullinen taho: {{ feedback.agency_responsible }}</p>
                                 <p class="text-muted">Created: {{ feedback.requested_datetime }}</p>
+                                <p class="text-muted">Estimation: {{ feedback.expected_datetime }}</p>
                                 <p class="text-muted">Current status: {{ feedback.status }}</p>
                                 <p>{{ feedback.description }}</p>
                                 <p>Estimated time of fixing: {{ feedback.estimated_datetime }}</p>
@@ -31,16 +32,14 @@
                                     </span>
                                 </span>
                                 <span class="badge feedback_list_vote_badge">{{ feedback.vote_counter }}</span>
-                                <span class="glyphicon glyphicon-share" style="padding-left: 20px"></span>
+                                <span class="glyphicon glyphicon-share feedback_list_share"></span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-4">
-                    <p>
                         <img id="feedback_image" class="img-thumbnail img-responsive center-cropped-details-page"
                              src="https://placehold.it/320x320"/>
-                    </p>
                     <div id="map"></div>
                 </div>
             </div>
