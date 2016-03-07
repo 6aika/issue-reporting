@@ -255,7 +255,6 @@ class FeedbackWizard(SessionWizardView):
         new_feedback.expected_datetime = new_feedback.requested_datetime + waiting_time
         new_feedback.save()
 
-        #waiting_time = fixing_time/1000/3600/24
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
                                                               'waiting_time': waiting_time})
 
