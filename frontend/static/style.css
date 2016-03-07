@@ -121,14 +121,79 @@ body {
 }
 
 #map {
-
-    height: 300px;
-    width: 300px;
-    display: block;
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
+    height: 400px;
+    width: 100%;
+    z-index: 1;
 }
+
+/* --- Sidebar --- */
+
+#toggleButton {
+    top: 100px;
+    left: 300px;
+    position: absolute;
+    z-index: 2;
+    transition: all 0.5s ease-in 0s;
+    -webkit-transition: all 0.5s ease-in 0s;
+    -moz-transition: all 0.5s ease-in 0s;
+    -ms-transition: all 0.5s ease-in 0s;
+    -o-transition: all 0.5s ease-in 0s;
+}
+
+#toggleButton.toggled {
+    left: 0;
+    transition: all 0.5s ease-in 0s;
+    -webkit-transition: all 0.5s ease-in 0s;
+    -moz-transition: all 0.5s ease-in 0s;
+    -ms-transition: all 0.5s ease-in 0s;
+    -o-transition: all 0.5s ease-in 0s;
+}
+
+#sidebar-wrapper {
+    margin-left: 0px;
+    left: -300px;
+    width: 300px;
+    position: fixed;
+    padding: 8px 15px;
+    height: 100%;
+    background: #000;
+    overflow-y: auto;
+    z-index: 2;
+    transition: all 0.5s ease-in 0s;
+    -webkit-transition: all 0.5s ease-in 0s;
+    -moz-transition: all 0.5s ease-in 0s;
+    -ms-transition: all 0.5s ease-in 0s;
+    -o-transition: all 0.5s ease-in 0s;
+}
+
+#sidebar-wrapper.toggled {
+    left: 0;
+    width: 300px;
+    transition: all 0.5s ease-in 0s;
+    -webkit-transition: all 0.5s ease-in 0s;
+    -moz-transition: all 0.5s ease-in 0s;
+    -ms-transition: all 0.5s ease-in 0s;
+    -o-transition: all 0.5s ease-in 0s;
+}
+
+.calendar, .dropdown {
+    width: 260px;
+    padding: 10px;
+    padding-top: 0px;
+}
+
+.dropdown {
+    width: 260px;
+    padding: 10px;
+    padding-top: 0px;
+}
+
+@media(min-width: 992px) {
+
+
+
+}
+
 
 /* css to customize Leaflet default styles  */
 .custom .leaflet-popup-tip,
@@ -137,8 +202,15 @@ body {
     color: #ffffff;
 }
 
+.custom .leaflet-popup-content-wrapper a {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
 .custom .leaflet-popup-content-wrapper {
     width: 300px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 #heatmap {
@@ -223,6 +295,10 @@ body {
     border-color: #ddd;
     padding-bottom: 20px;
     padding-top: 20px;
+}
+
+.feedback_list_filters label {
+
 }
 
 /* Color for item under mouse in category selection */

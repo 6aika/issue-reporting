@@ -79,9 +79,8 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-xs-4 text-right">
-                <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon" id="{{item.pk}}"></span>
+                <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon" id="{{item.service_request_id}}"></span>
                 <span class="badge feedback_list_vote_badge">{{item.vote_counter}}</span>
             </div>
         </div>
@@ -121,4 +120,6 @@
 </script>
 
 <script type="text/javascript" src="{% static 'enable_voting.js' %}"></script>
+
+{% include 'footer.html' %}
 {% endblock %}

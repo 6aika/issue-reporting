@@ -1,5 +1,4 @@
 from django import forms
-from multiupload.fields import MultiFileField
 
 class FeedbackFormClosest(forms.Form):
     latitude = forms.FloatField(widget=forms.HiddenInput(
@@ -16,8 +15,7 @@ class FeedbackFormCategory(forms.Form):
 class FeedbackForm3(forms.Form):
 	title = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Anna otsikko..."}))
 	description = forms.CharField(widget=forms.Textarea(attrs={'rows': 8, 'maxlength': 5000, 'class': 'form-control', 'placeholder': "Kirjoita tarkka kuvaus..."}))
-	#image = forms.FileField(required=False, allow_empty_file=True)
-	attachments = MultiFileField(min_num=1, max_num=3, max_file_size=1024*1024*5)
+	form_id = forms.CharField(required=False, max_length=50, widget=forms.HiddenInput())
 
 class FeedbackFormContact(forms.Form):
 	first_name = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Etunimesi..."}))

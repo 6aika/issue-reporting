@@ -5,10 +5,81 @@
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 <script type="text/javascript" src="{% static 'proj4-compressed.js' %}" ></script>
 <script type="text/javascript" src="{% static 'proj4leaflet.js' %}" ></script>
+<link rel="stylesheet" href="{% static 'easy-button.css' %}" />
+<script type="text/javascript" src="{% static 'easy-button.js' %}" ></script>
 {% endblock %}
 {% block content-fluid %}
 
+<div id="wrapper">
+	<!-- Sidebar -->
+        <div id="sidebar-wrapper">
+			
+			<div class="topic">
+				<h1></h1>
+			</div>
+			
+			<div class="space"></div>
+
+			<div class="dropdown">
+				<label for="statuspicker">Tila</label>
+				<select class="form-control" id="statuspicker" name="statuspicker">
+					<option value="0">Kaikki</option>
+					<option value="1">Avoin</option>
+					<option value="2">Käsitelty</option>
+				</select>
+			</div>
+		
+			<div class="calendar">
+				<label for="datepicker-start">Alku</label>
+				<div class="form-group">
+					<div class='input-group date' id='datepicker-start'>
+						<input type='text' class="form-control" />
+						<span class="input-group-addon" style="cursor:pointer">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+				</div>
+			</div>
+			 <div class="calendar">
+				<label for="datepicker-end">Loppu</label>
+				<div class="form-group">
+					<div class='input-group date' id='datepicker-end'>
+						<input type='text' class="form-control" />
+						<span class="input-group-addon" style="cursor:pointer">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="panel-group" id="accordion">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+						<a class="accordion-toggle" data-toggle="collapse" href="#collapseOne">
+							<span class="glyphicon glyphicon-chevron-down"></span>
+							Aihealue
+						</a>
+						</h4>
+					</div>
+					<div id="collapseOne" class="panel-collapse collapse">
+						<div class="panel-body">
+							<div class="boksi">
+
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>
+		
+		<button id="toggleButton" class="btn btn-primary toggled" onclick="onToggleMenu()">
+			<span id="toggleButtonIcon" class="glyphicon glyphicon-chevron-right"></span>
+		</button>
+
+
 <div id="map"></div>
+</div>
 <script src="{% static 'map.js' %}"></script>
 
 {% endblock %}

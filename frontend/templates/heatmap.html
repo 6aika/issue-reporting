@@ -16,7 +16,7 @@
 
 <script type="text/javascript">
 $(function() {
-
+    "use strict";
     var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
     // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
     var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
@@ -33,7 +33,7 @@ $(function() {
             transformation: new L.Transformation(1, -originNw[0], -1, originNw[1])
         };
         return new L.Proj.CRS(crsName, projDef, crsOpts);
-    }
+    };
     
     var map = L.map('heatmap', {
         crs : crs()
@@ -55,7 +55,7 @@ $(function() {
             var div = L.DomUtil.create('div', 'service-selector-div');
 
             div.className = "form-group";
-            html_string = "<option value=''>Kaikki</option>";
+            var html_string = "<option value=''>Kaikki</option>";
             {% for service in services %}
                 html_string += "<option value={{service.service_code}}>{{service.service_name}}</option>";
             {% endfor %} 
@@ -74,7 +74,7 @@ $(function() {
             var div = L.DomUtil.create('div', 'service-selector-div');
 
             div.className = "form-group";
-            html_string = "<option value='open'>Avoin</option>";
+            var html_string = "<option value='open'>Avoin</option>";
             html_string += "<option value='closed'>Suljettu</option>";
 
             div.innerHTML = '<label for="service">Tila:</label><select class="form-control" id="status">' + html_string + '</select>';
@@ -86,7 +86,7 @@ $(function() {
     map.addControl(new StatusSelector());
 
     var heatlayer = null;
-    update_map()
+    update_map();
 
     $("#service,#status").change(function() {
         update_map();
@@ -124,7 +124,6 @@ $(function() {
         user_marker.bindPopup("Sijaintisi", {closeButton: false});
     }
 });
-
 
 </script>
 {% endblock %}

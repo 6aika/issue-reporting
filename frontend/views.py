@@ -2,11 +2,11 @@ import json
 import operator
 import os
 import urllib.request
+import uuid
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
-from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render, render_to_response
@@ -14,7 +14,7 @@ from formtools.wizard.views import SessionWizardView
 from django.db.models import Count, Avg
 import datetime
 from datetime import timedelta
-from api.models import Feedback, Service
+from api.models import Feedback, Service, MediaFile
 from api.services import get_feedbacks, get_feedbacks_count
 from api.analysis import *
 from api.geocoding.geocoding import reverse_geocode
@@ -32,6 +32,10 @@ def mainpage(request):
     fixed_feedbacks_count = Feedback.objects.filter(status="closed").count()
     recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
     feedbacks_count = get_feedbacks_count()
+    #172 is dummy, to be fixed
+    fixing_time = calc_fixing_time(172)
+    waiting_time = timedelta(milliseconds=fixing_time)
+    context["waiting_time"] = waiting_time
     context["feedbacks_count"] = feedbacks_count
     context["fixed_feedbacks"] = fixed_feedbacks
     context["fixed_feedbacks_count"] = fixed_feedbacks_count
@@ -103,8 +107,11 @@ def vote_feedback(request):
     """
     if request.method == "POST":
         try:
-            id = request.POST["id"]
-            feedback = Feedback.objects.get(pk=id)
+            id = request.POST["service_request_id"]
+            if(id):
+                feedback = Feedback.objects.get(service_request_id=id)
+            else:
+                return JsonResponse({"status": "error", "message": "Ääntä ei voitu tallentaa. Palautetta ei löydetty!"})
         except KeyError:
             return JsonResponse({"status": "error", "message": "Ääntä ei voitu tallentaa. Väärä parametri!"})
         except Feedback.DoesNotExist:
@@ -142,19 +149,14 @@ def map(request):
     return render(request, "map.html", {"feedbacks": feedbacks})
 
 
-def statistic_page(request):
-    context = {}
-    duration = ExpressionWrapper(Avg((F('updated_datetime') - F('requested_datetime'))),
-                                 output_field=fields.DurationField())
-    feedback_category = Feedback.objects.all().exclude(service_name__exact='').exclude(
-            service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).order_by('-total')
-    closed = Feedback.objects.filter(status='closed').exclude(service_name__exact='').exclude(
-            service_name__isnull=True).values('service_name').annotate(total=Count('service_name')).annotate(
-            duration=duration).order_by('-total')
+def department(request):
 
-    context["feedback_category"] = feedback_category
-    context["closed"] = closed
-    return render(request, "statistic_page.html", context)
+    feedback_category = Feedback.objects.all().exclude(agency_responsible__exact='').exclude(
+            agency_responsible__isnull=True).values('agency_responsible').annotate(total=Count('agency_responsible')).order_by('-total')
+
+
+
+    return render(request, "department.html", {"feedbacks_category": feedback_category})
 
 # Idea for statistic implementation.
 def statistics2(request):
@@ -165,8 +167,8 @@ def statistics2(request):
         item["service_name"] = service.service_name
         item["total"] = get_total(service_code)
         item["closed"] = get_closed(service_code)
-        item["avg"] = timedelta_days_hours(get_avg_duration(get_closed_by_service_code(service_code)))
-        item["median"] = timedelta_days_hours(get_median_duration(get_closed_by_service_code(service_code)))
+        item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
+        item["median"] = get_median_duration(get_closed_by_service_code(service_code))
         data.append(item)
 
     # Sort the rows by "total" column
@@ -178,8 +180,6 @@ def heatmap(request):
     return render(request, "heatmap.html", {"services": Service.objects.all()})
 
 class FeedbackWizard(SessionWizardView):
-    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp'))
-
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
 
@@ -202,10 +202,8 @@ class FeedbackWizard(SessionWizardView):
                     updated_before=None,
                     search=None,
                     order_by='distance')[:10]
-
             context.update({'closest': closest})
-
-        if self.steps.current == 'category':
+        elif self.steps.current == 'category':
             categories = []
             data = Service.objects.all()
 
@@ -224,6 +222,9 @@ class FeedbackWizard(SessionWizardView):
                 categories.append(category)
                 context.update({'categories': categories})
                 idx += 1
+        elif self.steps.current == "basic_info":
+            form_id = uuid.uuid4().hex
+            context.update({'form_id': form_id})
         return context
 
     def done(self, form_list, form_dict, **kwargs):
@@ -238,37 +239,43 @@ class FeedbackWizard(SessionWizardView):
         data["location"] = GEOSGeometry('SRID=4326;POINT(' + str(longitude) + ' ' + str(latitude) + ')')
         data["address_string"] = reverse_geocode(latitude, longitude)
 
-        print(form_dict["basic_info"].cleaned_data["attachments"])
-        for file in form_dict["basic_info"].cleaned_data["attachments"]:
-            print("File found!")
-            handle_uploaded_file(file)
-            data["media_url"] = "/media/" + file.name
-
         data["first_name"] = form_dict["contact"].cleaned_data["first_name"]
         data["last_name"] = form_dict["contact"].cleaned_data["last_name"]
         data["email"] = form_dict["contact"].cleaned_data["email"]
         data["phone"] = form_dict["contact"].cleaned_data["phone"]
 
+        form_id = form_dict["basic_info"].cleaned_data["form_id"]
+
+        # Attach media urls to the feedback and delete MediaFile object, leaving the file intact
+        for file in MediaFile.objects.filter(form_id=form_id):
+            # TODO: Add either media_url or create media_url objects, both?
+            # Delete used MediaFile objects - spare the file itself
+            file.delete()
+
         new_feedback = Feedback(**data)
-        #new_feedback.save()
 
         fixing_time = calc_fixing_time(data["service_code"])
-        expected_datetime = new_feedback.requested_datetime + timedelta(milliseconds=fixing_time)
-        new_feedback.expected_datetime = expected_datetime
+        waiting_time = timedelta(milliseconds=fixing_time)
+        new_feedback.expected_datetime = new_feedback.requested_datetime + waiting_time
         new_feedback.save()
 
-        waiting_time = fixing_time/1000/3600/24
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
                                                               'waiting_time': waiting_time})
 
+# This view handles media uploads from user during submitting a new feedback
+# It receives files with a form_id, saves the file and saves the info to DB so
+# the files can be processed when the form wizard is actually complete in done()
+def media_upload(request):
+    file = request.FILES.getlist("file")[0]
+    form_id = request.POST["form_id"]
+    if(file and form_id):
+        # Create new unique random filename preserving extension
+        extension = os.path.splitext(file.name)[1]
+        file.name = uuid.uuid4().hex + extension
+        f_object = MediaFile(file=file, form_id=form_id)
+        f_object.save()
+    return JsonResponse({"status": "success"});
 
 def instructions(request):
     context = {}
     return render(request, "instructions.html", context)
-
-
-# Now only saves the submitted file into MEDIA_ROOT directory
-def handle_uploaded_file(file):
-    with open(os.path.join(settings.MEDIA_ROOT, file.name), 'wb+') as destination:
-        for chunk in file.chunks():
-            destination.write(chunk)

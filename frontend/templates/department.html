@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+{%include "statistics_menu.html" with department_active="active"%}
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="text-center">Statistics</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Department</th>
+                    <th>Total Number of Issues </th>
+
+                </tr>
+                </thead>
+                <tbody>
+
+                    {% for every in feedbacks_category %}
+                    <tr>
+                        <td>{{ every.agency_responsible}}</td>
+                        <td>{{ every.total }}</td>
+
+                    </tr>
+                {% endfor %}
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% include 'footer.html' %}
+{% endblock %}

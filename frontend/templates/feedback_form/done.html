@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load custom_tags %}
 {% block content %}
 {% include 'feedback_form/stagebar.html' with stage="5"%}
 <div class="row text-center">
@@ -9,7 +10,7 @@
 
 <div class="row text-center">
 	<div class="col-sm-6 col-sm-offset-3">
-		Tyypillinen korjausaika on: {{ waiting_time|floatformat:0 }} pv
+		Tyypillinen korjausaika on: {{ waiting_time|td_humanize }}
 	</div>
 </div>
 
@@ -25,5 +26,5 @@
 		</p>
 	</div>
 </div>
-
+{% include 'footer.html' %}
 {% endblock %}
