@@ -159,7 +159,13 @@ body {
     -o-transition: all 0.5s ease-in 0s; 
 }
 
-.calendar {
+.calendar, .dropdown {
+    width: 260px;
+    padding: 10px;
+    padding-top: 0px;
+}
+
+.dropdown {
     width: 260px;
     padding: 10px;
     padding-top: 0px;
@@ -181,6 +187,8 @@ body {
 
 .custom .leaflet-popup-content-wrapper {
     width: 300px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 #heatmap {

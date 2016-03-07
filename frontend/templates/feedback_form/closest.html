@@ -23,17 +23,6 @@
 
     <div class="row">
         <div class="col-md-12">
-            <!--
-            <div class="row">
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-block btn-success" onclick="getUserLocation()">
-                    <span class="glyphicon glyphicon-map-marker"></span>
-                        Oma sijainti
-                    </button>
-                </div>
-            </div>
-            -->
-
             <div class="row">
                 <div class="col-md-12" style="padding-top: 20px">
                     <div id="map"></div>
@@ -58,9 +47,6 @@
     "use strict";
 
     var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
-
-    
-
     // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
     var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
 
@@ -166,9 +152,14 @@
             var popupContent = "";
 
             popupContent += "<h3 id=\"feedback_title\"></h3>" +
-                "<p id=\"feedback_service_name\"><b></b></p>" +
-                "<p id=\"feedback_requested_datetime\">[feedback.requested_datetime]</p>" +
-                "<p id=\"feedback_description\">[feedback.feedback_description]</p>";
+                "<h4 id=\"feedback_service_name\"></h4>" +
+                "<span class=\"badge feedback_list_vote_icon\" id=\"{{ feedback.service_request_id }}\">" +
+                    "<span> +1</span>" +
+                "</span>" +
+                "<span class=\"badge feedback_list_vote_badge\">{{ feedback.vote_counter }}</span>" +
+                
+                "<p id=\"feedback_requested_datetime\">{{ feedback.requested_datetime }}</p>" +
+                "<p id=\"feedback_description\">{{ feedback.feedback_description|truncatechars:9 }}</p>";
                        
 
             var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(map);
@@ -199,11 +190,6 @@
                 
             });
         });
-
-        $("<ul/>", {
-            "class": "my-new-list",
-            html: items.join("")
-        }).appendTo("body");
     });
 </script>
 
