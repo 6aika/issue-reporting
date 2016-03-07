@@ -32,6 +32,10 @@ def mainpage(request):
     fixed_feedbacks_count = Feedback.objects.filter(status="closed").count()
     recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
     feedbacks_count = get_feedbacks_count()
+    #172 is dummy, to be fixed
+    fixing_time = calc_fixing_time(172)
+    waiting_time = timedelta(milliseconds=fixing_time)
+    context["waiting_time"] = waiting_time
     context["feedbacks_count"] = feedbacks_count
     context["fixed_feedbacks"] = fixed_feedbacks
     context["fixed_feedbacks_count"] = fixed_feedbacks_count
