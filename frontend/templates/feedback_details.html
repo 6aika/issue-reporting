@@ -24,10 +24,11 @@
                                 <p>{{ feedback.address_string }}</p>
                             </div>
                         </div>
+                        {% if item.service_request_id %}
                         <div class="row">
                             <div class="xs-col-3">
                                 <span class="badge feedback_list_vote_icon"
-                                      id="{{ feedback.pk }}">
+                                      id="{{ feedback.service_request_id }}">
                                     <span>
                                         +1
                                     </span>
@@ -36,6 +37,7 @@
                                 <span class="glyphicon glyphicon-share" style="padding-left: 20px"></span>
                             </div>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-4">

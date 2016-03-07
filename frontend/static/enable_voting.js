@@ -3,7 +3,7 @@
 function enable_voting(csrf_token_string, voting_url_string) {
     $(".feedback_list_vote_icon").click(function () {
         var id = $(this).attr("id");
-        var data = {id: id, csrfmiddlewaretoken: csrf_token_string};
+        var data = {service_request_id: id, csrfmiddlewaretoken: csrf_token_string};
         $.post(voting_url_string, data, function (data) {
             if (data.status === "success") {
                 var value = parseInt($(this).next().text()) + 1;
