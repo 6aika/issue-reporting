@@ -32,6 +32,10 @@ def mainpage(request):
     fixed_feedbacks_count = Feedback.objects.filter(status="closed").count()
     recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
     feedbacks_count = get_feedbacks_count()
+    #172 is dummy, to be fixed
+    fixing_time = calc_fixing_time(172)
+    waiting_time = timedelta(milliseconds=fixing_time)
+    context["waiting_time"] = waiting_time
     context["feedbacks_count"] = feedbacks_count
     context["fixed_feedbacks"] = fixed_feedbacks
     context["fixed_feedbacks_count"] = fixed_feedbacks_count
@@ -255,7 +259,6 @@ class FeedbackWizard(SessionWizardView):
         new_feedback.expected_datetime = new_feedback.requested_datetime + waiting_time
         new_feedback.save()
 
-        #waiting_time = fixing_time/1000/3600/24
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
                                                               'waiting_time': waiting_time})
 
