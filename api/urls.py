@@ -1,7 +1,12 @@
-from rest_framework.routers import DefaultRouter
+from django.conf.urls import url
+from rest_framework.urlpatterns import format_suffix_patterns
 
-from . import views
+from api import views
 
-router = DefaultRouter()
-router.register(r'feedbacks', views.FeedbackViewSet, base_name='feedback')
-router.register(r'services', views.ServiceViewSet, base_name='service')
+urlpatterns = [
+    url(r'^requests/$', views.FeedbackList.as_view()),
+    url(r'^requests/(?P<service_request_id>\w+)/$', views.FeedbackDetail.as_view()),
+    url(r'^services/$', views.ServiceList.as_view()),
+]
+
+urlpatterns = format_suffix_patterns(urlpatterns)

@@ -152,7 +152,7 @@
         $("#{{ form.longitude.id_for_label }}").val(latlng.lng);
     }
 
-    $.getJSON("/api/v1/feedbacks/?status=open", function (data) {
+    $.getJSON("/api/v1/requests.json/?status=open", function (data) {
         var items = [];
         $.each(data, function (key, feedback) {
 
