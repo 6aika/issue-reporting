@@ -1,10 +1,11 @@
 <!-- Template for creating small feedback box -->
+{% load custom_tags %}
 <div class="short-feedback-box-with-image">
     <div class="row">
         <div class="col-xs-8 col-sm-12 col-xs-offset-2 col-sm-offset-0 shadow">
             <div class="row">
                 <div class="col-xs-12 short-img">
-                    <img class="img-responsive" src="https://placehold.it/270x200"/>
+                    <img class="img-responsive" src="../static/No_Image.jpg"/>
                 </div>
             </div>
             <div class="row">
@@ -13,8 +14,7 @@
                     <h5 class="text-muted">{{ feedback.service_name }}</h5>
                     <span>Avattu: {{ feedback.requested_datetime }}</span><br>
                     <span>Ratkaistu: {{ feedback.updated_datetime }}</span><br>
-                    <span>Arvio: {{ feedback.expected_datetime }}</span><br>
-                    <span>Osoite: {{ feedback.address_string }}</span>
+                    <span>Tyypillinen korjausaika: {{ feedback.expected_datetime }}</span><br>
                 </div>
             </div>
 

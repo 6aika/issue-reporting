@@ -86,6 +86,7 @@ class Service(models.Model):
 # Delete MediaFile objects+files when they are old
 # Delete MediaFile objects and leave files when files
 # are binded to Feedback
+# Default directory is MEDIA_ROOT
 class MediaFile(models.Model):
     file = models.FileField()
     form_id = models.CharField(max_length=50)
