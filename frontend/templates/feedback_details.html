@@ -3,73 +3,94 @@
 {% block head %}
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script type="text/javascript" src="{% static 'proj4-compressed.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'proj4leaflet.js' %}" ></script>
 {% endblock %}
 {% block content %}
-    <div class="row">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-xs-12 col-md-8" style="padding: 40px">
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-xs-12 col-md-8" style="padding: 40px">
+                <div class="row">
+                    <h1 class="feedback_title">{{ feedback.title }}</h1>
                     <div class="row">
-                        <h1 class="feedback_title">{{ feedback.title }}</h1>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <p class="text-muted">Aihealue: {{ feedback.service_name }}</p>
-                                <p class="text-muted">Vastuullinen taho: {{ feedback.agency_responsible }}</p>
-                                <p class="text-muted">Created: {{ feedback.requested_datetime }}</p>
-                                <p class="text-muted">Current status: {{ feedback.status }}</p>
-                                <p>{{ feedback.description }}</p>
-                                <p>Estimated time of fixing: {{ feedback.estimated_datetime }}</p>
-                                <p>{{ feedback.address_string }}</p>
-                            </div>
+                        <div class="col-md-12">
+                            <p class="text-muted">Aihe: {{ feedback.service_name }}</p>
+                            <p class="text-muted">Vastuullinen taho: {{ feedback.agency_responsible }}</p>
+                            <p class="text-muted">Luotu: {{ feedback.requested_datetime }}</p>
+                            <p class="text-muted">Tila: {{ feedback.status }}</p>
+                            <p>{{ feedback.description }}</p>
+                            <p>Estimated time of fixing: {{ feedback.estimated_datetime }}</p>
+                            <p>{{ feedback.address_string }}</p>
                         </div>
-                        <div class="row">
-                            <div class="xs-col-3">
-                                <span class="badge feedback_list_vote_icon"
-                                      id="{{ feedback.pk }}">
-                                    <span>
-                                        +1
-                                    </span>
+                    </div>
+                    <div class="row">
+                        <div class="xs-col-3">
+                            <span class="badge feedback_list_vote_icon"
+                                  id="{{ feedback.service_request_id }}">
+                                <span>
+                                    +1
                                 </span>
-                                <span class="badge feedback_list_vote_badge">{{ feedback.vote_counter }}</span>
-                                <span class="glyphicon glyphicon-share" style="padding-left: 20px"></span>
-                            </div>
+                            </span>
+                            <span class="badge feedback_list_vote_badge">{{ feedback.vote_counter }}</span>
+                            <span class="glyphicon glyphicon-share" style="padding-left: 20px"></span>
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-md-4">
-                    <p>
-                        <img id="feedback_image" class="img-thumbnail img-responsive center-cropped-details-page"
-                             src="https://placehold.it/320x320"/>
-                    </p>
-                    <div id="map"></div>
-                </div>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <p>
+                    <img id="feedback_image" class="img-thumbnail img-responsive center-cropped-details-page"
+                         src="https://placehold.it/320x320" alt="Feedback image"/>
+                </p>
+                <div id="map"></div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        "use strict";
+<script>
+    "use strict";
 
-        var lat = "{{feedback.lat}}";
-        var lon = "{{feedback.lon}}";
+    var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
+    var crs = function() {
+        var bounds, crsName, crsOpts, originNw, projDef;
+        crsName = 'EPSG:3067';
+        projDef = '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
+        bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
+        originNw = [bounds.min.x, bounds.max.y];
+        crsOpts = {
+            resolutions: [8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125],
+            bounds: bounds,
+            transformation: new L.Transformation(1, -originNw[0], -1, originNw[1])
+        };
+        return new L.Proj.CRS(crsName, projDef, crsOpts);
+    }
 
-        var map = L.map('map').setView([lat, lon], 14);
+    var lat = "{{feedback.lat}}";
+    var lon = "{{feedback.lon}}";
 
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-            maxZoom: 18
-        }).addTo(map);
+    var map = L.map('map',
+    {
+        crs : crs()
+    }).setView([lat, lon], 12);
 
-        L.marker([lat, lon]).addTo(map);
-    </script>
+    L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png", {
+        attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+        maxZoom: 18,
+        continuousWorld: true,
+        tms: false
+    }).addTo(map);
 
-    <script type="text/javascript">
-        $(function () {
-            enable_voting("{{csrf_token}}", "{% url 'vote_feedback' %}");
-        });
-    </script>
+    L.marker([lat, lon]).addTo(map);
+</script>
 
-    <script type="text/javascript" src="{% static 'enable_voting.js' %}"></script>
+<script type="text/javascript">
+    $(function () {
+        enable_voting("{{csrf_token}}", "{% url 'vote_feedback' %}");
+    });
+</script>
 
-{% include 'footer.html' %}    
+<script type="text/javascript" src="{% static 'enable_voting.js' %}"></script>
+{% include 'footer.html' %}
 {% endblock %}

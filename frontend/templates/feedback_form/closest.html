@@ -23,17 +23,6 @@
 
     <div class="row">
         <div class="col-md-12">
-            <!--
-            <div class="row">
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-block btn-success" onclick="getUserLocation()">
-                    <span class="glyphicon glyphicon-map-marker"></span>
-                        Oma sijainti
-                    </button>
-                </div>
-            </div>
-            -->
-
             <div class="row">
                 <div class="col-md-12" style="padding-top: 20px">
                     <div id="map"></div>
@@ -58,9 +47,6 @@
     "use strict";
 
     var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
-
-    
-
     // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
     var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
 
@@ -152,8 +138,9 @@
         $("#{{ form.longitude.id_for_label }}").val(latlng.lng);
     }
 
-    $.getJSON("/api/v1/feedbacks/?status=open", function (data) {
+    $.getJSON("/api/v1/feedbacks/?status=open&extensions=true", function (data) {
         var items = [];
+        console.log(data);
         $.each(data, function (key, feedback) {
 
             // specify popup options 
@@ -164,11 +151,18 @@
                 }
 
             var popupContent = "";
-
+            
             popupContent += "<h3 id=\"feedback_title\"></h3>" +
-                "<p id=\"feedback_service_name\"><b></b></p>" +
-                "<p id=\"feedback_requested_datetime\">[feedback.requested_datetime]</p>" +
-                "<p id=\"feedback_description\">[feedback.feedback_description]</p>";
+                "<p id=\"feedback_service_name\"></p>" +
+                "<span class=\"badge feedback_list_vote_icon\" id=\"\">" +
+                    "<span> +1</span>" +
+                "</span>" +
+                "<span class=\"badge feedback_list_vote_badge\"></span>" +
+                
+                "<p id=\"feedback_requested_datetime\"></p>" +
+                "<p id=\"feedback_description\"></p>" +
+                "<a id=\"feedback_details\" href=\"\"></a>";
+                
                        
 
             var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(map);
@@ -189,21 +183,22 @@
                 }
 
                 // @TODO : Additional id's left, remove if not required
-                $('#feedback_title').text(e.target.feedback.title);
+                $('#feedback_title').text(e.target.feedback.extended_attributes.title);
                 $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
-                $('.feedback_list_vote_icon').attr("id", e.target.feedback.id);
-                $('#feedback_service_name').text(e.target.feedback.service_name);
+                $('.feedback_list_vote_icon').attr("id", e.target.feedback.service_request_id);
+                $('#feedback_service_name').text("Aihe: " + e.target.feedback.service_name);
                 $('#feedback_requested_datetime').text(e.target.feedback.requested_datetime);
-                $('#feedback_description').text(e.target.feedback.description);
+                var len = 135;
+                var desc = e.target.feedback.description;
+                var trunc_desc = desc.substring(0, len)  + "...";
+                $('#feedback_description').text(trunc_desc);
+                var feedback_url = "/feedbacks/" + e.target.feedback.id;
+                $('#feedback_details').text("Lisää");
+                $('#feedback_details').attr("href", feedback_url);
                 $('#feedback_info').css("visibility", "visible");
                 
             });
         });
-
-        $("<ul/>", {
-            "class": "my-new-list",
-            html: items.join("")
-        }).appendTo("body");
     });
 </script>
 

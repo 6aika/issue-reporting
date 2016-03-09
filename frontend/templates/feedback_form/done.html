@@ -10,7 +10,7 @@
 
 <div class="row text-center">
 	<div class="col-sm-6 col-sm-offset-3">
-		Tyypillinen korjausaika on: {{ waiting_time|td_humanize }}
+		<p>Tyypillinen korjausaika on: {{ waiting_time|td_humanize }} <span data-toggle="tooltip" title="Arvio on keskimääräinen aika, joka on kulunut tämän aihealueen palautteiden käsittelyssä. Palautteen käsittely voi kestää kauemminkin." class="glyphicon glyphicon-question-sign"></span></p>
 	</div>
 </div>
 
@@ -26,5 +26,16 @@
 		</p>
 	</div>
 </div>
+<div class="row text-center">
+	<div class="col-sm-6 col-sm-offset-3">
+		<a href="/" type="button" class="btn btn-primary">Palaa etusivulle</a>
+		<a href="{% url 'feedback_form' %}" type="button" class="btn btn-primary">Anna uusi palaute</a>
+	</div>
+</div>
 {% include 'footer.html' %}
+<script type="text/javascript">
+	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip()
+	})
+</script>
 {% endblock %}
