@@ -32,7 +32,7 @@ class Feedback(models.Model):
     service_object_type = models.TextField(null=True)
     detailed_status = models.TextField(null=True)
 
-    location = models.PointField(srid=4326, null=True)
+    location = models.PointField(srid=4326)
 
     # Keeps track of votes users have given to the feedback
     vote_counter = models.IntegerField(default=0)
