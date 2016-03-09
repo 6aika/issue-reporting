@@ -172,6 +172,24 @@ def statistics2(request):
 def heatmap(request):
     return render(request, "heatmap.html", {"services": Service.objects.all()})
 
+
+def charts(request):
+    data = []
+    for service in Service.objects.all():
+        item = {}
+        service_code = service.service_code
+        item["service_name"] = service.service_name
+        item["total"] = get_total(service_code)
+        item["closed"] = get_closed(service_code)
+        item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
+        item["median"] = get_median_duration(get_closed_by_service_code(service_code))
+        data.append(item)
+
+    # Sort the rows by "total" column
+    data.sort(key=operator.itemgetter('total'), reverse=True)
+    return render(request, "charts.html", {"data": data})
+
+
 class FeedbackWizard(SessionWizardView):
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]

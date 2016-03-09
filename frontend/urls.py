@@ -16,5 +16,6 @@ urlpatterns = [
     url(r'^statistics/$', frontend.views.statistics2, name="statistics"),
     url(r'^heatmap/$', frontend.views.heatmap, name="heatmap"),
     url(r'^department/$', frontend.views.department, name="department"),
+    url(r'^charts/$', frontend.views.charts, name="charts"),
     url(r'^vote_feedback/$', frontend.views.vote_feedback, name="vote_feedback")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

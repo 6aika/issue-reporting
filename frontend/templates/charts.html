@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block head %}
+
+    <link rel="stylesheet" href="{% static 'c3/c3.min.css' %}" />
+    <script type="text/javascript" src="{% static 'c3/c3.min.js' %}" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js" charset="utf-8"></script>
+
+{% endblock %}
+{% block content %}
+{%include "statistics_menu.html" with charts_active="active"%}
+    <div id="chart"></div>
+
+     <div id="chartsecond"></div>
+    <script>
+
+
+
+    var chart = c3.generate({
+    bindto: '#chart',
+    data: {
+
+
+
+        x : 'x',
+        columns: [
+            ['x', 'Katujen kunto', 'Muu korjattava asia', 'Liikennemerkit', 'Ilkivalta'],
+            ['open', 30, 200, 100, 400],
+            ['closed', 90, 100, 140, 200],
+        ],
+        groups: [
+            ['open', 'closed']
+        ],
+        type: 'bar',
+        labels:true
+    },
+    axis: {
+        x: {
+            type: 'category' // this needed to load string x value
+        }
+    }
+});
+
+
+
+    </script>
+
+
+
+{% include 'footer.html' %}
+{% endblock %}
