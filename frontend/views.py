@@ -1,25 +1,22 @@
-import json
 import operator
 import os
-import urllib.request
 import uuid
-from django.conf import settings
+from datetime import timedelta
+
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
-from django.db.models import Count, Avg
-import datetime
-from datetime import timedelta
-from api.models import Feedback, Service, MediaFile
-from api.services import get_feedbacks, get_feedbacks_count
+
 from api.analysis import *
 from api.geocoding.geocoding import reverse_geocode
+from api.models import Service, MediaFile
+from api.services import get_feedbacks, get_feedbacks_count
 from frontend.forms import FeedbackFormClosest, FeedbackFormCategory, FeedbackForm3, FeedbackFormContact
-from django.db.models import F, ExpressionWrapper, fields
 
 FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackForm3), ("contact", FeedbackFormContact) ]
 TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/category.html",
@@ -228,8 +225,10 @@ class FeedbackWizard(SessionWizardView):
             categories = []
             data = Service.objects.all()
 
-            GLYPHICONS = ["glyphicon-wrench", "glyphicon-road", "glyphicon-euro", "glyphicon-music", "glyphicon-glass",
-                          "glyphicon-heart", "glyphicon-star", "glyphicon-user", "glyphicon-film", "glyphicon-home"]
+            GLYPHICONS = ["glyphicon-fire", "glyphicon-trash", "glyphicon-tint", "glyphicon-road",
+                          "glyphicon-warning-sign",
+                          "glyphicon-picture", "glyphicon-tree-conifer", "glyphicon-cloud", "glyphicon-tree-deciduous",
+                          "glyphicon-option-horizontal"]
 
             idx = 0
             for item in data:
