@@ -96,7 +96,7 @@ $(function() {
     map.on('locationfound', onLocationFound);
 
     function update_map() {
-        var url = "/api/v1/feedbacks/?";
+        var url = "/api/v1/requests.json/?";
         
         var status = $("#status").val();
         url += "status=" + status;

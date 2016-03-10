@@ -6,7 +6,7 @@ class Feedback(models.Model):
     class Meta:
         db_table = 'feedbacks'
 
-    service_request_id = models.CharField(max_length=254, db_index=True, unique=False)
+    service_request_id = models.CharField(max_length=254, db_index=True, null=True)
     status_notes = models.TextField(null=True)
     status = models.TextField(null=True)
     service_code = models.TextField(null=True)

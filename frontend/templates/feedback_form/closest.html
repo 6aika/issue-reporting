@@ -138,7 +138,7 @@
         $("#{{ form.longitude.id_for_label }}").val(latlng.lng);
     }
 
-    $.getJSON("/api/v1/feedbacks/?status=open&extensions=true", function (data) {
+    $.getJSON("/api/v1/requests.json/?status=open", function (data) {
         var items = [];
         console.log(data);
         $.each(data, function (key, feedback) {
@@ -151,18 +151,18 @@
                 }
 
             var popupContent = "";
-            
+
             popupContent += "<h3 id=\"feedback_title\"></h3>" +
                 "<p id=\"feedback_service_name\"></p>" +
                 "<span class=\"badge feedback_list_vote_icon\" id=\"\">" +
                     "<span> +1</span>" +
                 "</span>" +
                 "<span class=\"badge feedback_list_vote_badge\"></span>" +
-                
+
                 "<p id=\"feedback_requested_datetime\"></p>" +
                 "<p id=\"feedback_description\"></p>" +
                 "<a id=\"feedback_details\" href=\"\"></a>";
-                
+
                        
 
             var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(map);
