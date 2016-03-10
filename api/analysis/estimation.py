@@ -39,6 +39,8 @@ def get_avg_duration(query_set):
 def get_median_duration(query_set):
     duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
     duration_list = sorted(query_set.annotate(duration=duration).values_list("duration", flat=True))
+    if not duration_list:
+        return datetime.timedelta(0)
     return duration_list[(len(duration_list) - 1) // 2]
 
 
