@@ -6,7 +6,7 @@ html {
 }
 
 body {
-    padding-top: 60px;
+    padding-top: 51px;
     -webkit-font-smoothing: antialiased;
     font-family: 'Lato', sans-serif !important;
     margin: 0 0 200px;
@@ -121,7 +121,7 @@ body {
 }
 
 #map {
-    height: 400px;
+    height: calc(100vh - 51px);
     width: 100%;
     z-index: 1;
 }
