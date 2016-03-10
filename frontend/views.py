@@ -72,7 +72,7 @@ def feedback_list(request):
         'order_by': filter_order_by,
         'service_codes': request.GET.get("service_code"),
         'search': request.GET.get("search"),
-        'lat': request.GET.get("search"),
+        'lat': request.GET.get("lat"),
         'lon': request.GET.get("lon")
     }
 
