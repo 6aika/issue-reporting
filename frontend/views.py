@@ -145,8 +145,11 @@ def paginate_query_set(query_set, items_per_page, page):
 
 
 def map(request):
-    feedbacks = Feedback.objects.all()
-    return render(request, "map.html", {"feedbacks": feedbacks})
+    context = {
+        'feedbacks': Feedback.objects.all(),
+        'services': Service.objects.all(),
+    }
+    return render(request, "map.html", context)
 
 
 def department(request):
