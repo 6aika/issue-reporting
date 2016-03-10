@@ -43,7 +43,10 @@
 </form>
 
 <script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
+<script src="{% static 'map.js' %}"></script>
 <script>
+
+/*
     "use strict";
 
     var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
@@ -96,7 +99,7 @@
             $('#feedback_info').css("visibility", "hidden");
         }
     }
-
+*/
     var userLocation = new L.marker(map.getCenter(), {icon: center_icon}).addTo(map);
     storeLocation(userLocation.getLatLng());
     
@@ -138,9 +141,8 @@
         $("#{{ form.longitude.id_for_label }}").val(latlng.lng);
     }
 
+/*
     $.getJSON("/api/v1/requests.json/?status=open", function (data) {
-        var items = [];
-        console.log(data);
         $.each(data, function (key, feedback) {
 
             // specify popup options 
@@ -200,6 +202,7 @@
             });
         });
     });
+*/
 </script>
 
 <script type="text/javascript">
