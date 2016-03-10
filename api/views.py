@@ -59,8 +59,6 @@ class FeedbackDetail(APIView):
                 start_date=request.query_params.get('start_date', None),
                 end_date=request.query_params.get('end_date', None),
                 statuses=request.query_params.get('status', None),
-                service_object_type=None,
-                service_object_id=None,
                 lat=request.query_params.get('lat', None),
                 lon=request.query_params.get('long', None),
                 radius=request.query_params.get('radius', None),

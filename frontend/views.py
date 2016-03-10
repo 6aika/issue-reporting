@@ -54,12 +54,7 @@ def feedback_list(request):
 
     filter_start_date = request.GET.get("start_date")
     filter_end_date = request.GET.get("end_date")
-    filter_status = request.GET.get("status")
     filter_order_by = request.GET.get("order_by")
-    filter_service_code = request.GET.get("service_code")
-    filter_search = request.GET.get("search")
-    filter_lat = request.GET.get("lat")
-    filter_lon = request.GET.get("lon")
 
     if filter_start_date:
         filter_start_date = datetime.datetime.strptime(filter_start_date, "%d.%m.%Y").isoformat()
@@ -70,12 +65,18 @@ def feedback_list(request):
     if filter_order_by is None:
         filter_order_by = "-requested_datetime"
 
-    feedbacks = get_feedbacks(service_codes=filter_service_code, service_request_ids=None,
-                              start_date=filter_start_date, end_date=filter_end_date,
-                              statuses=filter_status, search=filter_search,
-                              service_object_type=None, service_object_id=None,
-                              updated_after=None, updated_before=None,
-                              lat=filter_lat, lon=filter_lon, radius=None, order_by=filter_order_by)
+    filter_params = {
+        'start_date': filter_start_date,
+        'end_date': filter_end_date,
+        'statuses': request.GET.get("status"),
+        'order_by': filter_order_by,
+        'service_codes': request.GET.get("service_code"),
+        'search': request.GET.get("search"),
+        'lat': request.GET.get("search"),
+        'lon': request.GET.get("lon")
+    }
+
+    feedbacks = get_feedbacks(**filter_params)
 
     page = request.GET.get("page")
 
@@ -218,19 +219,10 @@ class FeedbackWizard(SessionWizardView):
         if self.steps.current == 'closest':
             print('duplicates step')
             closest = get_feedbacks(
-                    service_request_ids=None,
-                    service_codes=None,
-                    start_date=None,
-                    end_date=None,
                     statuses='Open',
-                    service_object_type=None,
-                    service_object_id=None,
                     lat=60.17067,
                     lon=24.94152,
                     radius=3000,
-                    updated_after=None,
-                    updated_before=None,
-                    search=None,
                     order_by='distance')[:10]
             context.update({'closest': closest})
         elif self.steps.current == 'category':
