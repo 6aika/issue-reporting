@@ -17,12 +17,12 @@
 <div id="wrapper">
 	<!-- Sidebar -->
         <div id="sidebar-wrapper">
-			
-			<div class="topic">
-				<h1></h1>
-			</div>
-			
-			<div class="space"></div>
+
+            <div class="topic">
+                <h1></h1>
+            </div>
+
+            <div class="space"></div>
 
 			<form role="form" id="feedback-filter" method="GET" class="form-horizontal" enctype="multipart/form-data">
 				<div class="dropdown">
@@ -33,7 +33,7 @@
 						<option value="closed">Closed</option>
 					</select>
 				</div>
-			
+
 				<div class="calendar">
 					<label for="datepicker-start">Alku</label>
 					<div class="calendar form-group">
@@ -56,7 +56,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<!-- TODO : add multiple selection feature for service types
 				<div class="panel-group" id="accordion">
 					<div class="panel panel-primary">
@@ -92,9 +92,9 @@
 				<div class="space"></div>
 
                 <button class="btn btn-primary btn-lg btn-block" type="submit" value="apply">Apply</button>
-            </form>	
+            </form>
 	</div>
-		
+
 	<button id="toggleButton" class="btn btn-primary toggled" onclick="onToggleMenu()">
 		<span id="toggleButtonIcon" class="glyphicon glyphicon-chevron-right"></span>
 	</button>
@@ -116,7 +116,7 @@
 
     $("#feedback-filter").submit(function (event) {
 	    var params = "";
-	    if ($("#status").val() !== "") 
+	    if ($("#status").val() !== "")
 	    	params.push({"status" : $("#status").val()});
 	    var service_code = $("#service_code").val();
 	    var search = $("#search").val();

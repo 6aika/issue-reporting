@@ -1,7 +1,8 @@
 import datetime
 
-from ..models import Feedback
 from django.db.models import ExpressionWrapper, F, fields
+
+from ..models import Feedback
 
 # def calc_fixing_time(service_code):
 #     requests = Feedback.objects.filter(service_code=service_code, status='closed').all()

@@ -30,3 +30,4 @@ def td_humanize(diff):
 def time_from_now(datetime):
 	now = timezone.now()
 	return td_humanize(datetime - now)
+
