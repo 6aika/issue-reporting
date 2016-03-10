@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-{%include "statistics_menu.html" with department_active="active"%}
+    {% include "statistics_menu.html" with department_active="active" %}
     <div class="row">
         <div class="col-sm-12">
             <h3 class="text-center">Statistics</h3>
@@ -8,15 +8,15 @@
                 <thead>
                 <tr>
                     <th>Department</th>
-                    <th>Total Number of Issues </th>
+                    <th>Total Number of Issues</th>
 
                 </tr>
                 </thead>
                 <tbody>
 
-                    {% for every in feedbacks_category %}
+                {% for every in feedbacks_category %}
                     <tr>
-                        <td>{{ every.agency_responsible}}</td>
+                        <td>{{ every.agency_responsible }}</td>
                         <td>{{ every.total }}</td>
 
                     </tr>
@@ -27,5 +27,5 @@
             </table>
         </div>
     </div>
-{% include 'footer.html' %}
+    {% include 'footer.html' %}
 {% endblock %}

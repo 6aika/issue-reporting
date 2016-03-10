@@ -1,5 +1,98 @@
 "use strict";
 
+var data;
+
+moment.locale('fi');
+
+$(document).ready(function() {
+    getData();
+});
+
+function getData(params) {
+    $.getJSON("/api/v1/requests.json/?status=open", params, function (data) {
+        console.log(data);
+        $.each(data, function (key, feedback) {
+
+            // specify popup options 
+            var customOptions =
+                {
+                    'maxWidth': '300',
+                    'className' : 'custom'
+                }
+
+            var popupContent = "";
+
+            popupContent += "<h3 id=\"feedback_title\"></h3>";
+            popupContent += "<p id=\"feedback_service_name\"></p>" +
+                "<span class=\"badge feedback_list_vote_icon\" id=\"\">" +
+                    "<span> +1</span>" +
+                "</span>" +
+                "<span class=\"badge feedback_list_vote_badge\"></span>" +
+
+                "<p id=\"feedback_requested_datetime\"></p>" +
+                "<p id=\"feedback_description\"></p>" +
+                "<a id=\"feedback_details\" href=\"\"></a>";
+
+                       
+
+            var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(map);
+            marker.feedback = feedback;
+            marker.on('click', function(e) {
+                if (highlight !== null) {
+                    // is highlighted, store id of marker
+                    var id = highlight._leaflet_id;
+                }
+
+                removeHighlight();
+
+                if (id !== marker._leaflet_id) {
+                    // Set highlight icon
+                    marker.setIcon(highlight_icon);
+                    // Assign highlight
+                    highlight = marker;
+                }
+
+                // @TODO : Add TITLE
+                //$('#feedback_title').text(e.target.feedback.extended_attributes.title);
+                $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
+                $('.feedback_list_vote_icon').attr("id", e.target.feedback.service_request_id);
+                $('#feedback_service_name').text("Aihe: " + e.target.feedback.service_name);
+                var datetime = moment(e.target.feedback.requested_datetime).fromNow();
+                $('#feedback_requested_datetime').text("Lisätty: " + datetime);
+                var len = 135;
+                var desc = e.target.feedback.description;
+                var trunc_desc = desc.substring(0, len)  + "...";
+                $('#feedback_description').text(trunc_desc);
+                var feedback_url = "/feedbacks/" + e.target.feedback.id;
+                $('#feedback_details').text("Lisää");
+                $('#feedback_details').attr("href", feedback_url);
+                $('#feedback_info').css("visibility", "visible");
+                
+            });
+        });
+    });
+}
+
+var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
+var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
+var highlight_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "m"});
+
+// Variable to keep track of highlighted marker
+var highlight = null;
+
+// Function for removing highlight 
+function removeHighlight () {
+    // Check for highlight
+    if (highlight !== null) {
+        // Set default icon
+        highlight.setIcon(feedback_icon);
+        // Unset highlight
+        highlight = null;
+        $('#feedback_info').css("visibility", "hidden");
+    }
+}
+
+
 var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
 // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
 var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
@@ -18,7 +111,7 @@ var crs = function() {
     return new L.Proj.CRS(crsName, projDef, crsOpts);
 }
 var map = L.map('map', {
-    crs : crs(),
+    crs: crs(),
     zoomControl: false
 }).setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 11);
 
@@ -29,15 +122,15 @@ L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{
     tms: false
 }).addTo(map);
 
-map.addControl(L.control.zoom({ position : 'topright' }));
+map.addControl(L.control.zoom({position: 'topright'}));
 
-L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function(){
+L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function () {
     getUserLocation();
 }, {position: 'topright'}).addTo(map);
 
 function getUserLocation(e) {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function (position) {
             var newLocation = L.latLng(position.coords.latitude, position.coords.longitude);
             //userLocation.setLatLng(newLocation);
             //storeLocation(newLocation);
@@ -63,8 +156,8 @@ function addMarker(e){
 	}
 }
 
- function onToggleMenu(){
+function onToggleMenu() {
     $("#sidebar-wrapper").toggleClass("toggled");
     $("#toggleButton").toggleClass("toggled");
-    $("#toggleButtonIcon").toggleClass("glyphicon-chevron-left glyphicon-chevron-right");    
+    $("#toggleButtonIcon").toggleClass("glyphicon-chevron-left glyphicon-chevron-right");
 }

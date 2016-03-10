@@ -43,7 +43,10 @@
 </form>
 
 <script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
+<script src="{% static 'map.js' %}"></script>
 <script>
+
+/*
     "use strict";
 
     var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
@@ -96,7 +99,7 @@
             $('#feedback_info').css("visibility", "hidden");
         }
     }
-
+*/
     var userLocation = new L.marker(map.getCenter(), {icon: center_icon}).addTo(map);
     storeLocation(userLocation.getLatLng());
     
@@ -138,9 +141,8 @@
         $("#{{ form.longitude.id_for_label }}").val(latlng.lng);
     }
 
+/*
     $.getJSON("/api/v1/requests.json/?status=open", function (data) {
-        var items = [];
-        console.log(data);
         $.each(data, function (key, feedback) {
 
             // specify popup options 
@@ -185,7 +187,7 @@
                 // @TODO : Additional id's left, remove if not required
                 $('#feedback_title').text(e.target.feedback.extended_attributes.title);
                 $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
-                $('.feedback_list_vote_icon').attr("id", e.target.feedback.service_request_id);
+                $('.feedback_list_vote_icon').attr("id", e.target.feedback.id);
                 $('#feedback_service_name').text("Aihe: " + e.target.feedback.service_name);
                 $('#feedback_requested_datetime').text(e.target.feedback.requested_datetime);
                 var len = 135;
@@ -200,6 +202,7 @@
             });
         });
     });
+*/
 </script>
 
 <script type="text/javascript">

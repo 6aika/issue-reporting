@@ -6,7 +6,7 @@ html {
 }
 
 body {
-    padding-top: 60px;
+    padding-top: 51px;
     -webkit-font-smoothing: antialiased;
     font-family: 'Lato', sans-serif !important;
     margin: 0 0 200px;
@@ -121,7 +121,7 @@ body {
 }
 
 #map {
-    height: 400px;
+    height: calc(100vh - 51px);
     width: 100%;
     z-index: 1;
 }
@@ -176,7 +176,7 @@ body {
     -o-transition: all 0.5s ease-in 0s;
 }
 
-.calendar, .dropdown {
+.calendar {
     width: 260px;
     padding: 10px;
     padding-top: 0px;
@@ -186,12 +186,6 @@ body {
     width: 260px;
     padding: 10px;
     padding-top: 0px;
-}
-
-@media(min-width: 992px) {
-
-
-
 }
 
 
@@ -306,6 +300,12 @@ body {
     background-color: #eee
 }
 
+.feedback_form_category_item {
+    box-shadow: 1px 1px 3px 1px #aaa;
+    padding: 20px;
+    padding-bottom: 0px;
+}
+
 .category_icon {
     color: #777;
     font-size: 5em;
@@ -347,42 +347,42 @@ body {
         border-color: #ddd;
     }
 
-    .report-well {
-        width: 45%;
-        border-color: transparent;
-        margin-top: -280px;
-        background-color: rgba(35, 35, 35, 0.8);
+    .feedback_list_date_picker {
+        margin-left: 30px;
     }
 
-    .report-well h1 {
-        padding-bottom: 0;
-        padding-top: 0;
-        color: #ddd;
-    }
 
-    .report-well a {
-        padding: 20px;
-        color: #ddd;
-    }
+}
+.report-well {
+    min-width: 280px;
+    width: 55%;
+    border-color: transparent;
+    margin-top: -280px;
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: rgba(35, 35, 35, 0.8);
+}
 
-    .report-well a p {
-        font-size: 18px;
-        text-decoration: solid;
-        padding-left: 10px;
-    }
+.report-well h2 {
+    padding-bottom: 0;
+    padding-top: 0;
+    color: #ddd;
+}
 
-    .btn-lg {
-
-        margin-bottom: 10px;
-        padding: 15px 25px 15px 25px;
-        font-size: 30px;
+@media (max-width: 767px) {
+    .report-well h2 {
+        font-size: 20px;
     }
 }
 
-.btn-lg {
+#banner-link {
+    padding: 20px;
+    color: #ddd;
+}
 
+#banner-button {
     margin-bottom: 10px;
-    padding: 15px 25px 15px 25px;
+    padding: 10px;
     font-size: 20px;
 }
 
@@ -408,17 +408,14 @@ body {
     padding-right: 30px;
 }
 
-@media (min-width: 992px) {
-
-    .feedback_list_date_picker {
-        margin-left: 30px;
-    }
-}
-
 .feedback_list_filter_button {
     margin-top: 25px;
 }
 
 .feedback_list_filter_well {
     margin-top: 25px;
+}
+
+.category_title {
+    font-weight: bold;
 }
