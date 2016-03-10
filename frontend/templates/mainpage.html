@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block content-fluid %}
 
-    <img class="hidden-xs" id="banner-photo"
+    <img id="banner-photo"
          src="http://cdn.aarp.net/content/dam/travel/destination-images/finland/helsinki/1400-hero-helsinki-finland-summer.imgcache.rev1409674055616.web.jpg"/>
     <div class="container">
-        <div class="row report-button">
+        <div class="row">
             <div class="col-xs-12 well report-well">
-                <h1>Tehdään Helsingistä parempi!</h1>
-                <a href="{% url 'feedback_form' %}"><button class="btn btn-primary btn-lg">Anna palaute</button></a>
-                <a href="#"><p>Näin käytät sivustoa</p></a>
+                <h2>Tehdään Helsingistä parempi!</h2>
+                <a type="button" href="{% url 'feedback_form' %}" class="btn btn-primary" id="banner-button">Anna palaute</a>
+                <div class="hidden-xs"><a href="#" id="banner-link">Näin käytät sivustoa</a></div>
             </div>
         </div>
         <div class="row" id="info-row"> <!-- Info graph icons -->
