@@ -351,6 +351,10 @@ body {
         margin-left: 30px;
     }
 
+    #datepicker-start, #datepicker-end {
+        width: 140px;
+    }
+
 }
 
 .report-well {
@@ -397,10 +401,8 @@ body {
 }
 
 .feedback_list_filter {
-    margin: 2em;
+    margin: 0 2em 0 2em;
     border-color: #ddd;
-    padding-bottom: 20px;
-    padding-top: 20px;
 }
 
 .feedback_list_date_picker {
@@ -432,7 +434,6 @@ body {
 }
 
 #char_counter {
-    margin-left: 20px;
     margin-bottom: 20px;
 }
 
@@ -447,5 +448,14 @@ body {
 
     .feedback_form_category_item {
         height: 160px;
+    }
+
+    #char_counter {
+        margin-left: 20px;
+    }
+
+    #datepicker-start, #datepicker-end {
+        margin-left: -10px;
+        width: 60vw;
     }
 }
