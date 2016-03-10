@@ -2,11 +2,12 @@ import operator
 import os
 import uuid
 from datetime import timedelta
-
+from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render, render_to_response
@@ -14,7 +15,7 @@ from formtools.wizard.views import SessionWizardView
 
 from api.analysis import *
 from api.geocoding.geocoding import reverse_geocode
-from api.models import Service, MediaFile
+from api.models import Service, MediaFile, MediaURL
 from api.services import get_feedbacks, get_feedbacks_count
 from frontend.forms import FeedbackFormClosest, FeedbackFormCategory, FeedbackForm3, FeedbackFormContact
 
@@ -25,13 +26,12 @@ TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form
 
 def mainpage(request):
     context = {}
+    closed_feedbacks = Feedback.objects.filter(status="closed")
     fixed_feedbacks = Feedback.objects.filter(status="closed")[0:4]
-    fixed_feedbacks_count = Feedback.objects.filter(status="closed").count()
+    fixed_feedbacks_count = closed_feedbacks.count()
     recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
     feedbacks_count = get_feedbacks_count()
-    #172 is dummy, to be fixed
-    fixing_time = calc_fixing_time(172)
-    waiting_time = timedelta(milliseconds=fixing_time)
+    waiting_time = get_median_duration(closed_feedbacks)
     context["waiting_time"] = waiting_time
     context["feedbacks_count"] = feedbacks_count
     context["fixed_feedbacks"] = fixed_feedbacks
@@ -266,18 +266,27 @@ class FeedbackWizard(SessionWizardView):
 
         form_id = form_dict["basic_info"].cleaned_data["form_id"]
 
-        # Attach media urls to the feedback and delete MediaFile object, leaving the file intact
-        for file in MediaFile.objects.filter(form_id=form_id):
-            # TODO: Add either media_url or create media_url objects, both?
-            # Delete used MediaFile objects - spare the file itself
-            file.delete()
-
         new_feedback = Feedback(**data)
 
         fixing_time = calc_fixing_time(data["service_code"])
         waiting_time = timedelta(milliseconds=fixing_time)
         new_feedback.expected_datetime = new_feedback.requested_datetime + waiting_time
         new_feedback.save()
+
+        # Attach media urls to the feedback
+        files = MediaFile.objects.filter(form_id=form_id)
+        if(files):
+            for file in files:
+                # Todo: Better way to build abs image URL
+                abs_url = ''.join(['http://feedback.hel.ninja', settings.MEDIA_URL, file.file.name])
+                media_url = MediaURL(feedback=new_feedback, media_url=abs_url)
+                media_url.save()
+                new_feedback.media_urls.add(media_url)
+                # Attach the file to feedback - not needed if using external Open311!
+                new_feedback.media_files.add(file)
+            # Update the single media_url field to point to the 1st image
+            new_feedback.media_url = new_feedback.media_urls.all()[0].media_url
+            new_feedback.save()
 
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
                                                               'waiting_time': waiting_time})

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load custom_tags %}
 {% block content-fluid %}
 
     <img id="banner-photo"
@@ -82,7 +83,7 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12"> <!-- The value -->
-                                <h3>2 viikkoa</h3>
+                                <h3>{{waiting_time|td_humanize}}</h3>
                             </div>
                         </div>
                     </div>

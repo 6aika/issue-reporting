@@ -88,6 +88,7 @@ class Service(models.Model):
 # are binded to Feedback
 # Default directory is MEDIA_ROOT
 class MediaFile(models.Model):
+    feedback = models.ForeignKey('Feedback', on_delete=models.CASCADE, related_name="media_files", null=True)
     file = models.FileField()
     form_id = models.CharField(max_length=50)
     date_created = models.DateTimeField(auto_now_add=True)
