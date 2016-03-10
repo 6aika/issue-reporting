@@ -1,32 +1,42 @@
 {% extends 'base.html' %}
 {% block content %}
-{% include 'feedback_form/stagebar.html' with stage=wizard.steps.step1%}
-{% include "feedback_form/category_list.html" %}
-<form method="post">
-{% csrf_token %}
-{{ wizard.management_form }}
-	{{form.service_code}}
-	<div class="form-group">
-		<div class="col-sm-offset-10 col-sm-2">
-			<button type="submit" class="btn btn-primary pull-right">Seuraava <span class="glyphicon glyphicon-triangle-right"></span></button>
-		</div>
-	</div>
-</form>
+    {% include 'feedback_form/stagebar.html' with stage=wizard.steps.step1 %}
+    {% include "feedback_form/category_list.html" %}
+    <form method="post">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        {{ form.service_code }}
+        <div class="form-group">
+            <div class="row">
 
-<script>
-var selected = null;
-$(function () {
-	$(".feedback_form_category_item").click(item_clicked);
-});
+                <!-- TODO This button needs functionality for going back -->
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-primary pull-left">Edellinen <span
+                            class="glyphicon glyphicon-triangle-left"></span></button>
+                </div>
 
-function item_clicked(event) {
-	$("#{{form.service_code.id_for_label}}").val($(this).attr("data-service-code"));
-	if(selected) {
-		$(selected).removeClass("active");
-	}
-	selected = $(this);
-	$(this).addClass("active");
-}
-</script>
+                <div class="col-sm-offset-8 col-sm-2">
+                    <button type="submit" class="btn btn-primary pull-right">Seuraava <span
+                            class="glyphicon glyphicon-triangle-right"></span></button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        var selected = null;
+        $(function () {
+            $(".feedback_form_category_item").click(item_clicked);
+        });
+
+        function item_clicked(event) {
+            $("#{{form.service_code.id_for_label}}").val($(this).attr("data-service-code"));
+            if (selected) {
+                $(selected).removeClass("active");
+            }
+            selected = $(this);
+            $(this).addClass("active");
+        }
+    </script>
     {% include 'footer.html' %}
 {% endblock %}

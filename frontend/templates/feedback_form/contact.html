@@ -34,9 +34,16 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<div class="col-sm-offset-8 col-sm-2">
-			<button type="submit" class="btn btn-primary pull-right">Lähetä <span class="glyphicon glyphicon-triangle-right"></span></button>
-		</div>
+        <!-- TODO This button needs functionality for going back -->
+        <div class="col-sm-offset-2 col-sm-2">
+            <button type="submit" class="btn btn-primary pull-left">Edellinen <span
+                    class="glyphicon glyphicon-triangle-left"></span></button>
+        </div>
+
+        <div class="col-sm-offset-4 col-sm-2">
+            <button type="submit" class="btn btn-primary pull-right">Seuraava <span
+                    class="glyphicon glyphicon-triangle-right"></span></button>
+        </div>
 	</div>
 </form>
     {% include 'footer.html' %}

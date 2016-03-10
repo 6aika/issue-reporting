@@ -27,7 +27,6 @@ body {
     font-weight: bold;
 }
 
-
 .feedback_list_vote_icon:hover {
     color: #57c;
     cursor: pointer;
@@ -121,7 +120,8 @@ body {
 }
 
 #map {
-    height: calc(100vh - 51px);
+    height: calc(100vh - 220px);
+    /* height: calc(100vh - 51px);*/
     width: 100%;
     z-index: 1;
 }
@@ -187,7 +187,6 @@ body {
     padding: 10px;
     padding-top: 0px;
 }
-
 
 /* css to customize Leaflet default styles  */
 .custom .leaflet-popup-tip,
@@ -337,6 +336,7 @@ body {
     .main_footer {
         bottom: 0;
     }
+
     .shadow {
         min-height: 160px;
     }
@@ -351,8 +351,8 @@ body {
         margin-left: 30px;
     }
 
-
 }
+
 .report-well {
     min-width: 280px;
     width: 55%;
@@ -418,4 +418,34 @@ body {
 
 .category_title {
     font-weight: bold;
+}
+
+.table-stage {
+    border-radius: 4px;
+    box-shadow: 1px 1px 3px 1px #aaa;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.table-stage > thead > tr > th {
+    border-bottom: 0 white;
+}
+
+#char_counter {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 400px) {
+    #stage1, #stage2, #stage3, #stage4, #stage5 {
+        font-size: 10px;
+    }
+
+    .category_title {
+        font-size: 14px;
+    }
+
+    .feedback_form_category_item {
+        height: 160px;
+    }
 }
