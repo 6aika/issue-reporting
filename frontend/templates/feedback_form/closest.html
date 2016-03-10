@@ -187,7 +187,7 @@
                 // @TODO : Additional id's left, remove if not required
                 $('#feedback_title').text(e.target.feedback.extended_attributes.title);
                 $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
-                $('.feedback_list_vote_icon').attr("id", e.target.feedback.service_request_id);
+                $('.feedback_list_vote_icon').attr("id", e.target.feedback.id);
                 $('#feedback_service_name').text("Aihe: " + e.target.feedback.service_name);
                 $('#feedback_requested_datetime').text(e.target.feedback.requested_datetime);
                 var len = 135;
