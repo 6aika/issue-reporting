@@ -188,9 +188,7 @@ body {
     padding-top: 0px;
 }
 
-@media(min-width: 992px) {
-
-
+@media (min-width: 992px) {
 
 }
 
@@ -304,6 +302,12 @@ body {
 /* Color for item under mouse in category selection */
 .feedback_form_category_item:hover {
     background-color: #eee
+}
+
+.feedback_form_category_item {
+    box-shadow: 1px 1px 3px 1px #aaa;
+    padding: 20px;
+    padding-bottom: 0px;
 }
 
 .category_icon {
@@ -421,4 +425,8 @@ body {
 
 .feedback_list_filter_well {
     margin-top: 25px;
+}
+
+.category_title {
+    font-weight: bold;
 }

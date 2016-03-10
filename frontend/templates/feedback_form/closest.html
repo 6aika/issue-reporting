@@ -153,15 +153,15 @@
             var popupContent = "";
 
             popupContent += "<h3 id=\"feedback_title\"></h3>" +
-                "<h4 id=\"feedback_service_name\"></h4>" +
-                "<span class=\"badge feedback_list_vote_icon\" id=\"\">" +
+                    "<h4 id=\"feedback_service_name\"></h4>" +
+                    "<span class=\"badge feedback_list_vote_icon\" id=\"\">" +
                     "<span> +1</span>" +
-                "</span>" +
-                "<span class=\"badge feedback_list_vote_badge\"></span>" +
-                
-                "<p id=\"feedback_requested_datetime\"></p>" +
-                "<p id=\"feedback_description\"></p>" +
-                "<a id=\"feedback_details\" href=\"\"></a>";
+                    "</span>" +
+                    "<span class=\"badge feedback_list_vote_badge\"></span>" +
+
+                    "<p id=\"feedback_requested_datetime\"></p>" +
+                    "<p id=\"feedback_description\"></p>" +
+                    "<a id=\"feedback_details\" href=\"\"></a>";
                        
 
             var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(map);
@@ -189,7 +189,7 @@
                 $('#feedback_requested_datetime').text(e.target.feedback.requested_datetime);
                 var len = 135;
                 var desc = e.target.feedback.description;
-                var trunc_desc = desc.substring(0, len)  + "...";
+                var trunc_desc = desc.substring(0, len) + "...";
                 $('#feedback_description').text(trunc_desc);
                 var feedback_url = "/feedbacks/" + e.target.feedback.id;
                 $('#feedback_details').text("Lisää");
@@ -208,5 +208,5 @@
 </script>
 
 <script type="text/javascript" src="{% static 'enable_voting.js' %}"></script>
-{% include 'footer.html' %}
+    {% include 'footer.html' %}
 {% endblock %}

@@ -18,7 +18,7 @@ var crs = function() {
     return new L.Proj.CRS(crsName, projDef, crsOpts);
 }
 var map = L.map('map', {
-    crs : crs(),
+    crs: crs(),
     zoomControl: false
 }).setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 11);
 
@@ -29,15 +29,15 @@ L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{
     tms: false
 }).addTo(map);
 
-map.addControl(L.control.zoom({ position : 'topright' }));
+map.addControl(L.control.zoom({position: 'topright'}));
 
-L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function(){
+L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function () {
     getUserLocation();
 }, {position: 'topright'}).addTo(map);
 
 function getUserLocation(e) {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function (position) {
             var newLocation = L.latLng(position.coords.latitude, position.coords.longitude);
             //userLocation.setLatLng(newLocation);
             //storeLocation(newLocation);
@@ -63,8 +63,8 @@ function addMarker(e){
 	}
 }
 
- function onToggleMenu(){
+function onToggleMenu() {
     $("#sidebar-wrapper").toggleClass("toggled");
     $("#toggleButton").toggleClass("toggled");
-    $("#toggleButtonIcon").toggleClass("glyphicon-chevron-left glyphicon-chevron-right");    
+    $("#toggleButtonIcon").toggleClass("glyphicon-chevron-left glyphicon-chevron-right");
 }
