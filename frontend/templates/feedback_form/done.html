@@ -10,13 +10,13 @@
 
 <div class="row text-center">
 	<div class="col-sm-6 col-sm-offset-3">
-        Tyypillinen korjausaika on: {{ waiting_time|td_humanize }}
+		<p>Tyypillinen korjausaika on: {{ waiting_time|td_humanize }} <span data-toggle="tooltip" title="Arvio on keskimääräinen aika, joka on kulunut tämän aihealueen palautteiden käsittelyssä. Palautteen käsittely voi kestää kauemminkin." class="glyphicon glyphicon-question-sign"></span></p>
 	</div>
 </div>
 
 <div class="row">
 	<div class="col-sm-4 col-sm-offset-4">
-		<img class="img-responsive" src="https://s-media-cache-ak0.pinimg.com/564x/26/69/f9/2669f9640e9072f06b72ef0c6ad853e0.jpg" />
+		<img class="img-responsive" src="http://www.how-to-draw-funny-cartoons.com/image-files/cartoon-squirrel-8.gif" alt="Squirrel image" />
 	</div>
 </div>
 <div class="row text-center">
@@ -26,5 +26,16 @@
 		</p>
 	</div>
 </div>
-    {% include 'footer.html' %}
+<div class="row text-center">
+	<div class="col-sm-6 col-sm-offset-3">
+		<a href="/" type="button" class="btn btn-primary">Palaa etusivulle</a>
+		<a href="{% url 'feedback_form' %}" type="button" class="btn btn-primary">Anna uusi palaute</a>
+	</div>
+</div>
+{% include 'footer.html' %}
+<script type="text/javascript">
+	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip()
+	})
+</script>
 {% endblock %}

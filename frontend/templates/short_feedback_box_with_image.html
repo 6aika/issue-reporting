@@ -14,7 +14,7 @@
                     <h5 class="text-muted">{{ feedback.service_name }}</h5>
                     <span>Avattu: {{ feedback.requested_datetime }}</span><br>
                     <span>Ratkaistu: {{ feedback.updated_datetime }}</span><br>
-                    <span>Tyypillinen korjausaika: {{ waiting_time|td_humanize }}</span><br>
+                    <span>Tyypillinen korjausaika: {{ feedback.expected_datetime }}</span><br>
                 </div>
             </div>
 

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -81,10 +82,22 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'cfh.wsgi.application'
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework_xml.parsers.XMLParser',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework_xml.renderers.XMLRenderer',
+    ),
+    'EXCEPTION_HANDLER': 'api.api_utils.api_exception_handler'
+}
 
-# Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
+WSGI_APPLICATION = 'cfh.wsgi.application'
 
 DATABASES = {
     'default': {

@@ -1,22 +1,25 @@
+import json
 import operator
 import os
+import urllib.request
 import uuid
-from datetime import timedelta
-
+from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Count
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render, render_to_response
 from formtools.wizard.views import SessionWizardView
-
+from django.db.models import Count, Avg
+import datetime
+from datetime import timedelta
+from api.models import Feedback, Service, MediaFile
+from api.services import get_feedbacks, get_feedbacks_count
 from api.analysis import *
 from api.geocoding.geocoding import reverse_geocode
-from api.models import Service, MediaFile
-from api.services import get_feedbacks, get_feedbacks_count
 from frontend.forms import FeedbackFormClosest, FeedbackFormCategory, FeedbackForm3, FeedbackFormContact
+from django.db.models import F, ExpressionWrapper, fields
 
 FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackForm3), ("contact", FeedbackFormContact) ]
 TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/category.html",
@@ -29,7 +32,7 @@ def mainpage(request):
     fixed_feedbacks_count = Feedback.objects.filter(status="closed").count()
     recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
     feedbacks_count = get_feedbacks_count()
-    # 172 is dummy, to be fixed
+    #172 is dummy, to be fixed
     fixing_time = calc_fixing_time(172)
     waiting_time = timedelta(milliseconds=fixing_time)
     context["waiting_time"] = waiting_time
@@ -104,9 +107,9 @@ def vote_feedback(request):
     """
     if request.method == "POST":
         try:
-            id = request.POST["service_request_id"]
-            if (id):
-                feedback = Feedback.objects.get(service_request_id=id)
+            id = request.POST["id"]
+            if(id):
+                feedback = Feedback.objects.get(pk=id)
             else:
                 return JsonResponse({"status": "error", "message": "Ääntä ei voitu tallentaa. Palautetta ei löydetty!"})
         except KeyError:
@@ -142,14 +145,19 @@ def paginate_query_set(query_set, items_per_page, page):
 
 
 def map(request):
-    feedbacks = Feedback.objects.all()
-    return render(request, "map.html", {"feedbacks": feedbacks})
+    context = {
+        'feedbacks': Feedback.objects.all(),
+        'services': Service.objects.all(),
+    }
+    return render(request, "map.html", context)
 
 
 def department(request):
+
     feedback_category = Feedback.objects.all().exclude(agency_responsible__exact='').exclude(
-        agency_responsible__isnull=True).values('agency_responsible').annotate(
-        total=Count('agency_responsible')).order_by('-total')
+            agency_responsible__isnull=True).values('agency_responsible').annotate(total=Count('agency_responsible')).order_by('-total')
+
+
 
     return render(request, "department.html", {"feedbacks_category": feedback_category})
 
@@ -173,6 +181,24 @@ def statistics2(request):
 
 def heatmap(request):
     return render(request, "heatmap.html", {"services": Service.objects.all()})
+
+
+def charts(request):
+    data = []
+    for service in Service.objects.all():
+        item = {}
+        service_code = service.service_code
+        item["service_name"] = service.service_name
+        item["total"] = get_total(service_code)
+        item["closed"] = get_closed(service_code)
+        item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
+        item["median"] = get_median_duration(get_closed_by_service_code(service_code))
+        data.append(item)
+
+    # Sort the rows by "total" column
+    data.sort(key=operator.itemgetter('total'), reverse=True)
+    return render(request, "charts.html", {"data": data})
+
 
 class FeedbackWizard(SessionWizardView):
     def get_template_names(self):
@@ -202,10 +228,8 @@ class FeedbackWizard(SessionWizardView):
             categories = []
             data = Service.objects.all()
 
-            GLYPHICONS = ["glyphicon-fire", "glyphicon-trash", "glyphicon-tint", "glyphicon-road",
-                          "glyphicon-warning-sign",
-                          "glyphicon-picture", "glyphicon-tree-conifer", "glyphicon-cloud", "glyphicon-tree-deciduous",
-                          "glyphicon-option-horizontal"]
+            GLYPHICONS = ["glyphicon-wrench", "glyphicon-road", "glyphicon-euro", "glyphicon-music", "glyphicon-glass",
+                          "glyphicon-heart", "glyphicon-star", "glyphicon-user", "glyphicon-film", "glyphicon-home"]
 
             idx = 0
             for item in data:
@@ -259,14 +283,13 @@ class FeedbackWizard(SessionWizardView):
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
                                                               'waiting_time': waiting_time})
 
-
 # This view handles media uploads from user during submitting a new feedback
 # It receives files with a form_id, saves the file and saves the info to DB so
 # the files can be processed when the form wizard is actually complete in done()
 def media_upload(request):
     file = request.FILES.getlist("file")[0]
     form_id = request.POST["form_id"]
-    if (file and form_id):
+    if(file and form_id):
         # Create new unique random filename preserving extension
         extension = os.path.splitext(file.name)[1]
         file.name = uuid.uuid4().hex + extension

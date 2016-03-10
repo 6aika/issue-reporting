@@ -4,10 +4,10 @@
 {% block head %}
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
-<script type="text/javascript" src="{% static 'proj4-compressed.js' %}" ></script>
-<script type="text/javascript" src="{% static 'proj4leaflet.js' %}" ></script>
-<link rel="stylesheet" href="{% static 'easy-button.css' %}" />
-<script type="text/javascript" src="{% static 'easy-button.js' %}" ></script>
+<script type="text/javascript" src="{% static 'utils/proj4-compressed.js' %}" ></script>
+<script type="text/javascript" src="{% static 'utils/proj4leaflet.js' %}" ></script>
+<link rel="stylesheet" href="{% static 'utils/easy-button.css' %}" />
+<script type="text/javascript" src="{% static 'utils/easy-button.js' %}" ></script>
 
 {% endblock %}
 
@@ -42,8 +42,11 @@
     </div>
 </form>
 
-<script src="{% static 'Leaflet.MakiMarkers.js' %}"></script>
+<script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
+<script src="{% static 'map.js' %}"></script>
 <script>
+
+/*
     "use strict";
 
     var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
@@ -96,7 +99,7 @@
             $('#feedback_info').css("visibility", "hidden");
         }
     }
-
+*/
     var userLocation = new L.marker(map.getCenter(), {icon: center_icon}).addTo(map);
     storeLocation(userLocation.getLatLng());
     
@@ -138,9 +141,8 @@
         $("#{{ form.longitude.id_for_label }}").val(latlng.lng);
     }
 
-    $.getJSON("/api/v1/feedbacks/?status=open", function (data) {
-        var items = [];
-        console.log(data);
+/*
+    $.getJSON("/api/v1/requests.json/?status=open", function (data) {
         $.each(data, function (key, feedback) {
 
             // specify popup options 
@@ -153,15 +155,16 @@
             var popupContent = "";
 
             popupContent += "<h3 id=\"feedback_title\"></h3>" +
-                    "<h4 id=\"feedback_service_name\"></h4>" +
-                    "<span class=\"badge feedback_list_vote_icon\" id=\"\">" +
+                "<p id=\"feedback_service_name\"></p>" +
+                "<span class=\"badge feedback_list_vote_icon\" id=\"\">" +
                     "<span> +1</span>" +
-                    "</span>" +
-                    "<span class=\"badge feedback_list_vote_badge\"></span>" +
+                "</span>" +
+                "<span class=\"badge feedback_list_vote_badge\"></span>" +
 
-                    "<p id=\"feedback_requested_datetime\"></p>" +
-                    "<p id=\"feedback_description\"></p>" +
-                    "<a id=\"feedback_details\" href=\"\"></a>";
+                "<p id=\"feedback_requested_datetime\"></p>" +
+                "<p id=\"feedback_description\"></p>" +
+                "<a id=\"feedback_details\" href=\"\"></a>";
+
                        
 
             var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(map);
@@ -182,14 +185,14 @@
                 }
 
                 // @TODO : Additional id's left, remove if not required
-                $('#feedback_title').text(e.target.feedback.title);
+                $('#feedback_title').text(e.target.feedback.extended_attributes.title);
                 $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
-                $('.feedback_list_vote_icon').attr("id", e.target.feedback.service_request_id);
-                $('#feedback_service_name').text(e.target.feedback.service_name);
+                $('.feedback_list_vote_icon').attr("id", e.target.feedback.id);
+                $('#feedback_service_name').text("Aihe: " + e.target.feedback.service_name);
                 $('#feedback_requested_datetime').text(e.target.feedback.requested_datetime);
                 var len = 135;
                 var desc = e.target.feedback.description;
-                var trunc_desc = desc.substring(0, len) + "...";
+                var trunc_desc = desc.substring(0, len)  + "...";
                 $('#feedback_description').text(trunc_desc);
                 var feedback_url = "/feedbacks/" + e.target.feedback.id;
                 $('#feedback_details').text("Lisää");
@@ -199,6 +202,7 @@
             });
         });
     });
+*/
 </script>
 
 <script type="text/javascript">
@@ -207,6 +211,6 @@
     });
 </script>
 
-<script type="text/javascript" src="{% static 'enable_voting.js' %}"></script>
-    {% include 'footer.html' %}
+<script type="text/javascript" src="{% static 'utils/enable_voting.js' %}"></script>
+{% include 'footer.html' %}
 {% endblock %}

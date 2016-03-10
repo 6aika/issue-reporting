@@ -6,7 +6,7 @@ class Feedback(models.Model):
     class Meta:
         db_table = 'feedbacks'
 
-    service_request_id = models.CharField(max_length=254, db_index=True, unique=False)
+    service_request_id = models.CharField(max_length=254, db_index=True, null=True)
     status_notes = models.TextField(null=True)
     status = models.TextField(null=True)
     service_code = models.TextField(null=True)
@@ -86,6 +86,7 @@ class Service(models.Model):
 # Delete MediaFile objects+files when they are old
 # Delete MediaFile objects and leave files when files
 # are binded to Feedback
+# Default directory is MEDIA_ROOT
 class MediaFile(models.Model):
     file = models.FileField()
     form_id = models.CharField(max_length=50)

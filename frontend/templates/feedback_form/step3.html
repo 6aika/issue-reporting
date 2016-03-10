@@ -2,8 +2,8 @@
 {% load staticfiles %}
 
 {% block head %}
-    <script type="text/javascript" src="{% static 'dropzone.js' %}"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'dropzone.css' %}">
+<script type="text/javascript" src="{% static 'utils/dropzone.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'utils/dropzone.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -11,6 +11,11 @@
 <form method="post" class="form-horizontal" enctype="multipart/form-data">
 {% csrf_token %}
 {{ wizard.management_form }}
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-8">
+			<h4>Anna mahdollisimman tarkat tiedot</h4>
+		</div>
+	</div>
 	<div class="form-group">
 		<label for="{{form.title.id_for_label}}" class="col-sm-2 control-label">Otsikko:</label>
 		<div class="col-sm-8">
@@ -32,37 +37,46 @@
 	</div>
     {{ form.form_id }}
 </form>
-    <form class="dropzone" action="{% url 'media_upload' %}" id="dropzone">
-        {% csrf_token %}
-        <input type=hidden name="form_id" value="{{ form_id }}">
-    </form>
-{{form.errors}}
-<script>
-    $(function () {
-        $("#{{form.description.id_for_label}}").keyup(function () {
-            var text_length = $('#{{form.description.id_for_label}}').val().length;
-            var text_remaining = 5000 - text_length;
-            $('#char_counter').text(text_remaining + " merkkiä jäljellä");
-        });
+<div class="row">
+	<div class="col-sm-offset-2 col-sm-8">
+		<h4>Voit liittää kuvan palautteeseesi</h4>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-8 col-sm-offset-2">
+		<form class="dropzone" action="{% url 'media_upload' %}" id="dropzone">
+			{% csrf_token %}
+			<input type=hidden name="form_id" value="{{form_id}}">
+		</form>
+	</div>
+</div>
 
-        Dropzone.options.dropzone = {
-            url: "{% url 'media_upload' %}",
-            maxFilesize: 1,
-            acceptedFiles: "image/*",
-            init: function () {
-                // Disable next button during file upload
-                this.on("addedfile", function (file) {
-                    $("#next_button").prop("disabled", true);
-                });
-                // Enable next after all uploads are complete
-                // Also add unique id to form
-                this.on("queuecomplete", function (file) {
-                    $("#next_button").prop("disabled", false);
-                    $("#{{form.form_id.id_for_label}}").val("{{form_id}}");
-                });
-            }
-        };
+<script>
+$(function () {
+	$("#{{form.description.id_for_label}}").keyup(function() {
+	  var text_length = $('#{{form.description.id_for_label}}').val().length;
+	  var text_remaining = 5000 - text_length;
+	  $('#char_counter').text(text_remaining + " merkkiä jäljellä");
+	});
+
+	Dropzone.options.dropzone = {
+		url: "{% url 'media_upload' %}",
+		maxFilesize: 1,
+		acceptedFiles: "image/*",
+		init: function() {
+			// Disable next button during file upload
+			this.on("addedfile", function(file) { 
+				$("#next_button").prop("disabled", true);
+			});
+			// Enable next after all uploads are complete
+			// Also add unique id to form
+			this.on("queuecomplete", function(file) { 
+				$("#next_button").prop("disabled", false);
+				$("#{{form.form_id.id_for_label}}").val("{{form_id}}");
+			});
+		}
+	};
 });
 </script>
-    {% include 'footer.html' %}
+{% include 'footer.html' %}
 {% endblock %}
