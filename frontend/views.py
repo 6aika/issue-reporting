@@ -169,9 +169,6 @@ def department(request):
     return render(request, "department.html", {"data": data})
 
 
-
-
-# Idea for statistic implementation.
 def statistics2(request):
     data = []
     for service in Service.objects.all():
@@ -194,20 +191,7 @@ def heatmap(request):
 
 
 def charts(request):
-    data = []
-    for service in Service.objects.all():
-        item = {}
-        service_code = service.service_code
-        item["service_name"] = service.service_name
-       # item["total"] = get_total(service_code)
-       # item["closed"] = get_closed(service_code)
-       # item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
-       # item["median"] = get_median_duration(get_closed_by_service_code(service_code))
-        data.append(item)
-
-    # Sort the rows by "total" column
-    #data.sort(key=operator.itemgetter('total'), reverse=True)
-    return render(request, "charts.html", {"data": data})
+    return render(request, "charts.html")
 
 
 class FeedbackWizard(SessionWizardView):

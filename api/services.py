@@ -17,7 +17,7 @@ def get_feedbacks(service_codes=None, service_request_ids=None,
     if service_request_ids:
         queryset = queryset.filter(service_request_id__in=service_request_ids.split(','))
     if service_codes:
-        queryset = queryset.filter(service_code__in=service_codes.split(','))
+        queryset = queryset.filter(service_code__in=str(service_codes).split(','))
     if start_date:
         queryset = queryset.filter(requested_datetime__gt=start_date)
     if end_date:
