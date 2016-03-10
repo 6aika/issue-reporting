@@ -1,5 +1,5 @@
 from django import template
-
+from django.utils import timezone
 register = template.Library()
 
 
@@ -24,3 +24,9 @@ def td_humanize(diff):
 		hours, remainder = divmod(diff.seconds, 3600)
 		minutes, seconds = divmod(remainder, 60)
 		return str(hours) + " h, " + str(minutes) + " min"
+
+# Takes a datetime object and returns the difference between now and then
+@register.filter
+def time_from_now(datetime):
+	now = timezone.now()
+	return td_humanize(datetime - now)

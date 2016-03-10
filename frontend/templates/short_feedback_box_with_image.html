@@ -13,8 +13,7 @@
                     <a href="{% url 'feedback_details' feedback.id %}"><h5>{{ feedback.title|default:"NO TITLE" }}</h5></a>
                     <h5 class="text-muted">{{ feedback.service_name }}</h5>
                     <span>Avattu: {{ feedback.requested_datetime }}</span><br>
-                    <span>Ratkaistu: {{ feedback.updated_datetime }}</span><br>
-                    <span>Tyypillinen korjausaika: {{ feedback.expected_datetime }}</span><br>
+                    <span>Korjausarvio: {{ feedback.expected_datetime|time_from_now }}</span><br>
                 </div>
             </div>
 
