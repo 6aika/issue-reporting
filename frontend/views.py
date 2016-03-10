@@ -107,9 +107,9 @@ def vote_feedback(request):
     """
     if request.method == "POST":
         try:
-            id = request.POST["service_request_id"]
+            id = request.POST["id"]
             if(id):
-                feedback = Feedback.objects.get(service_request_id=id)
+                feedback = Feedback.objects.get(pk=id)
             else:
                 return JsonResponse({"status": "error", "message": "Ääntä ei voitu tallentaa. Palautetta ei löydetty!"})
         except KeyError:
