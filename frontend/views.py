@@ -148,15 +148,27 @@ def map(request):
     }
     return render(request, "map.html", context)
 
-
+#different departments
 def department(request):
+    data = []
+    agencies = Feedback.objects.all().distinct("agency_responsible")
+    for agency in agencies:
+        item = {}
+        agency_responsible = agency.agency_responsible
+        item["agency_responsible"] = agency_responsible
+        item["total"] = get_total_by_agency(agency_responsible)
+        item["closed"] = get_closed_by_agency(agency_responsible)
+        item["avg"] = get_avg_duration(get_closed_by_agency_responsible(agency_responsible))
+        item["median"] = get_median_duration(get_closed_by_agency_responsible(agency_responsible))
+        data.append(item)
 
-    feedback_category = Feedback.objects.all().exclude(agency_responsible__exact='').exclude(
-            agency_responsible__isnull=True).values('agency_responsible').annotate(total=Count('agency_responsible')).order_by('-total')
+    # Sort the rows by "total" column
+    data.sort(key=operator.itemgetter('total'), reverse=True)
+
+    return render(request, "department.html", {"data": data})
 
 
 
-    return render(request, "department.html", {"feedbacks_category": feedback_category})
 
 # Idea for statistic implementation.
 def statistics2(request):
@@ -165,8 +177,8 @@ def statistics2(request):
         item = {}
         service_code = service.service_code
         item["service_name"] = service.service_name
-        item["total"] = get_total(service_code)
-        item["closed"] = get_closed(service_code)
+        item["total"] = get_total_by_service(service_code)
+        item["closed"] = get_closed_by_service(service_code)
         item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
         item["median"] = get_median_duration(get_closed_by_service_code(service_code))
         data.append(item)
@@ -186,14 +198,14 @@ def charts(request):
         item = {}
         service_code = service.service_code
         item["service_name"] = service.service_name
-        item["total"] = get_total(service_code)
-        item["closed"] = get_closed(service_code)
-        item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
-        item["median"] = get_median_duration(get_closed_by_service_code(service_code))
+       # item["total"] = get_total(service_code)
+       # item["closed"] = get_closed(service_code)
+       # item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
+       # item["median"] = get_median_duration(get_closed_by_service_code(service_code))
         data.append(item)
 
     # Sort the rows by "total" column
-    data.sort(key=operator.itemgetter('total'), reverse=True)
+    #data.sort(key=operator.itemgetter('total'), reverse=True)
     return render(request, "charts.html", {"data": data})
 
 

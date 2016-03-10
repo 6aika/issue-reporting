@@ -28,11 +28,11 @@ def calc_fixing_time(service_code):
     return timedelta_milliseconds(get_avg_duration(get_closed_by_service_code(service_code)))
 
 # Return total number of feedbacks with either "open" or "closed" status-
-def get_total(service_code):
+def get_total_by_service(service_code):
     return Feedback.objects.filter(service_code=service_code, status__in=["open", "closed"]).count()
 
 # return total number of feedbacks with "closed" status
-def get_closed(service_code):
+def get_closed_by_service(service_code):
     return Feedback.objects.filter(service_code=service_code, status="closed").count()
 
 # TODO: This will be replaced with more generic get_feedbacks() taking a dict
@@ -58,3 +58,21 @@ def get_median_duration(query_set):
 # Concerts timedelta into millisoconds
 def timedelta_milliseconds(td):
     return int(td.days * 86400000 + td.seconds * 1000 + td.microseconds / 1000)
+
+
+
+
+
+#new departments
+
+def get_total_by_agency(agency_responsible):
+    return Feedback.objects.filter(agency_responsible=agency_responsible, status__in=["open", "closed"]).count()
+
+# return total number of feedbacks with "closed" status
+def get_closed_by_agency(agency_responsible):
+    return Feedback.objects.filter(agency_responsible=agency_responsible, status="closed").count()
+
+# TODO: This will be replaced with more generic get_feedbacks() taking a dict
+def get_closed_by_agency_responsible(agency_responsible):
+    return Feedback.objects.filter(agency_responsible=agency_responsible, status="closed")
+

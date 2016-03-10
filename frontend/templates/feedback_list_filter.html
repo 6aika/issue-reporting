@@ -78,6 +78,11 @@
                                     <option value="-vote_counter">Votes</option>
                                 </select>
                             </div>
+                            <!-- fields required for ordering by distance -->
+                            <div>
+                                <input type="text" name="lat" id="lat" style="display: none;"/>
+                                <input type="text" name="lon" id="lon" style="display: none;"/>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -249,22 +254,18 @@
 
     $("#feedback-filter").submit(function (event) {
         event.preventDefault();
-
         if ($("#order_by").val() === 'distance') {
-            if (navigator.geolocation) {
-                console.log("getting geoloc");
-                var that = this;
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    $("#lat").val(position.coords.latitude);
-                    $("#lon").val(position.coords.longitude);
-
-                    that.submit();
-                }, function () {
-                    alert("Ordering by distance is not allowed with disabled geolocation");
-                });
-            } else {
-                alert("Geolocation is not supported by this browser");
-            }
+          if (navigator.geolocation) {
+            // console.log("getting geoloc");
+            var that = this;
+              navigator.geolocation.getCurrentPosition(function (position) {
+                  $("#lat").val(position.coords.latitude);
+                  $("#lon").val(position.coords.longitude);
+                  that.submit();
+              }, function() {alert("Ordering by distance is not allowed with disabled geolocation");});
+          } else {
+            alert("Geolocation is not supported by this browser");
+          }
         } else {
             this.submit();
         }
