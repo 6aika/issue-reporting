@@ -27,10 +27,14 @@
                             <p class="text-muted">Aihe: {{ feedback.service_name }}</p>
                             <p class="text-muted">Vastuullinen taho: {{ feedback.agency_responsible }}</p>
                             <p class="text-muted">Luotu: {{ feedback.requested_datetime }}</p>
-                            <p class="text-muted">Tila: {{ feedback.status }}</p>
+                            <p class="text-muted">Tila: {{ feedback.status }}
+                            {% if feedback.status == "closed" %}
+                                <span>({{feedback.updated_datetime}})</span>
+                            {% endif %}
+                            </p>
                             <p>{{ feedback.description }}</p>
-                            <p>Estimated time of fixing: {{ feedback.estimated_datetime }}</p>
-                            <p>{{ feedback.address_string }}</p>
+                            <p>Estimated time of fixing: {{ feedback.expected_datetime }}</p>
+                            <p>Osoite: {{ feedback.address_string }}</p>
                         </div>
                     </div>
                     <div class="row">
@@ -50,7 +54,7 @@
             <div class="col-xs-12 col-md-4">
                 <p>
                     <img id="feedback_image" class="img-thumbnail img-responsive center-cropped-details-page"
-                         src="https://placehold.it/320x320" alt="Feedback image"/>
+                         src="{{feedback.media_url|default:'https://placehold.it/320x320'}}" alt="Feedback image"/>
                 </p>
                 <div id="map"></div>
             </div>
