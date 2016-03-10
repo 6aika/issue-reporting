@@ -27,15 +27,25 @@
         var selected = null;
         $(function () {
             $(".feedback_form_category_item").click(item_clicked);
+            code = $("#{{form.service_code.id_for_label}}").val();
+            // Populate, if we returned here from the next wizard step
+            if(code) {
+                selected = $("div[data-service-code='"+code+"']");
+                activate(selected);
+            }
         });
 
         function item_clicked(event) {
             $("#{{form.service_code.id_for_label}}").val($(this).attr("data-service-code"));
-            if (selected) {
-                $(selected).removeClass("active");
-            }
-            selected = $(this);
-            $(this).addClass("active");
+            activate($(this));
+        }
+
+        function activate(item) {
+           if (selected) {
+               $(selected).removeClass("active");
+           }
+           selected = item;
+           item.addClass("active"); 
         }
     </script>
     {% include 'footer.html' %}
