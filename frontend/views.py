@@ -2,11 +2,12 @@ import operator
 import os
 import uuid
 from datetime import timedelta
-
+from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render, render_to_response
@@ -14,7 +15,7 @@ from formtools.wizard.views import SessionWizardView
 
 from api.analysis import *
 from api.geocoding.geocoding import reverse_geocode
-from api.models import Service, MediaFile
+from api.models import Service, MediaFile, MediaURL
 from api.services import get_feedbacks, get_feedbacks_count
 from frontend.forms import FeedbackFormClosest, FeedbackFormCategory, FeedbackForm3, FeedbackFormContact
 
@@ -25,13 +26,12 @@ TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form
 
 def mainpage(request):
     context = {}
+    closed_feedbacks = Feedback.objects.filter(status="closed")
     fixed_feedbacks = Feedback.objects.filter(status="closed")[0:4]
-    fixed_feedbacks_count = Feedback.objects.filter(status="closed").count()
+    fixed_feedbacks_count = closed_feedbacks.count()
     recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
     feedbacks_count = get_feedbacks_count()
-    #172 is dummy, to be fixed
-    fixing_time = calc_fixing_time(172)
-    waiting_time = timedelta(milliseconds=fixing_time)
+    waiting_time = get_median_duration(closed_feedbacks)
     context["waiting_time"] = waiting_time
     context["feedbacks_count"] = feedbacks_count
     context["fixed_feedbacks"] = fixed_feedbacks
@@ -54,12 +54,7 @@ def feedback_list(request):
 
     filter_start_date = request.GET.get("start_date")
     filter_end_date = request.GET.get("end_date")
-    filter_status = request.GET.get("status")
     filter_order_by = request.GET.get("order_by")
-    filter_service_code = request.GET.get("service_code")
-    filter_search = request.GET.get("search")
-    filter_lat = request.GET.get("lat")
-    filter_lon = request.GET.get("lon")
 
     if filter_start_date:
         filter_start_date = datetime.datetime.strptime(filter_start_date, "%d.%m.%Y").isoformat()
@@ -70,12 +65,18 @@ def feedback_list(request):
     if filter_order_by is None:
         filter_order_by = "-requested_datetime"
 
-    feedbacks = get_feedbacks(service_codes=filter_service_code, service_request_ids=None,
-                              start_date=filter_start_date, end_date=filter_end_date,
-                              statuses=filter_status, search=filter_search,
-                              service_object_type=None, service_object_id=None,
-                              updated_after=None, updated_before=None,
-                              lat=filter_lat, lon=filter_lon, radius=None, order_by=filter_order_by)
+    filter_params = {
+        'start_date': filter_start_date,
+        'end_date': filter_end_date,
+        'statuses': request.GET.get("status"),
+        'order_by': filter_order_by,
+        'service_codes': request.GET.get("service_code"),
+        'search': request.GET.get("search"),
+        'lat': request.GET.get("search"),
+        'lon': request.GET.get("lon")
+    }
+
+    feedbacks = get_feedbacks(**filter_params)
 
     page = request.GET.get("page")
 
@@ -148,25 +149,34 @@ def map(request):
     }
     return render(request, "map.html", context)
 
-
+#different departments
 def department(request):
+    data = []
+    agencies = Feedback.objects.all().distinct("agency_responsible")
+    for agency in agencies:
+        item = {}
+        agency_responsible = agency.agency_responsible
+        item["agency_responsible"] = agency_responsible
+        item["total"] = get_total_by_agency(agency_responsible)
+        item["closed"] = get_closed_by_agency(agency_responsible)
+        item["avg"] = get_avg_duration(get_closed_by_agency_responsible(agency_responsible))
+        item["median"] = get_median_duration(get_closed_by_agency_responsible(agency_responsible))
+        data.append(item)
 
-    feedback_category = Feedback.objects.all().exclude(agency_responsible__exact='').exclude(
-            agency_responsible__isnull=True).values('agency_responsible').annotate(total=Count('agency_responsible')).order_by('-total')
+    # Sort the rows by "total" column
+    data.sort(key=operator.itemgetter('total'), reverse=True)
+
+    return render(request, "department.html", {"data": data})
 
 
-
-    return render(request, "department.html", {"feedbacks_category": feedback_category})
-
-# Idea for statistic implementation.
 def statistics2(request):
     data = []
     for service in Service.objects.all():
         item = {}
         service_code = service.service_code
         item["service_name"] = service.service_name
-        item["total"] = get_total(service_code)
-        item["closed"] = get_closed(service_code)
+        item["total"] = get_total_by_service(service_code)
+        item["closed"] = get_closed_by_service(service_code)
         item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
         item["median"] = get_median_duration(get_closed_by_service_code(service_code))
         data.append(item)
@@ -181,20 +191,7 @@ def heatmap(request):
 
 
 def charts(request):
-    data = []
-    for service in Service.objects.all():
-        item = {}
-        service_code = service.service_code
-        item["service_name"] = service.service_name
-        item["total"] = get_total(service_code)
-        item["closed"] = get_closed(service_code)
-        item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
-        item["median"] = get_median_duration(get_closed_by_service_code(service_code))
-        data.append(item)
-
-    # Sort the rows by "total" column
-    data.sort(key=operator.itemgetter('total'), reverse=True)
-    return render(request, "charts.html", {"data": data})
+    return render(request, "charts.html")
 
 
 class FeedbackWizard(SessionWizardView):
@@ -206,19 +203,10 @@ class FeedbackWizard(SessionWizardView):
         if self.steps.current == 'closest':
             print('duplicates step')
             closest = get_feedbacks(
-                    service_request_ids=None,
-                    service_codes=None,
-                    start_date=None,
-                    end_date=None,
                     statuses='Open',
-                    service_object_type=None,
-                    service_object_id=None,
                     lat=60.17067,
                     lon=24.94152,
                     radius=3000,
-                    updated_after=None,
-                    updated_before=None,
-                    search=None,
                     order_by='distance')[:10]
             context.update({'closest': closest})
         elif self.steps.current == 'category':
@@ -266,18 +254,27 @@ class FeedbackWizard(SessionWizardView):
 
         form_id = form_dict["basic_info"].cleaned_data["form_id"]
 
-        # Attach media urls to the feedback and delete MediaFile object, leaving the file intact
-        for file in MediaFile.objects.filter(form_id=form_id):
-            # TODO: Add either media_url or create media_url objects, both?
-            # Delete used MediaFile objects - spare the file itself
-            file.delete()
-
         new_feedback = Feedback(**data)
 
         fixing_time = calc_fixing_time(data["service_code"])
         waiting_time = timedelta(milliseconds=fixing_time)
         new_feedback.expected_datetime = new_feedback.requested_datetime + waiting_time
         new_feedback.save()
+
+        # Attach media urls to the feedback
+        files = MediaFile.objects.filter(form_id=form_id)
+        if(files):
+            for file in files:
+                # Todo: Better way to build abs image URL
+                abs_url = ''.join(['http://feedback.hel.ninja', settings.MEDIA_URL, file.file.name])
+                media_url = MediaURL(feedback=new_feedback, media_url=abs_url)
+                media_url.save()
+                new_feedback.media_urls.add(media_url)
+                # Attach the file to feedback - not needed if using external Open311!
+                new_feedback.media_files.add(file)
+            # Update the single media_url field to point to the 1st image
+            new_feedback.media_url = new_feedback.media_urls.all()[0].media_url
+            new_feedback.save()
 
         return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
                                                               'waiting_time': waiting_time})

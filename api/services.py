@@ -6,18 +6,18 @@ from django.contrib.gis.measure import D
 from api.models import Feedback
 
 
-def get_feedbacks(service_codes, service_request_ids,
-                  start_date, end_date,
-                  statuses, search,
-                  service_object_type, service_object_id,
-                  updated_after, updated_before,
-                  lat, lon, radius,
-                  order_by):
+def get_feedbacks(service_codes=None, service_request_ids=None,
+                  start_date=None, end_date=None,
+                  statuses=None, search=None,
+                  service_object_type=None, service_object_id=None,
+                  updated_after=None, updated_before=None,
+                  lat=None, lon=None, radius=None,
+                  order_by=None):
     queryset = Feedback.objects.all()
     if service_request_ids:
         queryset = queryset.filter(service_request_id__in=service_request_ids.split(','))
     if service_codes:
-        queryset = queryset.filter(service_code__in=service_codes.split(','))
+        queryset = queryset.filter(service_code__in=str(service_codes).split(','))
     if start_date:
         queryset = queryset.filter(requested_datetime__gt=start_date)
     if end_date:
