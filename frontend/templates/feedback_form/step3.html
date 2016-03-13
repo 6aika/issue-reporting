@@ -64,15 +64,26 @@
 
     <script>
         $(function () {
+            // Display how many characters left until 5000
             $("#{{form.description.id_for_label}}").keyup(function () {
                 var text_length = $('#{{form.description.id_for_label}}').val().length;
                 var text_remaining = 5000 - text_length;
                 $('#char_counter').text(text_remaining + " merkkiä jäljellä");
             });
 
+            // If first time in this step, assign a new form_id. Otherwise use previous
+            form_id = "{{form.form_id.value|default_if_none:''}}";
+            if(form_id === "") 
+                form_id = "{{form_id}}";
+
+            $("#{{form.form_id.id_for_label}}").attr("value", form_id);
+            $("input[name='form_id']").attr("value", form_id);
+
+            // Initialize dropzone
             Dropzone.options.dropzone = {
                 url: "{% url 'media_upload' %}",
                 maxFilesize: 1,
+                maxFiles: 3,
                 acceptedFiles: "image/*",
                 init: function () {
                     // Disable next button during file upload
@@ -83,10 +94,23 @@
                     // Also add unique id to form
                     this.on("queuecomplete", function (file) {
                         $("#next_button").prop("disabled", false);
-                        $("#{{form.form_id.id_for_label}}").val("{{form_id}}");
                     });
                 }
             };
+
+            // Populate Dropzone if user already has uploaded some images
+            data = {"form_id": form_id, "csrfmiddlewaretoken": "{{csrf_token}}"};
+            $.post("{% url 'media_upload' %}", data, function (data) {
+                $.each(data.files, function(index, element) {
+                    var myDropzone = Dropzone.forElement("#dropzone");
+                    var mockFile = { name: "Filename", size: 12345 };
+                    url = "/media/" + element;
+                    myDropzone.emit("addedfile", mockFile);
+                    myDropzone.createThumbnailFromUrl(mockFile, url);
+                    myDropzone.emit("complete", mockFile);
+                    myDropzone.options.maxFiles = myDropzone.options.maxFiles - 1;
+                });
+            });
         });
     </script>
     {% include 'footer.html' %}

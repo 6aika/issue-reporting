@@ -10,7 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.http.response import JsonResponse
-from django.shortcuts import redirect, render, render_to_response
+from django.shortcuts import redirect, render
 from formtools.wizard.views import SessionWizardView
 
 from api.analysis import *
@@ -199,7 +199,7 @@ class FeedbackWizard(SessionWizardView):
         return [TEMPLATES[self.steps.current]]
 
     def get_context_data(self, form, **kwargs):
-        context = super(FeedbackWizard, self).get_context_data(form=form, **kwargs)
+        context = super().get_context_data(form=form, **kwargs)
         if self.steps.current == 'closest':
             print('duplicates step')
             closest = get_feedbacks(
@@ -231,8 +231,7 @@ class FeedbackWizard(SessionWizardView):
                 context.update({'categories': categories})
                 idx += 1
         elif self.steps.current == "basic_info":
-            form_id = uuid.uuid4().hex
-            context.update({'form_id': form_id})
+            context.update({'form_id': uuid.uuid4().hex})
         return context
 
     def done(self, form_list, form_dict, **kwargs):
@@ -266,7 +265,7 @@ class FeedbackWizard(SessionWizardView):
         if(files):
             for file in files:
                 # Todo: Better way to build abs image URL
-                abs_url = ''.join(['http://feedback.hel.ninja', settings.MEDIA_URL, file.file.name])
+                abs_url = ''.join([self.request.build_absolute_uri('/')[:-1], settings.MEDIA_URL, file.file.name])
                 media_url = MediaURL(feedback=new_feedback, media_url=abs_url)
                 media_url.save()
                 new_feedback.media_urls.add(media_url)
@@ -276,22 +275,30 @@ class FeedbackWizard(SessionWizardView):
             new_feedback.media_url = new_feedback.media_urls.all()[0].media_url
             new_feedback.save()
 
-        return render_to_response('feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
+        return render(self.request, 'feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
                                                               'waiting_time': waiting_time})
 
 # This view handles media uploads from user during submitting a new feedback
 # It receives files with a form_id, saves the file and saves the info to DB so
 # the files can be processed when the form wizard is actually complete in done()
 def media_upload(request):
-    file = request.FILES.getlist("file")[0]
+    files = request.FILES.getlist("file")
     form_id = request.POST["form_id"]
-    if(file and form_id):
+    if(files):
         # Create new unique random filename preserving extension
+        file = files[0]
         extension = os.path.splitext(file.name)[1]
         file.name = uuid.uuid4().hex + extension
         f_object = MediaFile(file=file, form_id=form_id)
         f_object.save()
-    return JsonResponse({"status": "success"});
+    else:
+        # Just return the filenames associated with the form_id
+        mediafiles = MediaFile.objects.filter(form_id=form_id)
+        files = []
+        for item in mediafiles:
+            files.append(item.file.name)
+        return JsonResponse({"status": "success", "files": files})
+    return JsonResponse({"status": "success"})
 
 def instructions(request):
     context = {}
