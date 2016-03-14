@@ -28,7 +28,7 @@ def reverse_geocode(lat, lon):
         municipality = res['street']['municipality'].capitalize()
         address_string = street + ', ' + municipality
         print(address_string)
-        return address_string
+        return address_string.encode()
 
     print('address not found')
     return ''
