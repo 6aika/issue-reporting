@@ -9,7 +9,7 @@ $(document).ready(function() {
 });
 
 function getData(params) {
-    $.getJSON("/api/v1/requests.json/?status=open", params, function (data) {
+    $.getJSON("/api/v1/requests.json/?status=open&extensions=true", params, function (data) {
         console.log(data);
         $.each(data, function (key, feedback) {
 
@@ -22,8 +22,8 @@ function getData(params) {
 
             var popupContent = "";
 
-            popupContent += "<h3 id=\"feedback_title\"></h3>";
-            popupContent += "<p id=\"feedback_service_name\"></p>" +
+            popupContent += "<h3 id=\"feedback_title\"></h3>" +
+                "<p id=\"feedback_service_name\"></p>" +
                 "<span class=\"badge feedback_list_vote_icon\" id=\"\">" +
                     "<span> +1</span>" +
                 "</span>" +

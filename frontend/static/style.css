@@ -10,6 +10,7 @@ body {
     -webkit-font-smoothing: antialiased;
     font-family: 'Lato', sans-serif !important;
     margin: 0 0 200px;
+    min-height: 100%;
 }
 
 .feedback_list_vote_icon {
@@ -120,11 +121,13 @@ body {
 }
 
 #map {
-    height: calc(100vh - 220px);
-    /* height: calc(100vh - 51px);*/
+    /*height: calc(100vh - 220px);*/
+     height: calc(100vh - 51px);
     width: 100%;
     z-index: 1;
 }
+
+
 
 /* --- Sidebar --- */
 
@@ -176,7 +179,16 @@ body {
     -o-transition: all 0.5s ease-in 0s;
 }
 
+/*
 .calendar {
+    width: 260px;
+    padding: 10px;
+    padding-top: 0px;
+}
+*/
+
+.calendar #datepicker-start,
+.calendar #datepicker-end {
     width: 260px;
     padding: 10px;
     padding-top: 0px;
@@ -351,7 +363,8 @@ body {
         margin-left: 30px;
     }
 
-    #datepicker-start, #datepicker-end {
+    .feedback_list_date_picker #datepicker-start, 
+    .feedback_list_date_picker #datepicker-end {
         width: 140px;
     }
 
@@ -454,7 +467,8 @@ body {
         margin-left: 20px;
     }
 
-    #datepicker-start, #datepicker-end {
+    .feedback_list_date_picker #datepicker-start, 
+    .feedback_list_date_picker #datepicker-end {
         margin-left: -10px;
         width: 60vw;
     }

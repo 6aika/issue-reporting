@@ -25,8 +25,8 @@
             <div class="space"></div>
 
 			<form role="form" id="feedback-filter" method="GET" class="form-horizontal" enctype="multipart/form-data">
+				<label for="status">Tila</label>
 				<div class="dropdown">
-					<label for="status">Tila</label>
 					<select class="form-control" id="status" name="status">
 						<option selected="selected" value="">Status</option>
 						<option value="open">Open</option>
@@ -34,9 +34,9 @@
 					</select>
 				</div>
 
-				<div class="calendar">
-					<label for="datepicker-start">Alku</label>
-					<div class="calendar form-group">
+				<label for="datepicker-start">Alku</label>
+				<div class="">
+					<div class="form-group calendar">
 						<div class='input-group date' id='datepicker-start'>
 							<input type='text' class="form-control" />
 							<span class="input-group-addon" style="cursor:pointer">
@@ -45,9 +45,9 @@
 						</div>
 					</div>
 				</div>
-				<div class="calendar">
-					<label for="datepicker-end">Loppu</label>
-					<div class="calendar form-group">
+				<label for="datepicker-end">Loppu</label>
+				<div class="">
+					<div class="form-group calendar">
 						<div class='input-group date' id='datepicker-end'>
 							<input type='text' class="form-control" />
 							<span class="input-group-addon" style="cursor:pointer">
@@ -79,8 +79,8 @@
 				</div>
 				-->
 
+				<label for="service_code">Aihealue</label>
 				<div class="dropdown">
-					<label for="service_code">Aihealue</label>
 	                <select class="form-control" name="service_code" id="service_code">
 	                    <option selected="selected" value="">Service name</option>
 	                    {% for service in services %}
