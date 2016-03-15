@@ -195,6 +195,8 @@ def charts(request):
 
 
 class FeedbackWizard(SessionWizardView):
+    # Set the default category
+    initial_dict = {"category": {"service_code": "180"}}
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
 
