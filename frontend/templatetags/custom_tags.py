@@ -5,7 +5,7 @@ register = template.Library()
 
 # Takes a timdelta object and returns a string indicating how many
 # weeks, days, hours it is  
-# TODO: Handle negative values
+# TODO: REWRITE
 @register.filter
 def td_humanize(diff):
 	if(diff.total_seconds() < 0):

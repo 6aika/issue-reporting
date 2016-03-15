@@ -4,15 +4,14 @@
 {%include "statistics_menu.html" with statistics_active="active"%}
     <div class="row">
         <div class="col-sm-12">
-            <h3 class="text-center">Departments</h3>
+            <h3 class="text-center">Virasto Tilastotiedot</h3>
             <table class="table table-striped">
                 <thead>
                 <tr>
                     <th>Aihe</th>
                     <th>Yhteensä</th>
                     <th>Suljettu</th>
-                    <th>Keskiarvo</th>
-                    <th>Mediaani</th>
+                    <th>Käsittelyajat</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -21,7 +20,6 @@
                         <td>{{ item.agency_responsible }}</td>
                         <td>{{ item.total }}</td>
                         <td>{{ item.closed}}</td>
-                        <td>{{ item.avg | td_humanize }}</td>
                         <td>{{ item.median| td_humanize }}</td>
                     </tr>
                 {% endfor %}
