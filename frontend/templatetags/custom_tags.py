@@ -14,12 +14,12 @@ def td_humanize(diff):
 		weeks, days = divmod(diff.days, 7)
 		if(diff.seconds//3600 >= 12):
 			days += 1
-		return str(weeks) + " vk, " + str(days) + " pv"
+		return str(weeks) + "vk  " + str(days) + "pv"
 	elif(diff.days):
 		hours, remainder = divmod(diff.seconds, 3600)
 		if(remainder >= 1800):
 			hours += 1
-		return str(diff.days) + " pv, " + str(hours) + " h"
+		return str(diff.days) + "pv  " + str(hours) + "h"
 	else:
 		hours, remainder = divmod(diff.seconds, 3600)
 		minutes, seconds = divmod(remainder, 60)
