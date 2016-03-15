@@ -195,6 +195,8 @@ def charts(request):
 
 
 class FeedbackWizard(SessionWizardView):
+    # Set the default category
+    initial_dict = {"category": {"service_code": "180"}}
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
 
@@ -300,6 +302,6 @@ def media_upload(request):
         return JsonResponse({"status": "success", "files": files})
     return JsonResponse({"status": "success"})
 
-def instructions(request):
+def about(request):
     context = {}
-    return render(request, "instructions.html", context)
+    return render(request, "about.html", context)
