@@ -8,7 +8,7 @@ from api.models import Feedback
 
 
 def send_feedback_to_open311(f):
-    open_311_url = settings.OPEN311_URL
+    open_311_url = settings.OPEN311_URL + "/requests.json"
 
     data = dict(
             api_key=settings.OPEN311_API_KEY,
