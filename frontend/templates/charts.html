@@ -20,14 +20,16 @@
 <div id="donut"></div>
 
 <script>
-    $.getJSON("/api/v1/service_statistics", function (data) {
+    $.getJSON("/api/v1/statistics/services/", function (data) {
         var services = ['x'];
         var total = ['total'];
         var closed = ['closed'];
+        var fixing_time = ['fixing_time'];
         $.each(data, function (key, item) {
             services.push(item.service_name);
             total.push(item.total);
             closed.push(item.closed);
+            fixing_time.push(item.median_sec)
         });
         c3.generate({
             bindto: '#serviceStatistics',
@@ -47,14 +49,31 @@
                 }
             }
         });
+        c3.generate({
+            bindto: '#timeStatistics',
+            data: {
+                x: 'x',
+                columns: [
+                    services,
+                    fixing_time
+                ],
+                type: 'bar',
+                labels: true
+            },
+            axis: {
+                x: {
+                    type: 'category' // this needed to load string x value
+                }
+            }
+        });
     });
 
-    $.getJSON("/api/v1/agency_statistics", function (data) {
+    $.getJSON("/api/v1/statistics/agencies/", function (data) {
         var agencies = ['x'];
         var total = ['total'];
         var closed = ['closed'];
         $.each(data, function (key, item) {
-            if(key > 9) return;
+            if (key > 9) return;
             agencies.push(item.agency_responsible);
             total.push(item.total);
             closed.push(item.closed);
@@ -79,35 +98,12 @@
         });
     });
 
-    $.getJSON("/api/v1/service_statistics", function (data) {
+    $.getJSON("/api/v1/statistics/services/", function (data) {
         var services = ['x'];
         var total = ['total'];
         $.each(data, function (key, item) {
             services.push(item.service_name);
             total.push(item.total);
-        });
-        c3.generate({
-            bindto: '#timeStatistics',
-            data: {
-                x: 'x',
-                columns: [
-                    services,
-                    total,
-                ],
-                type: 'bar',
-                labels: true
-            },
-            axis: {
-                x: {
-
-                    type: 'category' // this needed to load string x value
-
-                }
-
-
-
-
-            }
         });
     });
 
