@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     {% include 'feedback_form/stagebar.html' with stage=wizard.steps.step1 %}
+    <h4>Valitse aihe</h4>
     {% include "feedback_form/category_list.html" %}
     <form method="post">
         {% csrf_token %}

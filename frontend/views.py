@@ -27,11 +27,13 @@ TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form
 def mainpage(request):
     context = {}
     closed_feedbacks = Feedback.objects.filter(status="closed")
-    fixed_feedbacks = Feedback.objects.filter(status="closed")[0:4]
+    fixed_feedbacks = Feedback.objects.filter(status="closed").order_by('-requested_datetime')[:4]
     fixed_feedbacks_count = closed_feedbacks.count()
-    recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
+    recent_feedbacks = Feedback.objects.filter(status="open").order_by('-requested_datetime')[:4]
     feedbacks_count = get_feedbacks_count()
     waiting_time = get_median_duration(closed_feedbacks)
+    emails = get_emails()
+    context["emails"] = emails
     context["waiting_time"] = waiting_time
     context["feedbacks_count"] = feedbacks_count
     context["fixed_feedbacks"] = fixed_feedbacks
@@ -302,6 +304,6 @@ def media_upload(request):
         return JsonResponse({"status": "success", "files": files})
     return JsonResponse({"status": "success"})
 
-def instructions(request):
+def about(request):
     context = {}
-    return render(request, "instructions.html", context)
+    return render(request, "about.html", context)

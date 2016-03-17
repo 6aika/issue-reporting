@@ -121,13 +121,24 @@ body {
 }
 
 #map {
+<<<<<<< HEAD
     /*height: calc(100vh - 220px);*/
      height: calc(100vh - 51px);
+=======
+    height: calc(100vh - 51px);
+>>>>>>> 6db39bee3fdb29ebfd1fd17e08e708abd54e520f
     width: 100%;
     z-index: 1;
 }
 
+<<<<<<< HEAD
 
+=======
+.category-map {
+    height: calc(100vh - 220px) !important;
+
+}
+>>>>>>> 6db39bee3fdb29ebfd1fd17e08e708abd54e520f
 
 /* --- Sidebar --- */
 
@@ -159,7 +170,8 @@ body {
     position: fixed;
     padding: 8px 15px;
     height: 100%;
-    background: #000;
+    background: #222;
+    color: #9d9d9d;
     overflow-y: auto;
     z-index: 2;
     transition: all 0.5s ease-in 0s;
@@ -183,7 +195,9 @@ body {
 .calendar #datepicker-end {
     width: 260px;
     padding: 10px;
-    padding-top: 0px;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-left: 5px;
 }
 
 .dropdown {

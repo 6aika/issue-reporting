@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block head %}
+<<<<<<< HEAD
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 <script src="{% static 'utils/leaflet-heat.js' %}"></script>
@@ -19,63 +20,88 @@
 	<!-- Sidebar -->
     <div id="sidebar-wrapper">
 
-		<div class="checkbox">
-			<label>
-				<input type="checkbox" id="markers" checked>
-				Markers
-			</label>
-		</div>
-
-		<div class="checkbox">
-			<label>
-				<input type="checkbox" id="heatmap">
-				Heatmap
-			</label>
-		</div>
-
-        <div class="space"></div>
-
-		<label for="status">Tila</label>
-		<div class="dropdown">
-			<select class="form-control" id="status" name="status">
-				<option selected="selected" value="">Status</option>
-				<option value="open">Open</option>
-				<option value="closed">Closed</option>
-			</select>
-		</div>
-
-		<label for="service_code">Aihealue</label>
-		<div class="dropdown">
-            <select class="form-control" name="service_code" id="service_code">
-                <option selected="selected" value="">Service name</option>
-                {% for service in services %}
-                    <option value="{{ service.service_code }}">{{ service.service_name }}</option>
-                {% endfor %}
-            </select>
-		</div>
-
-		<div class="space"></div>
-
-		<label for="datepicker-start">Alku</label>
-		<div>
-			<div class="calendar">
-				<div class='input-group date' id='datepicker-start'>
-					<input type='text' class="form-control" />
-					<span class="input-group-addon" style="cursor:pointer">
-						<span class="glyphicon glyphicon-calendar"></span>
-					</span>
+		<div class="row">
+			<div class="dropdown col-xs-12">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" id="markers" checked>
+						Markers
+					</label>
 				</div>
 			</div>
 		</div>
 
-		<label for="datepicker-end">Loppu</label>
-		<div>
-			<div class="calendar">
-				<div class='input-group date' id='datepicker-end'>
-					<input type='text' class="form-control" />
-					<span class="input-group-addon" style="cursor:pointer">
-						<span class="glyphicon glyphicon-calendar"></span>
-					</span>
+		<div class="row">
+			<div class="dropdown col-xs-12">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" id="heatmap">
+						Heatmap
+					</label>
+				</div>
+			</div>
+		</div>		
+
+        <div class="space"></div>
+
+
+		<div class="row">
+			<div class="dropdown col-xs-12">
+				<label for="status">Tila</label>
+				<div class="dropdown">
+					<select class="form-control" id="status" name="status">
+						<option selected="selected" value="">Status</option>
+						<option value="open">Open</option>
+						<option value="closed">Closed</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="dropdown col-xs-12">
+				<label for="service_code">Aihealue</label>
+				<div class="dropdown">
+		            <select class="form-control" name="service_code" id="service_code">
+		                <option selected="selected" value="">Service name</option>
+		                {% for service in services %}
+		                    <option value="{{ service.service_code }}">{{ service.service_name }}</option>
+		                {% endfor %}
+		            </select>
+				</div>
+			</div>
+		</div>
+
+		<div class="space"></div>
+
+		<div class="row">
+			<div class="dropdown col-xs-12">
+				<label for="datepicker-start">Alku</label>
+				<div>
+					<div class="calendar">
+						<div class='input-group date' id='datepicker-start'>
+							<input type='text' class="form-control" />
+							<span class="input-group-addon" style="cursor:pointer">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="dropdown col-xs-12">
+				<label for="datepicker-end">Loppu</label>
+				<div>
+					<div class="calendar">
+						<div class='input-group date' id='datepicker-end'>
+							<input type='text' class="form-control" />
+							<span class="input-group-addon" style="cursor:pointer">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -89,6 +115,9 @@
 		<span id="toggleButtonIcon" class="glyphicon glyphicon-chevron-right"></span>
 	</button>
 
+    <button id="toggleButton" class="btn btn-primary toggled" onclick="onToggleMenu()">
+        <span id="toggleButtonIcon" class="glyphicon glyphicon-chevron-right"></span>
+    </button>
 
 	<div id="map"></div>
 </div>
@@ -119,5 +148,5 @@
         getData(params);
     }
 
-</script>
+    </script>
 {% endblock %}
