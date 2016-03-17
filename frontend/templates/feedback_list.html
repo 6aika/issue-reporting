@@ -111,16 +111,19 @@
 
         <div class="row">
             <div class="col-xs-6 col-xs-offset-4 col-md-offset-5 centered">
-                <ul class="pagination nav navbar-nav">
+                <div class="pagination">
                     {% if feedbacks.has_previous %}
-                        <li><a href="?page={{ feedbacks.previous_page_number }}">Prev</a></li>
+                      <a href="?page={{ feedbacks.previous_page_number }}" class="btn btn-primary" role="button">Prev</a>
+                    {% else %}
+                      <a class="btn btn-primary" role="button" disabled>Prev</a>
                     {% endif %}
-                    <li><a href="?page={{ feedbacks.number }}">Page {{ feedbacks.number }}
-                        of {{ feedbacks.paginator.num_pages }}</a></li>
+                    <span>{{ feedbacks.number }} / {{ feedbacks.paginator.num_pages }}</span>
                     {% if feedbacks.has_next %}
-                        <li><a href="?page={{ feedbacks.next_page_number }}">Next</a></li>
+                      <a href="?page={{ feedbacks.next_page_number }}" class="btn btn-primary" role="button">Next</a>
+                    {% else %}
+                      <a class="btn btn-primary" role="button" disabled>Next</a>
                     {% endif %}
-                </ul>
+                </div>
             </div>
         </div>
     {% else %}
