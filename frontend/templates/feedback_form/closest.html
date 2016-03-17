@@ -122,11 +122,12 @@
             };
             var url = "http://api.hel.fi/servicemap/v1/unit/";
             $.get(url, data, function (data) {
-                console.log(data);
-                //$("#location").append();
+                $.each(data.results, function (index, value) {
+                    var option = $("<option>", {value: value.id});
+                    $(option).text(value.name.fi);
+                    $("#service_object_select").append(option);
+                });
             });
-
-            
         }
 
         function getUserLocation(e) {
