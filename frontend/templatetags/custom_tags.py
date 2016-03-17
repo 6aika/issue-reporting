@@ -45,5 +45,5 @@ def time_from_now(datetime):
 	if(datetime):
 		return td_humanize(datetime - now)
 	else: 
-		return ""
+		return "Ei tiedossa"
 
