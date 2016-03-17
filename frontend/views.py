@@ -32,6 +32,8 @@ def mainpage(request):
     recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
     feedbacks_count = get_feedbacks_count()
     waiting_time = get_median_duration(closed_feedbacks)
+    emails = get_emails()
+    context["emails"] = emails
     context["waiting_time"] = waiting_time
     context["feedbacks_count"] = feedbacks_count
     context["fixed_feedbacks"] = fixed_feedbacks
