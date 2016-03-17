@@ -1,10 +1,11 @@
+﻿<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- Template for creating small feedback box -->
 <div class="short-feedback-box">
     <div class="row">
         <div class="col-xs-12 short-text shadow">
             <a href="{% url 'feedback_details' feedback.id %}"><h5>{{ feedback.title|default:"NO TITLE" }}</h5></a>
             <h5 class="text-muted">{{ feedback.service_name }}</h5>
-            <span>Ratkaistu: {{ feedback.updated_datetime|date }}</span><br>
+            <span>Käsitelty: {{ feedback.updated_datetime|date }}</span><br>
             <span>Osoite: {{ feedback.address_string }}</span>
         </div>
     </div>

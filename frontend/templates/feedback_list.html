@@ -55,7 +55,15 @@
                     {% if item.distance %}
                         <div class="row">
                             <div class="col-sm-12">
-                                <p>Etäisyys: {{ item.distance }}</p>
+
+                                <p>Etäisyys:
+                                    {% if item.distance.m < 1000 %}
+                                        {{ item.distance.m|floatformat:"0" }} m
+                                    {% else %}
+                                        {{ item.distance.km|floatformat:"2" }} km
+                                    {% endif %}
+                                </p>
+
                             </div>
                         </div>
                     {% endif %}
