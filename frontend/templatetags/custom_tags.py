@@ -4,8 +4,7 @@ register = template.Library()
 
 
 # Takes a timdelta object and returns a string indicating how many
-# weeks, days, hours it is  
-# TODO: REWRITE
+# weeks, days, hours it is. Does not round, only truncates!
 @register.filter
 def td_humanize(diff):
 	if(diff.total_seconds() < 0):
@@ -13,19 +12,12 @@ def td_humanize(diff):
 	days = diff.days
 	if(days >= 7):
 		weeks, days = divmod(days, 7)
-		if(diff.seconds//3600 >= 12):
-			days += 1
 		result = str(weeks) + " vk"
 		if days:
 			result += " " + str(days) + " pv"
 		return result
 	elif(days):
 		hours, remainder = divmod(diff.seconds, 3600)
-		if(remainder >= 1800):
-			hours += 1
-			if hours == 24:
-				hours = 0
-				days += 1
 		result = str(days) + " pv"
 		if hours:
 			result += " " + str(hours) + " h"
