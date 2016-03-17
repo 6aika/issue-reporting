@@ -3,6 +3,7 @@
 {% block head %}
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script src="{% static 'utils/leaflet-heat.js' %}"></script>
 <script type="text/javascript" src="{% static 'utils/proj4-compressed.js' %}" ></script>
 <script type="text/javascript" src="{% static 'utils/proj4leaflet.js' %}" ></script>
 <link rel="stylesheet" href="{% static 'utils/easy-button.css' %}" />
@@ -16,83 +17,72 @@
 </style>
 <div id="wrapper">
 	<!-- Sidebar -->
-        <div id="sidebar-wrapper">
+    <div id="sidebar-wrapper">
 
-            <div class="topic">
-                <h1></h1>
-            </div>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" id="markers" checked>
+				Markers
+			</label>
+		</div>
 
-            <div class="space"></div>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" id="heatmap">
+				Heatmap
+			</label>
+		</div>
 
-			<form role="form" id="feedback-filter" method="GET" class="form-horizontal" enctype="multipart/form-data">
-				<label for="status">Tila</label>
-				<div class="dropdown">
-					<select class="form-control" id="status" name="status">
-						<option selected="selected" value="">Status</option>
-						<option value="open">Open</option>
-						<option value="closed">Closed</option>
-					</select>
+        <div class="space"></div>
+
+		<label for="status">Tila</label>
+		<div class="dropdown">
+			<select class="form-control" id="status" name="status">
+				<option selected="selected" value="">Status</option>
+				<option value="open">Open</option>
+				<option value="closed">Closed</option>
+			</select>
+		</div>
+
+		<label for="service_code">Aihealue</label>
+		<div class="dropdown">
+            <select class="form-control" name="service_code" id="service_code">
+                <option selected="selected" value="">Service name</option>
+                {% for service in services %}
+                    <option value="{{ service.service_code }}">{{ service.service_name }}</option>
+                {% endfor %}
+            </select>
+		</div>
+
+		<div class="space"></div>
+
+		<label for="datepicker-start">Alku</label>
+		<div>
+			<div class="calendar">
+				<div class='input-group date' id='datepicker-start'>
+					<input type='text' class="form-control" />
+					<span class="input-group-addon" style="cursor:pointer">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
 				</div>
+			</div>
+		</div>
 
-				<label for="datepicker-start">Alku</label>
-				<div class="">
-					<div class="form-group calendar">
-						<div class='input-group date' id='datepicker-start'>
-							<input type='text' class="form-control" />
-							<span class="input-group-addon" style="cursor:pointer">
-								<span class="glyphicon glyphicon-calendar"></span>
-							</span>
-						</div>
-					</div>
+		<label for="datepicker-end">Loppu</label>
+		<div>
+			<div class="calendar">
+				<div class='input-group date' id='datepicker-end'>
+					<input type='text' class="form-control" />
+					<span class="input-group-addon" style="cursor:pointer">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
 				</div>
-				<label for="datepicker-end">Loppu</label>
-				<div class="">
-					<div class="form-group calendar">
-						<div class='input-group date' id='datepicker-end'>
-							<input type='text' class="form-control" />
-							<span class="input-group-addon" style="cursor:pointer">
-								<span class="glyphicon glyphicon-calendar"></span>
-							</span>
-						</div>
-					</div>
-				</div>
+			</div>
+		</div>
 
-				<!-- TODO : add multiple selection feature for service types
-				<div class="panel-group" id="accordion">
-					<div class="panel panel-primary">
-						<div class="panel-heading">
-							<h4 class="panel-title">
-							<a class="accordion-toggle" data-toggle="collapse" href="#collapseOne">
-								<span class="glyphicon glyphicon-chevron-down"></span>
-								Aihealue
-							</a>
-							</h4>
-						</div>
-						<div id="collapseOne" class="panel-collapse collapse">
-							<div class="panel-body">
-								<div class="boksi">
+		<div class="space"></div>
 
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				-->
-
-				<label for="service_code">Aihealue</label>
-				<div class="dropdown">
-	                <select class="form-control" name="service_code" id="service_code">
-	                    <option selected="selected" value="">Service name</option>
-	                    {% for service in services %}
-	                        <option value="{{ service.service_code }}">{{ service.service_name }}</option>
-	                    {% endfor %}
-	                </select>
-				</div>
-
-				<div class="space"></div>
-
-                <button class="btn btn-primary btn-lg btn-block" type="submit" value="apply">Apply</button>
-            </form>
+        <button class="btn btn-primary btn-lg btn-block" type="submit" value="apply" onclick="sendRequest()">Apply</button>
 	</div>
 
 	<button id="toggleButton" class="btn btn-primary toggled" onclick="onToggleMenu()">
@@ -100,30 +90,34 @@
 	</button>
 
 
-<div id="map"></div>
+	<div id="map"></div>
 </div>
 <script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
 <script src="{% static 'map.js' %}"></script>
 <script>
-
-
-
     function dateStrToIso(dateStr) {
         var dateParts = dateStr.split(".");
         date = new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]);
         return date.toISOString();
     }
 
-    $("#feedback-filter").submit(function (event) {
-	    var params = "";
-	    if ($("#status").val() !== "")
-	    	params.push({"status" : $("#status").val()});
-	    var service_code = $("#service_code").val();
-	    var search = $("#search").val();
+    function sendRequest() {
+    	var params = {};
 
-        event.preventDefault();
+    	var start_date = $("#datepicker-start").data("DateTimePicker").date().toISOString();
+    	params["start_date"] = start_date;
+    	var end_date = $("#datepicker-end").data("DateTimePicker").date().toISOString();
+    	params["end_date"] = end_date;
+    	console.log(start_date);
+    	console.log(end_date);
+
+    	if ($("#status").val() !== "")
+	    	params["status"] = $("#status").val();
+	    if ($("#service_code").val() !== "")
+	    	params["service_code"] = $("#service_code").val();
+
         getData(params);
-    });
+    }
 
 </script>
 {% endblock %}

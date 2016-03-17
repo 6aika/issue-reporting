@@ -1,6 +1,6 @@
 "use strict";
 
-var data;
+var markers = [];
 
 moment.locale('fi');
 
@@ -10,7 +10,13 @@ $(document).ready(function() {
 
 function getData(params) {
     $.getJSON("/api/v1/requests.json/?status=open&extensions=true", params, function (data) {
-        console.log(data);
+
+        if (markers.length > 0) {
+            for (var i = 0; i < markers.length; i++) {
+                map.removeLayer(markers[i]);
+            }
+        }
+
         $.each(data, function (key, feedback) {
 
             // specify popup options 
@@ -22,7 +28,7 @@ function getData(params) {
 
             var popupContent = "";
 
-            popupContent += "<h3 id=\"feedback_title\"></h3>" +
+            popupContent += "<h4 id=\"feedback_title\"></h4>" +
                 "<p id=\"feedback_service_name\"></p>" +
                 "<span class=\"badge feedback_list_vote_icon\" id=\"\">" +
                     "<span> +1</span>" +
@@ -32,8 +38,6 @@ function getData(params) {
                 "<p id=\"feedback_requested_datetime\"></p>" +
                 "<p id=\"feedback_description\"></p>" +
                 "<a id=\"feedback_details\" href=\"\"></a>";
-
-                       
 
             var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(map);
             marker.feedback = feedback;
@@ -52,8 +56,7 @@ function getData(params) {
                     highlight = marker;
                 }
 
-                // @TODO : Add TITLE
-                //$('#feedback_title').text(e.target.feedback.extended_attributes.title);
+                $('#feedback_title').text(e.target.feedback.extended_attributes.title);
                 $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
                 $('.feedback_list_vote_icon').attr("id", e.target.feedback.service_request_id);
                 $('#feedback_service_name').text("Aihe: " + e.target.feedback.service_name);
@@ -69,6 +72,7 @@ function getData(params) {
                 $('#feedback_info').css("visibility", "visible");
                 
             });
+            markers.push(marker);
         });
     });
 }
@@ -132,8 +136,6 @@ function getUserLocation(e) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var newLocation = L.latLng(position.coords.latitude, position.coords.longitude);
-            //userLocation.setLatLng(newLocation);
-            //storeLocation(newLocation);
             map.panTo(newLocation);
         }.bind(this));
     }

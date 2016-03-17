@@ -179,14 +179,6 @@ body {
     -o-transition: all 0.5s ease-in 0s;
 }
 
-/*
-.calendar {
-    width: 260px;
-    padding: 10px;
-    padding-top: 0px;
-}
-*/
-
 .calendar #datepicker-start,
 .calendar #datepicker-end {
     width: 260px;
