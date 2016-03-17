@@ -7,7 +7,7 @@ from ..models import Feedback
 
 
 def calc_fixing_time(service_code):
-    return timedelta_milliseconds(get_avg_duration(get_closed_by_service_code(service_code)))
+    return timedelta_milliseconds(get_median_duration(get_closed_by_service_code(service_code)))
 
 
 # Return total number of feedbacks with either "open" or "closed" status-
@@ -63,3 +63,7 @@ def get_closed_by_agency(agency_responsible):
 def get_closed_by_agency_responsible(agency_responsible):
     return Feedback.objects.filter(agency_responsible=agency_responsible, status="closed")
 
+
+	# return total number of different emails
+def get_emails():
+    return Feedback.objects.values('email').distinct().count()

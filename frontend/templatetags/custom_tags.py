@@ -42,5 +42,8 @@ def td_humanize(diff):
 @register.filter
 def time_from_now(datetime):
 	now = timezone.now()
-	return td_humanize(datetime - now)
+	if(datetime):
+		return td_humanize(datetime - now)
+	else: 
+		return "Ei tiedossa"
 

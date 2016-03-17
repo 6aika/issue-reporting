@@ -1,21 +1,24 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block head %}
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
-<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
-<script type="text/javascript" src="{% static 'utils/proj4-compressed.js' %}" ></script>
-<script type="text/javascript" src="{% static 'utils/proj4leaflet.js' %}" ></script>
-<link rel="stylesheet" href="{% static 'utils/easy-button.css' %}" />
-<script type="text/javascript" src="{% static 'utils/easy-button.js' %}" ></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script type="text/javascript" src="{% static 'utils/proj4-compressed.js' %}"></script>
+    <script type="text/javascript" src="{% static 'utils/proj4leaflet.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'utils/easy-button.css' %}"/>
+    <script type="text/javascript" src="{% static 'utils/easy-button.js' %}"></script>
+{% endblock %}
+{% block body %}
+    <body style="margin: 0">
 {% endblock %}
 {% block content-fluid %}
-<style>
-.space {
-	padding: 10px;
-}
-</style>
-<div id="wrapper">
-	<!-- Sidebar -->
+    <style>
+        .space {
+            padding: 10px;
+        }
+    </style>
+    <div id="wrapper">
+        <!-- Sidebar -->
         <div id="sidebar-wrapper">
 
             <div class="topic">
@@ -24,106 +27,109 @@
 
             <div class="space"></div>
 
-			<form role="form" id="feedback-filter" method="GET" class="form-horizontal" enctype="multipart/form-data">
-				<div class="dropdown">
-					<label for="status">Tila</label>
-					<select class="form-control" id="status" name="status">
-						<option selected="selected" value="">Status</option>
-						<option value="open">Open</option>
-						<option value="closed">Closed</option>
-					</select>
-				</div>
-
-				<div class="calendar">
-					<label for="datepicker-start">Alku</label>
-					<div class="calendar form-group">
-						<div class='input-group date' id='datepicker-start'>
-							<input type='text' class="form-control" />
+            <form role="form" id="feedback-filter" method="GET" class="form-horizontal" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="dropdown col-xs-12">
+                        <label for="status">Tila</label>
+                        <select class="form-control" id="status" name="status">
+                            <option selected="selected" value="">Status</option>
+                            <option value="open">Open</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="calendar col-xs-12">
+                        <label for="datepicker-start">Alku</label>
+                        <div class="calendar form-group">
+                            <div class='input-group date' id='datepicker-start'>
+                                <input type='text' class="form-control"/>
 							<span class="input-group-addon" style="cursor:pointer">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</span>
-						</div>
-					</div>
-				</div>
-				<div class="calendar">
-					<label for="datepicker-end">Loppu</label>
-					<div class="calendar form-group">
-						<div class='input-group date' id='datepicker-end'>
-							<input type='text' class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="calendar col-xs-12">
+                        <label for="datepicker-end">Loppu</label>
+                        <div class="calendar form-group">
+                            <div class='input-group date' id='datepicker-end'>
+                                <input type='text' class="form-control"/>
 							<span class="input-group-addon" style="cursor:pointer">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</span>
-						</div>
-					</div>
-				</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- TODO : add multiple selection feature for service types
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                            <a class="accordion-toggle" data-toggle="collapse" href="#collapseOne">
+                                <span class="glyphicon glyphicon-chevron-down"></span>
+                                Aihealue
+                            </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <div class="boksi">
 
-				<!-- TODO : add multiple selection feature for service types
-				<div class="panel-group" id="accordion">
-					<div class="panel panel-primary">
-						<div class="panel-heading">
-							<h4 class="panel-title">
-							<a class="accordion-toggle" data-toggle="collapse" href="#collapseOne">
-								<span class="glyphicon glyphicon-chevron-down"></span>
-								Aihealue
-							</a>
-							</h4>
-						</div>
-						<div id="collapseOne" class="panel-collapse collapse">
-							<div class="panel-body">
-								<div class="boksi">
-
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				-->
-
-				<div class="dropdown">
-					<label for="service_code">Aihealue</label>
-	                <select class="form-control" name="service_code" id="service_code">
-	                    <option selected="selected" value="">Service name</option>
-	                    {% for service in services %}
-	                        <option value="{{ service.service_code }}">{{ service.service_name }}</option>
-	                    {% endfor %}
-	                </select>
-				</div>
-
-				<div class="space"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                -->
+                <div class="row">
+                    <div class="dropdown col-xs-12">
+                        <label for="service_code">Aihealue</label>
+                        <select class="form-control" name="service_code" id="service_code">
+                            <option selected="selected" value="">Service name</option>
+                            {% for service in services %}
+                                <option value="{{ service.service_code }}">{{ service.service_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="space"></div>
 
                 <button class="btn btn-primary btn-lg btn-block" type="submit" value="apply">Apply</button>
             </form>
-	</div>
+        </div>
 
-	<button id="toggleButton" class="btn btn-primary toggled" onclick="onToggleMenu()">
-		<span id="toggleButtonIcon" class="glyphicon glyphicon-chevron-right"></span>
-	</button>
-
-
-<div id="map"></div>
-</div>
-<script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
-<script src="{% static 'map.js' %}"></script>
-<script>
+        <button id="toggleButton" class="btn btn-primary toggled" onclick="onToggleMenu()">
+            <span id="toggleButtonIcon" class="glyphicon glyphicon-chevron-right"></span>
+        </button>
 
 
+        <div id="map"></div>
+    </div>
+    <script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
+    <script src="{% static 'map.js' %}"></script>
+    <script>
 
-    function dateStrToIso(dateStr) {
-        var dateParts = dateStr.split(".");
-        date = new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]);
-        return date.toISOString();
-    }
 
-    $("#feedback-filter").submit(function (event) {
-	    var params = "";
-	    if ($("#status").val() !== "")
-	    	params.push({"status" : $("#status").val()});
-	    var service_code = $("#service_code").val();
-	    var search = $("#search").val();
+        function dateStrToIso(dateStr) {
+            var dateParts = dateStr.split(".");
+            date = new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]);
+            return date.toISOString();
+        }
 
-        event.preventDefault();
-        getData(params);
-    });
+        $("#feedback-filter").submit(function (event) {
+            var params = "";
+            if ($("#status").val() !== "")
+                params.push({"status": $("#status").val()});
+            var service_code = $("#service_code").val();
+            var search = $("#search").val();
 
-</script>
+            event.preventDefault();
+            getData(params);
+        });
+
+    </script>
 {% endblock %}

@@ -3,9 +3,24 @@ import urllib
 from urllib.error import URLError
 
 from django.conf import settings
+from geopy.geocoders import Nominatim
 
 
 def reverse_geocode(lat, lon):
+    if settings.USE_NOMINATIM:
+        return reverse_geocode_nominatim(lat, lon)
+    else:
+        return reverse_geocode_servicemap(lat, lon)
+
+
+def reverse_geocode_nominatim(lat, lon):
+    geolocator = Nominatim()
+    location = geolocator.reverse("{}, {}".format(lat, lon))
+    print("found address: " + location.address)
+    return location.address
+
+
+def reverse_geocode_servicemap(lat, lon):
     reverse_geocoding_url = settings.REVERSE_GEO_URL.format(lat, lon)
     print('url to send: {}'.format(reverse_geocoding_url))
 

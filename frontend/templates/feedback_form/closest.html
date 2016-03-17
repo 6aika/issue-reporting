@@ -14,18 +14,24 @@
 {% block content %}
 
     {% include 'feedback_form/stagebar.html' with stage=wizard.steps.step1 %}
-    <form method="post">
+    <form method="post" id="location">
         {% csrf_token %}
         {{ wizard.management_form }}
 
         {{ form.latitude }}
         {{ form.longitude }}
+        <div class="form-group">
+            <div class="col-sm-8 col-sm-offset-2">
+                <select name="service_object_id" class="form-control" id="service_object_select"></select>
+            </div>
+        </div>
+
 
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-12">
-                        <div id="map"></div>
+                        <div id="map" class="category-map"></div>
                     </div>
                 </div>
 
@@ -105,6 +111,25 @@
             storeLocation(userLocation.getLatLng());
         });
 
+        // Populate the list by nearby service objects
+        function fetch_service_objects(location) {
+            console.log("HERE!");
+            var data = {
+                "only": "name", // @todo: explain! what is this!
+                "lat": location.lat,
+                "lon": location.lng,
+                "distance": 300
+            };
+            var url = "http://api.hel.fi/servicemap/v1/unit/";
+            $.get(url, data, function (data) {
+                $.each(data.results, function (index, value) {
+                    var option = $("<option>", {value: value.id});
+                    $(option).text(value.name.fi);
+                    $("#service_object_select").append(option);
+                });
+            });
+        }
+
         function getUserLocation(e) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
@@ -112,6 +137,8 @@
                     userLocation.setLatLng(newLocation);
                     storeLocation(newLocation);
                     map.panTo(newLocation);
+
+                    fetch_service_objects(newLocation);
                 }.bind(this));
             }
             else {
