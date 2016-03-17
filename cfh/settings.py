@@ -165,6 +165,7 @@ OPEN311_RANGE_LIMIT_DAYS = 90
 OPEN311_API_KEY = 'f1301b1ded935eabc5faa6a2ce975f6'
 
 # geocoding options
+USE_NOMINATIM = False
 REVERSE_GEO_URL = 'http://api.hel.fi/servicemap/v1/address/?lat={}&lon={}&page=1'
 
 # Set CFH environment variable to apply the path
