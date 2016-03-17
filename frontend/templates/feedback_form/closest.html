@@ -66,6 +66,7 @@
             };
             var url = "http://api.hel.fi/servicemap/v1/unit/";
             $.get(url, data, function (data) {
+                $("#service_object_select").empty();
                 $.each(data.results, function (index, value) {
                     var option = $("<option>", {value: value.id});
                     $(option).text(value.name.fi);
