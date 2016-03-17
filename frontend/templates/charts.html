@@ -9,10 +9,12 @@
 {% endblock %}
 {% block content %}
 {%include "statistics_menu.html" with charts_active="active"%}
-<h1>Service statistics</h1>
+<h1>Palvelu Kaaviot</h1>
 <div id="serviceStatistics" style="margin-top: 20px"></div>
-<h1>Agency statistics</h1>
+<h1>Virasto Kaaviot</h1>
 <div id="agencyStatistics" style="margin-top: 20px"></div>
+<h1>Aika Kaaviot</h1>
+<div id="timeStatistics" style="margin-top: 20px"></div>
 <h1>Chart samples...</h1>
 <div id="piechart"></div>
 <div id="donut"></div>
@@ -73,6 +75,38 @@
                 x: {
                     type: 'category' // this needed to load string x value
                 }
+            }
+        });
+    });
+
+    $.getJSON("/api/v1/service_statistics", function (data) {
+        var services = ['x'];
+        var total = ['total'];
+        $.each(data, function (key, item) {
+            services.push(item.service_name);
+            total.push(item.total);
+        });
+        c3.generate({
+            bindto: '#timeStatistics',
+            data: {
+                x: 'x',
+                columns: [
+                    services,
+                    total,
+                ],
+                type: 'bar',
+                labels: true
+            },
+            axis: {
+                x: {
+
+                    type: 'category' // this needed to load string x value
+
+                }
+
+
+
+
             }
         });
     });
