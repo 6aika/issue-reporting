@@ -7,7 +7,7 @@ from ..models import Feedback
 
 
 def calc_fixing_time(service_code):
-    return timedelta_milliseconds(get_avg_duration(get_closed_by_service_code(service_code)))
+    return timedelta_milliseconds(get_median_duration(get_closed_by_service_code(service_code)))
 
 
 # Return total number of feedbacks with either "open" or "closed" status-
