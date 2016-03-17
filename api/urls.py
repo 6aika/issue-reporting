@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^statistics/services/$', views.get_services_statistics, name='statistics-services'),
     url(r'^statistics/services/(?P<service_id>\d+)/$', views.get_service_statistics, name='statistics-service'),
     url(r'^statistics/agencies/$', views.get_agencies_statistics, name='statistics-agencies'),
-    url(r'^statistics/agencies/(?P<service_request_id>\w+)/$', views.get_agency_statistics, name='statistics-agency'),
+    url(r'^statistics/agencies/(?P<agency>\w+)/$', views.get_agency_statistics, name='statistics-agency'),
 
 ]
 

@@ -87,7 +87,7 @@ class ServiceList(APIView):
         return Response(serializer.data)
 
 
-def get_service_statistics(request):
+def get_service_statistics(request, service_id):
     pass
 
 
@@ -114,7 +114,7 @@ def get_services_statistics(request):
     return JsonResponse(service_statistics, safe=False)
 
 
-def get_agency_statistics(request):
+def get_agency_statistics(request, agency):
     pass
 
 
