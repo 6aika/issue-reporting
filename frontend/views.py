@@ -161,6 +161,7 @@ def department(request):
         item["agency_responsible"] = agency_responsible
         item["total"] = get_total_by_agency(agency_responsible)
         item["closed"] = get_closed_by_agency(agency_responsible)
+        item["open"] = get_open_by_agency(agency_responsible)
         item["avg"] = get_avg_duration(get_closed_by_agency_responsible(agency_responsible))
         item["median"] = get_median_duration(get_closed_by_agency_responsible(agency_responsible))
         data.append(item)
@@ -176,9 +177,11 @@ def statistics2(request):
     for service in Service.objects.all():
         item = {}
         service_code = service.service_code
+        item["service_code"]= service_code
         item["service_name"] = service.service_name
         item["total"] = get_total_by_service(service_code)
         item["closed"] = get_closed_by_service(service_code)
+        item["open"] = get_open_by_service(service_code)
         item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
         item["median"] = get_median_duration(get_closed_by_service_code(service_code))
         data.append(item)

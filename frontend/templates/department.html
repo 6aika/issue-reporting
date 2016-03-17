@@ -11,6 +11,7 @@
                     <th>Aihe</th>
                     <th>Yhteensä</th>
                     <th>Suljettu</th>
+                    <th>Avoinna</th>
                     <th>Käsittelyajat</th>
                 </tr>
                 </thead>
@@ -20,6 +21,7 @@
                         <td>{{ item.agency_responsible }}</td>
                         <td>{{ item.total }}</td>
                         <td>{{ item.closed}}</td>
+                        <td>{{ item.open}}</td>
                         <td>{{ item.median| td_humanize }}</td>
                     </tr>
                 {% endfor %}
