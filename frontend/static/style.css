@@ -125,6 +125,11 @@ body {
     z-index: 1;
 }
 
+#feedback-details-map {
+    width: 100%;
+    height: 300px;
+}
+
 .category-map {
     height: calc(100vh - 220px) !important;
 
@@ -442,6 +447,12 @@ body {
 
 #char_counter {
     margin-bottom: 20px;
+}
+
+@media (min-width: 992px) {
+    .feedback-details-sidebar {
+        padding: 40px;
+    }
 }
 
 @media (max-width: 400px) {
