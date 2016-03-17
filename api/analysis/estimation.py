@@ -63,3 +63,7 @@ def get_closed_by_agency(agency_responsible):
 def get_closed_by_agency_responsible(agency_responsible):
     return Feedback.objects.filter(agency_responsible=agency_responsible, status="closed")
 
+
+	# return total number of different emails
+def get_emails():
+    return Feedback.objects.values('email').distinct().count()
