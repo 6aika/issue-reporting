@@ -121,24 +121,15 @@ body {
 }
 
 #map {
-<<<<<<< HEAD
-    /*height: calc(100vh - 220px);*/
-     height: calc(100vh - 51px);
-=======
     height: calc(100vh - 51px);
->>>>>>> 6db39bee3fdb29ebfd1fd17e08e708abd54e520f
     width: 100%;
     z-index: 1;
 }
 
-<<<<<<< HEAD
-
-=======
 .category-map {
     height: calc(100vh - 220px) !important;
 
 }
->>>>>>> 6db39bee3fdb29ebfd1fd17e08e708abd54e520f
 
 /* --- Sidebar --- */
 

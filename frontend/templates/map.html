@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block head %}
-<<<<<<< HEAD
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 <script src="{% static 'utils/leaflet-heat.js' %}"></script>
@@ -9,6 +8,11 @@
 <script type="text/javascript" src="{% static 'utils/proj4leaflet.js' %}" ></script>
 <link rel="stylesheet" href="{% static 'utils/easy-button.css' %}" />
 <script type="text/javascript" src="{% static 'utils/easy-button.js' %}" ></script>
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
+{% endblock %}
+{% block body %}
+    <body style="margin: 0">
 {% endblock %}
 {% block content-fluid %}
 <style>
@@ -24,8 +28,8 @@
 			<div class="dropdown col-xs-12">
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" id="markers" checked>
 						Markers
+						<input type="checkbox" data-toggle="toggle" id="markers" checked>
 					</label>
 				</div>
 			</div>
@@ -35,15 +39,14 @@
 			<div class="dropdown col-xs-12">
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" id="heatmap">
 						Heatmap
+						<input type="checkbox" data-toggle="toggle" id="heatmap">
 					</label>
 				</div>
 			</div>
 		</div>		
 
         <div class="space"></div>
-
 
 		<div class="row">
 			<div class="dropdown col-xs-12">
@@ -110,10 +113,6 @@
 
         <button class="btn btn-primary btn-lg btn-block" type="submit" value="apply" onclick="sendRequest()">Apply</button>
 	</div>
-
-	<button id="toggleButton" class="btn btn-primary toggled" onclick="onToggleMenu()">
-		<span id="toggleButtonIcon" class="glyphicon glyphicon-chevron-right"></span>
-	</button>
 
     <button id="toggleButton" class="btn btn-primary toggled" onclick="onToggleMenu()">
         <span id="toggleButtonIcon" class="glyphicon glyphicon-chevron-right"></span>
