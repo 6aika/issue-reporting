@@ -1,95 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-<div id="test">
-  <h1>Ohje</h1>
-  <div class="row" id="navi">
-    <div class="col-sm-6 col-md-4">
-      <div class="thumbnail">
-        <img class="img-responsive" src="http://lorempixel.com/g/350/250/abstract/4/" />
-        <div class="caption">
-          <h3><a href="#what">Mikä</a></h3>
-          <p>Mikä tämä sivusto on? Kuka sen takana on?</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6 col-md-4">
-      <div class="thumbnail">
-        <img class="img-responsive" src="http://lorempixel.com/g/350/250/abstract/4/" />
-        <div class="caption">
-          <h3><a href="#why">Miksi</a></h3>
-          <p>Miksi tämä sivusto on olemassa? Ketä varten se on?</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6 col-md-4">
-      <div class="thumbnail">
-        <img class="img-responsive" src="http://lorempixel.com/g/350/250/abstract/4/" />
-        <div class="caption">
-          <h3><a href="#how">Miten</a></h3>
-          <p>Kuinka voin käyttää tätä palvelua? Miten tämä toimii?</p>
-        </div>
-      </div>
-    </div>
-  </div>
   <div id="topics">
-    <a id="what"></a><h2>Mikä tämä on?</h2>
-      <p>City Feedback Hub on sivusto, joka kokoaa yhteen Helsingin kaupungin palautepalvelut. Sivustolla voit selata palautteita, katsoa tilastoja niistä tai lähettää palautetta itse. Palvelun on toteuttanut ryhmä Aalto-yliopiston opiskelijoita kurssityönään.</p>
-    <a id="why"></a><h2>Miksi tämä on?</h2>
+    <h1>Tietoja sivustosta</h1>
+    <h2>Mikä tämä on?</h2>
+      <p>City Feedback Hub on sivusto, joka kokoaa yhteen Helsingin kaupungin palautepalvelut. Sivustolla voit selata palautteita, katsoa tilastoja niistä tai lähettää palautetta itse. Palvelun on toteuttanut ryhmä Aalto-yliopiston opiskelijoita kurssityönään. Lisätietoja projektista saa tekijäryhmän omilta sivuilta: <a href="http://hep7agon.herokuapp.com/">Hep7agon</a>.</p>
+    <h2>Miksi tämä on?</h2>
       <p>City Feedback Hub -palvelun tarkoituksena on tuoda kaupunkilaisia ja vierailijoita lähemmäs Helsingin kaupunkia ja antaa helppo mahdollisuus vaikuttaa kaupungin asioihin. Käyttäjät pääsevät myös halutessaan näkemään tilastotietoja sekä karttoja kaupungin palautteista.</p>
-    <a id="how"></a><h2>Miten tämä toimii?</h2>
+    <h2>Miten tämä toimii?</h2>
     <h3>Palautteen antaminen</h3>
-    <div id="steps">
-      <div class="media">
-        <div class="media-body">
-          <h4 class="media-heading">Vaihe 1</h4>
-          <p>Ensin siirry Anna palaute -sivulle. Sivulla on n-vaiheinen lomake, jonka ensimmäisessä askeleessa pyydetään valitsemaan kartasta paikka, johon palautteesi liittyy. Paina "seuraava" edetäksesi.</p>
-        </div>
-        <!-- <div class="media-right">
-          <img class="media-object" src="https://placehold.it/250x200">
-        </div> -->
-      </div>
-      <div class="media">
-        <div class="media-body">
-          <h4 class="media-heading">Vaihe 2</h4>
-          <p>Toisessa vaiheessa valitse palautteesi aihealue annetuista kuvakkeista. Valittuasi paina ”seuraava”.</p>
-        </div>
-        <!-- <div class="media-right">
-          <img class="media-object" src="https://placehold.it/250x200">
-        </div> -->
-      </div>
-      <div class="media">
-        <div class="media-body">
-          <h4 class="media-heading">Vaihe 3</h4>
-          <p>Kolmannessa vaiheessa voit kirjoittaa palautteesi. Palautteen tulee olla vähintään kymmenen ja enintään 5000 merkkiä pitkä. Voit myös lisätä palautteeseesi liittyvän valokuvan (esimerkiksi rikkoutuneesta esineestä). Kun olet valmis, paina ”seuraava”.</p>
-        </div>
-        <!-- <div class="media-right">
-          <img class="media-object" src="https://placehold.it/250x200">
-        </div> -->
-      </div>
-      <div class="media">
-        <div class="media-body">
-          <h4 class="media-heading">Vaihe 4</h4>
-          <p>Neljännessä vaiheessa voit antaa yhteystietosi, jos haluat saada vastauksen palautteeseesi. Tiedoista vain nimi tai nimimerkki julkaistaan. Voit myös jättää kentät tyhjiksi ja jatkaa suoraan viimeiseen vaiheeseen.</p>
-        </div>
-        <!-- <div class="media-right">
-          <img class="media-object" src="https://placehold.it/250x200">
-        </div> -->
-      </div>
-      <div class="media">
-        <div class="media-body">
-          <h4 class="media-heading">Vaihe 5</h4>
-          <p>Viidennessä vaiheessa näet yhteenvedon antamistasi tiedoista. Varmista, että kaikki tiedot ovat oikein ja paina ”valmis”. Palautteesi on lähetetty ja se käsitellään pian.</p>
-        </div>
-        <!-- <div class="media-right">
-          <img class="media-object" src="https://placehold.it/250x200">
-        </div> -->
-      </div>
-    </div>
+    <p>Sivustolla voit antaa palautetta Helsingin kaupungille esimerkiksi puistojen kunnosta tai opastekylteistä. Palautteet ohjataan eteenpäin asiaankuuluvalle taholle, joka käsittelee ne ja tarvittaessa ryhtyy toimenpiteisiin.</p>
     <h3>Tilastojen ja karttojen käyttö</h3>
     <p>On tilastoja ja kivoja karttoja, joissa näkyy palautekeskittymiä.</p>
   </div>
-</div>
-
-
-    {% include 'footer.html' %}
+  {% include 'footer.html' %}
 {% endblock %}

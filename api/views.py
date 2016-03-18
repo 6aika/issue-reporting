@@ -1,5 +1,6 @@
 import operator
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -87,14 +88,21 @@ class ServiceList(APIView):
         return Response(serializer.data)
 
 
-def get_service_statistics(request):
+def get_service_statistics(request, service_code):
+    try:
+        service = Service.objects.get(service_code=service_code)
+    except ObjectDoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'unknown service code'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+    statistics = get_service_item_statistics(service)
+    return JsonResponse(statistics)
+
+
+def get_services_statistics(request):
     service_statistics = []
     for service in Service.objects.all():
-        item = {}
-        service_code = service.service_code
-        item["service_name"] = service.service_name
-        item["total"] = get_total_by_service(service_code)
-        item["closed"] = get_closed_by_service(service_code)
+        item = get_service_item_statistics(service)
         service_statistics.append(item)
 
     # Sort the rows by "total" column
@@ -103,19 +111,56 @@ def get_service_statistics(request):
     return JsonResponse(service_statistics, safe=False)
 
 
-def get_agency_statistics(request):
+def get_service_item_statistics(service):
+    item = {}
+    service_code = service.service_code
+
+    avg = get_avg_duration(get_closed_by_service_code(service_code))
+    median = get_median_duration(get_closed_by_service_code(service_code))
+
+    item["service_name"] = service.service_name
+    item["total"] = get_total_by_service(service_code)
+    item["closed"] = get_closed_by_service(service_code)
+    item["avg_sec"] = int(avg.total_seconds())
+    item["median_sec"] = int(median.total_seconds())
+
+    return item
+
+
+def get_agency_item_statistics(agency_responsible):
+    item = {}
+
+    avg = get_avg_duration(get_closed_by_agency_responsible(agency_responsible))
+    median = get_median_duration(get_closed_by_agency_responsible(agency_responsible))
+
+    item["agency_responsible"] = agency_responsible
+    item["total"] = get_total_by_agency(agency_responsible)
+    item["closed"] = get_closed_by_agency(agency_responsible)
+    item["avg_sec"] = int(avg.total_seconds())
+    item["median_sec"] = int(median.total_seconds())
+
+    return item
+
+
+def get_agency_statistics(request, agency):
+    feedbacks_with_agency = Feedback.objects.filter(agency_responsible__iexact=agency).count()
+
+    if feedbacks_with_agency == 0:
+        return JsonResponse({'status': 'error', 'message': 'unknown agency name'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+    statistics = get_agency_item_statistics(agency)
+    return JsonResponse(statistics)
+
+
+def get_agencies_statistics(request):
     agency_statistics = []
     agencies = Feedback.objects.all().distinct("agency_responsible")
     for agency in agencies:
-        item = {}
-        agency_responsible = agency.agency_responsible
-        item["agency_responsible"] = agency_responsible
-        item["total"] = get_total_by_agency(agency_responsible)
-        item["closed"] = get_closed_by_agency(agency_responsible)
+        item = get_agency_item_statistics(agency.agency_responsible)
         agency_statistics.append(item)
 
     # Sort the rows by "total" column
     agency_statistics.sort(key=operator.itemgetter('total'), reverse=True)
 
     return JsonResponse(agency_statistics, safe=False)
-

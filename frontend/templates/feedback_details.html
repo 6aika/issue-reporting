@@ -51,12 +51,12 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-4">
+            <div class="col-xs-12 col-md-4 feedback-details-sidebar">
                 <p>
                     <img id="feedback_image" class="img-thumbnail img-responsive center-cropped-details-page"
-                         src="{{feedback.media_url|default:'https://placehold.it/320x320'}}" alt="Feedback image"/>
+                         src="{{feedback.media_url|default:'http://goo.gl/pqGzYQ'}}" alt="Feedback image"/>
                 </p>
-                <div id="map"></div>
+                <div id="feedback-details-map"></div>
             </div>
         </div>
     </div>
@@ -83,7 +83,7 @@
     var lat = "{{feedback.lat}}";
     var lon = "{{feedback.lon}}";
 
-    var map = L.map('map',
+    var map = L.map('feedback-details-map',
     {
         crs : crs()
     }).setView([lat, lon], 12);
