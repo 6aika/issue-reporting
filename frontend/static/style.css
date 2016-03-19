@@ -164,7 +164,7 @@ body {
     left: -300px;
     width: 300px;
     position: fixed;
-    padding: 8px 15px;
+    padding: 8px 20px;
     height: 100%;
     background: #222;
     color: #9d9d9d;
@@ -190,16 +190,18 @@ body {
 .calendar #datepicker-start,
 .calendar #datepicker-end {
     width: 260px;
-    padding: 10px;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding: 0px 10px;
     margin-left: 5px;
 }
 
-.dropdown {
-    width: 260px;
+.sidebar-element {
+    width: 280px;
     padding: 10px;
     padding-top: 0px;
+}
+
+.toggle-switch {
+    text-align: right;
 }
 
 /* css to customize Leaflet default styles  */
@@ -224,7 +226,6 @@ body {
     width: auto;
     height: 500px;
     margin-top: 1%;
-
 }
 
 /* Color for item under mouse in category selection */

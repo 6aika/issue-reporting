@@ -25,63 +25,57 @@
     <div id="sidebar-wrapper">
 
 		<div class="row">
-			<div class="dropdown col-xs-12">
-				<div class="checkbox">
-					<label>
-						Markers
-						<input type="checkbox" data-toggle="toggle" id="markers" checked>
-					</label>
-				</div>
+			<div class="col-xs-6">
+				<label for="markers">Markers</label>
 			</div>
-		</div>
-
-		<div class="row">
-			<div class="dropdown col-xs-12">
-				<div class="checkbox">
-					<label>
-						Heatmap
-						<input type="checkbox" data-toggle="toggle" id="heatmap">
-					</label>
-				</div>
-			</div>
-		</div>		
-
-        <div class="space"></div>
-
-		<div class="row">
-			<div class="dropdown col-xs-12">
-				<label for="status">Tila</label>
-				<div class="dropdown">
-					<select class="form-control" id="status" name="status">
-						<option selected="selected" value="">Status</option>
-						<option value="open">Open</option>
-						<option value="closed">Closed</option>
-					</select>
-				</div>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="dropdown col-xs-12">
-				<label for="service_code">Aihealue</label>
-				<div class="dropdown">
-		            <select class="form-control" name="service_code" id="service_code">
-		                <option selected="selected" value="">Service name</option>
-		                {% for service in services %}
-		                    <option value="{{ service.service_code }}">{{ service.service_name }}</option>
-		                {% endfor %}
-		            </select>
-				</div>
+			<div class="col-xs-6 toggle-switch">
+				<input type="checkbox" data-toggle="toggle" id="toggle-markers" data-width="100" checked>
 			</div>
 		</div>
 
 		<div class="space"></div>
 
 		<div class="row">
-			<div class="dropdown col-xs-12">
+			<div class="col-xs-6">
+				<label for="heatmap">Heatmap</label>
+			</div>
+			<div class="col-xs-6 toggle-switch">
+				<input type="checkbox" data-toggle="toggle" id="toggle-heatmap" data-width="100">
+			</div>
+		</div>		
+
+        <div class="space"></div>
+
+		<div class="row">
+			<div class="col-xs-12">
+				<label for="status">Tila</label>
+				<select class="form-control" id="status" name="status">
+					<option selected="selected" value="">Status</option>
+					<option value="open">Open</option>
+					<option value="closed">Closed</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-12">
+				<label for="service_code">Aihealue</label>
+	            <select class="form-control" name="service_code" id="service_code">
+	                <option selected="selected" value="">Service name</option>
+	                {% for service in services %}
+	                    <option value="{{ service.service_code }}">{{ service.service_name }}</option>
+	                {% endfor %}
+	            </select>
+			</div>
+		</div>
+
+		<div class="space"></div>
+
+		<div class="row">
+			<div class="col-xs-12">
 				<label for="datepicker-start">Alku</label>
 				<div>
-					<div class="calendar">
+					<div class="">
 						<div class='input-group date' id='datepicker-start'>
 							<input type='text' class="form-control" />
 							<span class="input-group-addon" style="cursor:pointer">
@@ -94,10 +88,10 @@
 		</div>
 
 		<div class="row">
-			<div class="dropdown col-xs-12">
+			<div class="col-xs-12">
 				<label for="datepicker-end">Loppu</label>
 				<div>
-					<div class="calendar">
+					<div class="">
 						<div class='input-group date' id='datepicker-end'>
 							<input type='text' class="form-control" />
 							<span class="input-group-addon" style="cursor:pointer">
@@ -146,6 +140,33 @@
 
         getData(params);
     }
+
+    $(function() {
+		$('#toggle-markers').change(function() {
+			if ($(this).prop('checked')) {
+				console.log("Show markers");
+				markers.
+			}
+			else
+			{
+				console.log("Hide markers");
+			}
+		})
+	})
+
+	$(function() {
+		$('#toggle-heatmap').change(function() {
+			if ($(this).prop('checked')) {
+				console.log("Show heatmap");
+			}
+			else
+			{
+				console.log("Hide heatmap");
+			}
+		})
+	})
+
+	
 
     </script>
 {% endblock %}
