@@ -130,8 +130,6 @@
     	params["start_date"] = start_date;
     	var end_date = $("#datepicker-end").data("DateTimePicker").date().toISOString();
     	params["end_date"] = end_date;
-    	console.log(start_date);
-    	console.log(end_date);
 
     	if ($("#status").val() !== "")
 	    	params["status"] = $("#status").val();
@@ -156,16 +154,14 @@
 	$(function() {
 		$('#toggle-heatmap').change(function() {
 			if ($(this).prop('checked')) {
-				console.log("Show heatmap");
+				showHeatmap(true);
 			}
 			else
 			{
-				console.log("Hide heatmap");
+				showHeatmap(false);
 			}
 		})
 	})
-
-	
 
     </script>
 {% endblock %}

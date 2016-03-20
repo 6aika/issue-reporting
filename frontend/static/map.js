@@ -1,22 +1,27 @@
 "use strict";
 
 var markers = [];
+var markerCoordinates = [];
 var markersLayer = L.layerGroup();
-
+var heatLayer = null;
 
 moment.locale('fi');
 
 $(document).ready(function() {
-    getData({"status" : "open"});
+    getData({"status" : "open"}, true);
 });
 
-function getData(params) {
+function getData(params, markersVisible) {
     $.getJSON("/api/v1/requests.json/?extensions=true", params, function (data) {
 
         if (markers.length > 0) {
             for (var i = 0; i < markers.length; i++) {
                 map.removeLayer(markers[i]);
             }
+        }
+
+        if (markerCoordinates.length > 0) {
+            markerCoordinates.length = 0;
         }
 
         $.each(data, function (key, feedback) {
@@ -31,18 +36,14 @@ function getData(params) {
             var popupContent = "";
 
             popupContent += "<h4 id=\"feedback_title\"></h4>" +
-                "<p id=\"feedback_service_name\"></p>" +
-                "<span class=\"badge feedback_list_vote_icon\" id=\"\">" +
-                    "<span> +1</span>" +
-                "</span>" +
-                "<span class=\"badge feedback_list_vote_badge\"></span>" +
-
-                "<p id=\"feedback_requested_datetime\"></p>" +
+                "<div id=\"feedback_service_name\"></div>" +
+                "<div id=\"feedback_requested_datetime\"></div>" +
                 "<p id=\"feedback_description\"></p>" +
                 "<a id=\"feedback_details\" href=\"\"></a>";
 
-            var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions);
+            var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(markersLayer);
             marker.feedback = feedback;
+            markerCoordinates.push([feedback.lat, feedback.long]);
             marker.on('click', function(e) {
                 if (highlight !== null) {
                     // is highlighted, store id of marker
@@ -75,10 +76,11 @@ function getData(params) {
                 
             });
             markers.push(marker);
-            markersLayer.addLayer(marker);
         });
     });
-    //markersLayer = L.layerGroup(markers);
+    if (markersVisible) {
+        showMarkers(markersVisible);
+    }
 }
 
 var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
@@ -163,8 +165,6 @@ function addMarker(e){
 }
 
 function showMarkers(show) {
-    console.log(markersLayer);
-    console.log("showMarkers: " + show);
     if (show) {
         map.addLayer(markersLayer);
     }
@@ -177,14 +177,18 @@ function showMarkers(show) {
 }
 
 function showHeatmap(show) {
-    console.log("showHeatmap:" + show);
-    
     if (show) {
-    
+        console.log(markers);
+        if(heatLayer)
+            map.removeLayer(heatLayer);
+
+        heatLayer = L.heatLayer(markerCoordinates, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
+        console.log(heatLayer);
     }
     else
     {
-
+        if(heatlayer)
+            map.removeLayer(heatlayer);
     }
 }
 
