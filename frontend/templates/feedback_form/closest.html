@@ -20,6 +20,7 @@
 
         {{ form.latitude }}
         {{ form.longitude }}
+        {{ form.service_object_id }}
 
         <div class="form-group">
             <div class="col-md-12">
@@ -59,6 +60,12 @@
             fetch_service_objects(userLocation.getLatLng())
         });
 
+        $("#location").submit(function (event){
+            // Assign the selected service_object_id to form
+            var service_object_id = $("#service_object_select").val();
+            $("#{{form.service_object_id.id_for_label}}").val(service_object_id);
+        });
+
         // Populate the list by nearby service objects
         function fetch_service_objects(location) {
             var data = {
@@ -70,6 +77,7 @@
             var url = "http://api.hel.fi/servicemap/v1/unit/";
             $.get(url, data, function (data) {
                 $("#service_object_select").empty();
+                $("#service_object_select").append("<option value=''>Voit valita listalta...</option>");
                 $.each(data.results, function (index, value) {
                     var option = $("<option>", {value: value.id});
                     $(option).text(value.name.fi);

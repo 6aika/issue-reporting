@@ -258,6 +258,8 @@ class FeedbackWizard(SessionWizardView):
         data["email"] = form_dict["contact"].cleaned_data["email"]
         data["phone"] = form_dict["contact"].cleaned_data["phone"]
 
+        data["service_object_id"] = form_dict["closest"].cleaned_data["service_object_id"]
+
         form_id = form_dict["basic_info"].cleaned_data["form_id"]
 
         new_feedback = Feedback(**data)
