@@ -57,6 +57,9 @@
         map.on('move', function (e) {
             userLocation.setLatLng(map.getCenter());
             storeLocation(userLocation.getLatLng());
+        });
+
+        map.on("moveend", function (event) {
             fetch_service_objects(userLocation.getLatLng())
         });
 
