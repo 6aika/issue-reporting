@@ -1,15 +1,17 @@
 "use strict";
 
 var markers = [];
+var markersLayer = L.layerGroup();
+
 
 moment.locale('fi');
 
 $(document).ready(function() {
-    getData();
+    getData({"status" : "open"});
 });
 
 function getData(params) {
-    $.getJSON("/api/v1/requests.json/?status=open&extensions=true", params, function (data) {
+    $.getJSON("/api/v1/requests.json/?extensions=true", params, function (data) {
 
         if (markers.length > 0) {
             for (var i = 0; i < markers.length; i++) {
@@ -39,7 +41,7 @@ function getData(params) {
                 "<p id=\"feedback_description\"></p>" +
                 "<a id=\"feedback_details\" href=\"\"></a>";
 
-            var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(map);
+            var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions);
             marker.feedback = feedback;
             marker.on('click', function(e) {
                 if (highlight !== null) {
@@ -73,8 +75,10 @@ function getData(params) {
                 
             });
             markers.push(marker);
+            markersLayer.addLayer(marker);
         });
     });
+    //markersLayer = L.layerGroup(markers);
 }
 
 var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
@@ -156,6 +160,32 @@ function addMarker(e){
 	{
 		userLocation.setLatLng(e.latlng);         
 	}
+}
+
+function showMarkers(show) {
+    console.log(markersLayer);
+    console.log("showMarkers: " + show);
+    if (show) {
+        map.addLayer(markersLayer);
+    }
+    else
+    {
+        if (map.hasLayer(markersLayer)) {
+            map.removeLayer(markersLayer);
+        } 
+    }
+}
+
+function showHeatmap(show) {
+    console.log("showHeatmap:" + show);
+    
+    if (show) {
+    
+    }
+    else
+    {
+
+    }
 }
 
 function onToggleMenu() {

@@ -144,12 +144,11 @@
     $(function() {
 		$('#toggle-markers').change(function() {
 			if ($(this).prop('checked')) {
-				console.log("Show markers");
-				markers.
+				showMarkers(true);
 			}
 			else
 			{
-				console.log("Hide markers");
+				showMarkers(false);
 			}
 		})
 	})
