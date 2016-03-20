@@ -23,7 +23,11 @@
             </div>
             {% for error in form.title.errors %}
                 <div class="col-sm-offset-2 col-sm-8">
-                    {{error}}
+                    {% if error == "This field is required." %}
+                        Tämä kenttä on pakollinen!
+                    {% else %}
+                        {{error}}
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
@@ -34,7 +38,11 @@
             </div>
             {% for error in form.description.errors %}
                 <div class="col-sm-offset-2 col-sm-8">
-                    {{error}}
+                    {% if error == "This field is required." %}
+                        Tämä kenttä on pakollinen!
+                    {% else %}
+                        {{error}}
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
