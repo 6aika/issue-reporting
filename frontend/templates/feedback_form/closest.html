@@ -69,7 +69,7 @@
             $("#{{form.service_object_id.id_for_label}}").val(service_object_id);
         });
 
-        // Populate the list by nearby service objects
+        // Populate the list by nearby service objects. Only shows max 20 (the 1st page)
         function fetch_service_objects(location) {
             var data = {
                 "only": "name",
