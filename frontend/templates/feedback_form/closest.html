@@ -57,6 +57,7 @@
     <script src="{% static 'map.js' %}"></script>
     <script>
         $("body").css("margin", 0);
+        map.setZoom(13);
         var userLocation = new L.marker(map.getCenter(), {icon: center_icon}).addTo(map);
         storeLocation(userLocation.getLatLng());
 
