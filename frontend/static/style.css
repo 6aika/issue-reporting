@@ -292,7 +292,6 @@ body {
     border-right-style: solid;
     border-right-width: 1px;
     border-color: #ddd;
-
 }
 
 .feedback_list_row {
@@ -308,10 +307,8 @@ body {
 
 }
 
-
-
 .main_footer {
-    margin-top: 30px;
+    margin-top: 75px;
     padding: 15px;
     color: #9d9d9d;
     background-color: #333;
@@ -319,7 +316,6 @@ body {
     left: 0;
     width: 100%;
     text-align: center;
-
 }
 
 @media (min-width: 992px) {
