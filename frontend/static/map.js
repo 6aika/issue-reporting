@@ -120,10 +120,14 @@ var crs = function() {
     };
     return new L.Proj.CRS(crsName, projDef, crsOpts);
 }
+
 var map = L.map('map', {
     crs: crs(),
     zoomControl: false
 }).setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 11);
+
+// Automatically fwetch user location and center
+getUserLocation();
 
 L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png", {
     attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',

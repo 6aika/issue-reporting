@@ -5,13 +5,13 @@
             <span class="input-group-btn">
                  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
                          aria-expanded="false" aria-controls="collapseExample">
-                     Filters
+                     Rajaa hakua
                  </button>
             </span>
             <input type="text" class="form-control" name="search" id="search"
                    placeholder="Esim. polkupyörä, Annankatu, rakennusvirasto..."/>
             <span class="input-group-btn">
-                <button class="btn btn-primary" type="submit" value="apply">Search</button>
+                <button class="btn btn-primary" type="submit" value="apply">Tee haku</button>
             </span>
         </div><!-- /input-group -->
     </div><!-- /.col-lg-6 -->
@@ -22,7 +22,7 @@
                 <div class="well feedback_list_filter_well">
                     <div class="row">
 
-                        <div class="col-sm-2 feedback_list_date_picker">
+                        <div class="col-sm-3 feedback_list_date_picker">
                             <label for="datepicker-start">Alku</label>
                             <div class="calendar form-group">
                                 <div class='input-group date' id='datepicker-start'>
@@ -35,7 +35,7 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-2 feedback_list_date_picker">
+                        <div class="col-sm-3 feedback_list_date_picker">
                             <label for="datepicker-end">Loppu</label>
                             <div class="calendar form-group">
                                 <div class='input-group date' id='datepicker-end'>
@@ -51,16 +51,16 @@
                         <div class="col-sm-2">
                             <label for="status">Tila</label>
                             <select class="form-control" name="status" id="status">
-                                <option selected="selected" value="">Status</option>
-                                <option value="open">Open</option>
-                                <option value="closed">Closed</option>
+                                <option value="">Kaikki</option>
+                                <option value="open">Avoimet</option>
+                                <option value="closed">Suljetut</option>
                             </select>
                         </div>
 
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <label for="service_code">Aihealue</label>
                             <select class="form-control" name="service_code" id="service_code">
-                                <option selected="selected" value="">Service name</option>
+                                <option value="">Valitse...</option>
                                 {% for service in services %}
                                     <option value="{{ service.service_code }}">{{ service.service_name }}</option>
                                 {% endfor %}
@@ -70,10 +70,9 @@
                         <div class="col-sm-2">
                             <label for="order_by">Järjestä</label>
                             <select class="form-control" name="order_by" id="order_by">
-                                <option selected="selected" value="">Order by</option>
-                                <option value="-requested_datetime">Creation datetime</option>
-                                <option value="distance">Distance</option>
-                                <option value="-vote_counter">Votes</option>
+                                <option value="-requested_datetime">Luontihetki</option>
+                                <option value="distance">Etäisyys</option>
+                                <option value="-vote_counter">Äänet</option>
                             </select>
                         </div>
 
@@ -86,7 +85,7 @@
                     </div>
                     <div class="row" style="margin-top: 20px">
                         <div class="col-sm-2 col-xs-offset-4 hidden-sm hidden-md hidden-lg">
-                            <button class="btn btn-primary" type="submit" value="apply">Apply</button>
+                            <button class="btn btn-primary" type="submit" value="apply">Tee haku</button>
                         </div>
                     </div>
 
