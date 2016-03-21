@@ -189,7 +189,7 @@ body {
 
 .calendar #datepicker-start,
 .calendar #datepicker-end {
-    width: 260px;
+    /*width: 260px;*/
     padding: 0px 10px;
     margin-left: 5px;
 }
@@ -269,13 +269,6 @@ body {
     object-position: center;
     background-position: center center;
     background-repeat: no-repeat;
-}
-
-.feedback_list_details {
-    /* width: 160px;*/
-    height: 240px;
-    padding: 10px;
-
 }
 
 .feedback_list_content {
@@ -362,13 +355,21 @@ body {
         border-color: #ddd;
     }
 
-    .feedback_list_date_picker {
-        margin-left: 30px;
+    /*
+        .feedback_list_date_picker {
+            margin-left: 30px;
+        }
+    */
+    .feedback_list_date_picker #datepicker-start,
+    .feedback_list_date_picker #datepicker-end {
+        /*width: 140px;*/
     }
 
-    .feedback_list_date_picker #datepicker-start, 
-    .feedback_list_date_picker #datepicker-end {
-        width: 140px;
+    .feedback_list_details {
+        /* width: 160px;*/
+        height: 240px;
+        padding: 10px;
+
     }
 
 }
@@ -392,6 +393,21 @@ body {
 @media (max-width: 767px) {
     .report-well h2 {
         font-size: 20px;
+    }
+
+    .feedback_list_icons {
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-left: 0;
+        margin-bottom: 5px;
+    }
+
+    .feedback_list_img, center-cropped  {
+        border-right-style: none;
+        border-right-width: 0;
+        border-color: transparent;
+        padding: 0;
+        margin-left: 15px;
     }
 }
 
@@ -476,9 +492,23 @@ body {
         margin-left: 20px;
     }
 
-    .feedback_list_date_picker #datepicker-start, 
+    .feedback_list_date_picker #datepicker-start,
     .feedback_list_date_picker #datepicker-end {
         margin-left: -10px;
         width: 60vw;
     }
+}
+
+/* TODO Make styling not change native bootstrap code for accordion*/
+
+.panel-default > .feedback_list_accordion_panel_heading {
+    background-color: white;
+}
+
+.panel-default {
+    border-color: white;
+}
+
+.panel-group .panel-heading + .panel-collapse > .panel-body {
+    border-top-color: white;
 }
