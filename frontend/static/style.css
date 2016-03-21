@@ -263,13 +263,6 @@ body {
     background-repeat: no-repeat;
 }
 
-.feedback_list_details {
-    /* width: 160px;*/
-    height: 240px;
-    padding: 10px;
-
-}
-
 .feedback_list_content {
     padding: 10px;
     /*height: 240px;*/
@@ -362,6 +355,13 @@ body {
         width: 140px;
     }
 
+    .feedback_list_details {
+        /* width: 160px;*/
+        height: 240px;
+        padding: 10px;
+
+    }
+
 }
 
 .report-well {
@@ -383,6 +383,21 @@ body {
 @media (max-width: 767px) {
     .report-well h2 {
         font-size: 20px;
+    }
+
+    .feedback_list_icons {
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-left: 0;
+        margin-bottom: 5px;
+    }
+
+    .feedback_list_img, center-cropped  {
+        border-right-style: none;
+        border-right-width: 0;
+        border-color: transparent;
+        padding: 0;
+        margin-left: 15px;
     }
 }
 
