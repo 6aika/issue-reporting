@@ -55,12 +55,11 @@ def get_feedbacks(service_codes=None, service_request_ids=None,
         queryset = queryset.order_by(order_by)
 
     # TODO: replace with conditional expression?
-    feedback_list = list(queryset)
-    for item in feedback_list:
+    for item in queryset:
         if hasattr(item, 'distance') and item.location.x == 0.0 and item.location.y == 0.0:
             del item.distance
 
-    return feedback_list
+    return queryset
 
 
 def get_feedbacks_count():
