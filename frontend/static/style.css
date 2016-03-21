@@ -120,7 +120,7 @@ body {
     margin-top: 0.1em;
 }
 
-#map {
+.main-map {
     height: calc(100vh - 51px);
     width: 100%;
     z-index: 1;
@@ -131,9 +131,10 @@ body {
     height: 300px;
 }
 
-.category-map {
+.form-map {
     height: calc(100vh - 220px) !important;
-
+    width: 100%;
+    z-index: 1;
 }
 
 /* --- Sidebar --- */

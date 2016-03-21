@@ -24,7 +24,7 @@
 
         <div class="form-group">
             <div class="col-md-12">
-                <div id="map" class="category-map"></div>
+                <div id="map" class="form-map"></div>
             </div>
         </div>
 
@@ -96,8 +96,6 @@
                     userLocation.setLatLng(newLocation);
                     storeLocation(newLocation);
                     map.panTo(newLocation);
-
-                    fetch_service_objects(newLocation);
                 }.bind(this));
             }
             else {
