@@ -65,6 +65,53 @@ body {
     top: 50px;
 }
 
+.banner-well {
+    min-width: 295px;
+    width: 55%;
+    border-color: transparent;
+    margin-top: -280px;
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: rgba(35, 35, 35, 0.8);
+}
+
+.banner-well h2 {
+    padding-bottom: 0;
+    padding-top: 0;
+    color: #ddd;
+}
+
+.banner-well a p {
+    font-size: 18px;
+    text-decoration: solid;
+    padding-left: 10px;
+}
+
+@media (max-width: 991px) {
+    #banner-photo {
+        height: 200px;
+    }
+
+    .banner-well {
+        margin-top: -180px;
+    }
+    
+    .banner-well h2 {
+        font-size: 18px;
+    }
+}
+
+#banner-link {
+    padding: 20px;
+    color: #ddd;
+}
+
+#banner-button {
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 20px;
+}
+
 .info-icon {
     font-size: 4em;
 }
@@ -353,27 +400,7 @@ body {
 
 }
 
-.report-well {
-    min-width: 295px;
-    width: 55%;
-    border-color: transparent;
-    margin-top: -280px;
-    margin-left: 5px;
-    margin-right: 5px;
-    background-color: rgba(35, 35, 35, 0.8);
-}
 
-.report-well h2 {
-    padding-bottom: 0;
-    padding-top: 0;
-    color: #ddd;
-}
-
-@media (max-width: 991px) {
-    .report-well h2 {
-        font-size: 18px;
-    }
-}
 
 @media (max-width: 767px) {
     .feedback_list_icons {
@@ -392,22 +419,7 @@ body {
     }
 }
 
-#banner-link {
-    padding: 20px;
-    color: #ddd;
-}
 
-#banner-button {
-    margin-bottom: 10px;
-    padding: 10px;
-    font-size: 20px;
-}
-
-.report-well a p {
-    font-size: 18px;
-    text-decoration: solid;
-    padding-left: 10px;
-}
 
 .feedback_list_title:hover {
     text-decoration: none;
