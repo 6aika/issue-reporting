@@ -95,7 +95,7 @@ body {
     .banner-well {
         margin-top: -180px;
     }
-    
+
     .banner-well h2 {
         font-size: 18px;
     }
@@ -179,7 +179,7 @@ body {
 }
 
 .form-map {
-    height: calc(100vh - 220px) !important;
+    height: calc(100vh - 240px);
     width: 100%;
     z-index: 1;
 }
