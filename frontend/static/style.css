@@ -167,20 +167,20 @@ body {
     margin-top: 0.1em;
 }
 
-.main-map {
-    height: calc(100vh - 51px);
+.map-main {
     width: 100%;
+    height: calc(100vh - 51px);
     z-index: 1;
 }
 
-#feedback-details-map {
+.map-feedback-details {
     width: 100%;
     height: 300px;
 }
 
-.form-map {
-    height: calc(100vh - 240px);
+.map-form {
     width: 100%;
+    height: calc(100vh - 240px);
     z-index: 1;
 }
 

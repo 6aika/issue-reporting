@@ -56,11 +56,12 @@
                     <img id="feedback_image" class="img-thumbnail img-responsive center-cropped-details-page"
                          src="{{feedback.media_url|default:'http://goo.gl/pqGzYQ'}}" alt="Feedback image"/>
                 </p>
-                <div id="feedback-details-map"></div>
+                <div id="map" class="map-feedback-details"></div>
             </div>
         </div>
     </div>
 </div>
+
 
 <script>
     "use strict";
@@ -83,7 +84,7 @@
     var lat = "{{feedback.lat}}";
     var lon = "{{feedback.lon}}";
 
-    var map = L.map('feedback-details-map',
+    var map = L.map('map',
     {
         crs : crs()
     }).setView([lat, lon], 12);
@@ -96,6 +97,7 @@
     }).addTo(map);
 
     L.marker([lat, lon]).addTo(map);
+    
 </script>
 
 <script type="text/javascript">

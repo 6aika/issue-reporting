@@ -2,7 +2,11 @@
 
 var markers = [];
 var markerCoordinates = [];
-var markersLayer = L.layerGroup();
+var markersLayer = L.markerClusterGroup({
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        disableClusteringAtZoom: 13
+    });
 var heatLayer = null;
 
 moment.locale('fi');
@@ -123,10 +127,11 @@ var crs = function() {
 
 var map = L.map('map', {
     crs: crs(),
-    zoomControl: false
+    zoomControl: false,
+    maxZoom: 15
 }).setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 11);
 
-// Automatically fwetch user location and center
+// Automatically fetch user location and center
 getUserLocation();
 
 L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png", {
@@ -189,8 +194,8 @@ function showHeatmap(show) {
     }
     else
     {
-        if(heatlayer)
-            map.removeLayer(heatlayer);
+        if(heatLayer)
+            map.removeLayer(heatLayer);
     }
 }
 
