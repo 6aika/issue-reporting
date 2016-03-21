@@ -358,7 +358,7 @@ body {
 }
 
 .report-well {
-    min-width: 280px;
+    min-width: 295px;
     width: 55%;
     border-color: transparent;
     margin-top: -280px;
@@ -373,11 +373,13 @@ body {
     color: #ddd;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
     .report-well h2 {
-        font-size: 20px;
+        font-size: 18px;
     }
+}
 
+@media (max-width: 767px) {
     .feedback_list_icons {
         margin-top: 0px;
         margin-right: 0px;
@@ -385,7 +387,7 @@ body {
         margin-bottom: 5px;
     }
 
-    .feedback_list_img, center-cropped  {
+    .feedback_list_img, .center-cropped  {
         border-right-style: none;
         border-right-width: 0;
         border-color: transparent;
