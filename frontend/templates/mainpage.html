@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 {% load custom_tags %}
 {% block content-fluid %}
 
     <img id="banner-photo"
-         src="https://upload.wikimedia.org/wikipedia/commons/b/ba/HelsinkiPanorama_rocco.jpg"/>
+         src="{% static 'bannerphoto.jpg' %}"/>
     <div class="container">
         <div class="row">
             <div class="col-xs-12 well report-well">
@@ -120,5 +121,5 @@
         </div>
     </div>
 
-    {% include "footer.html" with photocredit='<p>Photo: <a href="https://commons.wikimedia.org/wiki/File:HelsinkiPanorama_rocco.jpg">Panoraamakuva Helsingin Eteläsatamasta</a> by Roccodm <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">(CC BY-SA)</a></p>' %}
+    {% include "footer.html" with photocredit='<p><a href="https://commons.wikimedia.org/wiki/File:HelsinkiPanorama_rocco.jpg">Photo</a> by <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">(CC BY-SA)</a></p>' %}
 {% endblock %}
