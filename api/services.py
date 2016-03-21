@@ -30,7 +30,9 @@ def get_feedbacks(service_codes=None, service_request_ids=None,
 
     # start CitySDK Helsinki specific filtration
     if search:
-        queryset = queryset.filter(description__icontains=search) | queryset.filter(title__icontains=search) | queryset.filter(address_string__icontains=search) | queryset.filter(agency_responsible__icontains=search)
+        queryset = queryset.filter(description__icontains=search) | queryset.filter(
+            title__icontains=search) | queryset.filter(address_string__icontains=search) | queryset.filter(
+            agency_responsible__icontains=search)
     if service_object_type:
         queryset = queryset.filter(service_object_type__icontains=service_object_type)
     if service_object_id:
@@ -52,7 +54,13 @@ def get_feedbacks(service_codes=None, service_request_ids=None,
     if order_by:
         queryset = queryset.order_by(order_by)
 
-    return queryset
+    # TODO: replace with conditional expression?
+    feedback_list = list(queryset)
+    for item in feedback_list:
+        if hasattr(item, 'distance') and item.location.x == 0.0 and item.location.y == 0.0:
+            del item.distance
+
+    return feedback_list
 
 
 def get_feedbacks_count():
