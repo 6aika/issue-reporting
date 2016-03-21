@@ -182,12 +182,10 @@ function showMarkers(show) {
 
 function showHeatmap(show) {
     if (show) {
-        console.log(markers);
         if(heatLayer)
             map.removeLayer(heatLayer);
 
         heatLayer = L.heatLayer(markerCoordinates, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
-        console.log(heatLayer);
     }
     else
     {
