@@ -77,6 +77,86 @@
                     </div>
                 </div>
 
+                <!-- TODO Showing detail content in mobile in accordion (Prototype).Remember to hide details in mobile using hidden-xs in feedback_list_details class -->
+
+                <!--
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+
+                        <div class="panel-heading feedback_list_accordion_panel_heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                                   aria-expanded="false" aria-controls="collapseOne">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            {% if item.status == 'open' %}
+                                                <h4 class="text-success">
+                                                    {{ item.status|capfirst }}<br/>
+                                                    <small>
+                    {{ item.requested_datetime|default_if_none:""|date:"d.m.o " }}</small>
+                                                </h4>
+                                            {% elif item.status == 'moderation' %}
+                                                <h4 class="text-warning">
+                                                    {{ item.status|capfirst }}<br/>
+                                                    <small>{{ item.updated_datetime|default_if_none:"" }}</small>
+                                                </h4>
+                                            {% else %}
+                                                <h4 class="text-danger">
+                                                    {{ item.status|capfirst }}<br/>
+                                                    <small>{{ item.updated_datetime|default_if_none:"" }}</small>
+                                                </h4>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </a>
+                            </h4>
+                        </div>
+
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
+                             aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <p>Vastuullinen taho: <br/>
+                                            <small>{{ item.agency_responsible }}</small>
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-12 text-info">
+                                        {% if item.expected_datetime and not item.status == "closed" %}
+                                            <p>Arvio: <br/>
+                                                <small>{{ item.expected_datetime|time_from_now }}</small>
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% if item.distance %}
+                                    <div class="row">
+                                        <div class="col-sm-12">
+
+                                            <p>Etäisyys:
+                                                {% if item.distance.m < 1000 %}
+                                                    {{ item.distance.m|floatformat:"0" }} m
+                                                {% else %}
+                                                    {{ item.distance.km|floatformat:"2" }} km
+                                                {% endif %}
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <p>
+                                            <small>{{ item.address_string|default:'No Address' }}</small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+-->
                 <div class="col-xs-12 col-md-7 feedback_list_content col-md-pull-2">
                     <div class="row">
                         <div class="col-xs-12 col-md-10">
@@ -116,15 +196,17 @@
             <div class="col-xs-6 col-xs-offset-4 col-md-offset-5 centered">
                 <div class="pagination">
                     {% if feedbacks.has_previous %}
-                      <a href="?{{queries.urlencode}}&amp;page={{ feedbacks.previous_page_number }}" class="btn btn-primary" role="button"><<</a>
+                        <a href="?{{ queries.urlencode }}&amp;page={{ feedbacks.previous_page_number }}"
+                           class="btn btn-primary" role="button"><<</a>
                     {% else %}
-                      <a class="btn btn-primary" role="button" disabled><<</a>
+                        <a class="btn btn-primary" role="button" disabled><<</a>
                     {% endif %}
                     <span>{{ feedbacks.number }} / {{ feedbacks.paginator.num_pages }}</span>
                     {% if feedbacks.has_next %}
-                      <a href="?{{queries.urlencode}}&amp;page={{ feedbacks.next_page_number }}" class="btn btn-primary" role="button">>></a>
+                        <a href="?{{ queries.urlencode }}&amp;page={{ feedbacks.next_page_number }}"
+                           class="btn btn-primary" role="button">>></a>
                     {% else %}
-                      <a class="btn btn-primary" role="button" disabled>>></a>
+                        <a class="btn btn-primary" role="button" disabled>>></a>
                     {% endif %}
                 </div>
             </div>
