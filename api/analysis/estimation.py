@@ -20,6 +20,11 @@ def get_closed_by_service(service_code):
     return Feedback.objects.filter(service_code=service_code, status="closed").count()
 
 
+def get_open_by_service(service_code):
+    return Feedback.objects.filter(service_code=service_code, status="open").count()
+
+
+
 def get_closed_by_service_code(service_code):
     return get_feedbacks(service_codes=service_code, statuses="closed")
 
@@ -59,7 +64,13 @@ def get_total_by_agency(agency_responsible):
 def get_closed_by_agency(agency_responsible):
     return Feedback.objects.filter(agency_responsible=agency_responsible, status="closed").count()
 
+def get_open_by_agency(agency_responsible):
+    return Feedback.objects.filter(agency_responsible=agency_responsible, status="open").count()
 
 def get_closed_by_agency_responsible(agency_responsible):
     return Feedback.objects.filter(agency_responsible=agency_responsible, status="closed")
 
+
+	# return total number of different emails
+def get_emails():
+    return Feedback.objects.values('email').distinct().count()

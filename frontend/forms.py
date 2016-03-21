@@ -1,10 +1,9 @@
 from django import forms
 
 class FeedbackFormClosest(forms.Form):
-    latitude = forms.FloatField(widget=forms.HiddenInput(
-        attrs={'class': 'form-control', 'placeholder': "Latitude"}))
-    longitude = forms.FloatField(widget=forms.HiddenInput(
-        attrs={'class': 'form-control', 'placeholder': "Longitude"}))
+    latitude = forms.FloatField(widget=forms.HiddenInput(attrs={'class': 'form-control', 'placeholder': "Latitude"}))
+    longitude = forms.FloatField(widget=forms.HiddenInput(attrs={'class': 'form-control', 'placeholder': "Longitude"}))
+    service_object_id = forms.CharField(max_length=10, widget=forms.HiddenInput(), required=False)
 
 
 class FeedbackFormCategory(forms.Form):

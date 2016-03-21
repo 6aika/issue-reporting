@@ -10,6 +10,7 @@ body {
     -webkit-font-smoothing: antialiased;
     font-family: 'Lato', sans-serif !important;
     margin: 0 0 200px;
+    min-height: 100%;
 }
 
 .feedback_list_vote_icon {
@@ -125,6 +126,11 @@ body {
     z-index: 1;
 }
 
+#feedback-details-map {
+    width: 100%;
+    height: 300px;
+}
+
 .category-map {
     height: calc(100vh - 220px) !important;
 
@@ -158,7 +164,7 @@ body {
     left: -300px;
     width: 300px;
     position: fixed;
-    padding: 8px 15px;
+    padding: 8px 20px;
     height: 100%;
     background: #222;
     color: #9d9d9d;
@@ -181,18 +187,21 @@ body {
     -o-transition: all 0.5s ease-in 0s;
 }
 
-.calendar {
+.calendar #datepicker-start,
+.calendar #datepicker-end {
     width: 260px;
-    padding: 10px;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding: 0px 10px;
     margin-left: 5px;
 }
 
-.dropdown {
-    width: 260px;
+.sidebar-element {
+    width: 280px;
     padding: 10px;
     padding-top: 0px;
+}
+
+.toggle-switch {
+    text-align: right;
 }
 
 /* css to customize Leaflet default styles  */
@@ -217,7 +226,6 @@ body {
     width: auto;
     height: 500px;
     margin-top: 1%;
-
 }
 
 /* Color for item under mouse in category selection */
@@ -351,7 +359,8 @@ body {
         margin-left: 30px;
     }
 
-    #datepicker-start, #datepicker-end {
+    .feedback_list_date_picker #datepicker-start, 
+    .feedback_list_date_picker #datepicker-end {
         width: 140px;
     }
 
@@ -459,6 +468,12 @@ body {
     margin-bottom: 20px;
 }
 
+@media (min-width: 992px) {
+    .feedback-details-sidebar {
+        padding: 40px;
+    }
+}
+
 @media (max-width: 400px) {
     #stage1, #stage2, #stage3, #stage4, #stage5 {
         font-size: 10px;
@@ -476,7 +491,8 @@ body {
         margin-left: 20px;
     }
 
-    #datepicker-start, #datepicker-end {
+    .feedback_list_date_picker #datepicker-start, 
+    .feedback_list_date_picker #datepicker-end {
         margin-left: -10px;
         width: 60vw;
     }

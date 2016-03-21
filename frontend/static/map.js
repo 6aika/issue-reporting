@@ -1,16 +1,29 @@
 "use strict";
 
-var data;
+var markers = [];
+var markerCoordinates = [];
+var markersLayer = L.layerGroup();
+var heatLayer = null;
 
 moment.locale('fi');
 
 $(document).ready(function() {
-    getData();
+    getData({"status" : "open"}, true);
 });
 
-function getData(params) {
-    $.getJSON("/api/v1/requests.json/?status=open", params, function (data) {
-        console.log(data);
+function getData(params, markersVisible) {
+    $.getJSON("/api/v1/requests.json/?extensions=true", params, function (data) {
+
+        if (markers.length > 0) {
+            for (var i = 0; i < markers.length; i++) {
+                map.removeLayer(markers[i]);
+            }
+        }
+
+        if (markerCoordinates.length > 0) {
+            markerCoordinates.length = 0;
+        }
+
         $.each(data, function (key, feedback) {
 
             // specify popup options 
@@ -22,21 +35,15 @@ function getData(params) {
 
             var popupContent = "";
 
-            popupContent += "<h3 id=\"feedback_title\"></h3>";
-            popupContent += "<p id=\"feedback_service_name\"></p>" +
-                "<span class=\"badge feedback_list_vote_icon\" id=\"\">" +
-                    "<span> +1</span>" +
-                "</span>" +
-                "<span class=\"badge feedback_list_vote_badge\"></span>" +
-
-                "<p id=\"feedback_requested_datetime\"></p>" +
+            popupContent += "<h4 id=\"feedback_title\"></h4>" +
+                "<div id=\"feedback_service_name\"></div>" +
+                "<div id=\"feedback_requested_datetime\"></div>" +
                 "<p id=\"feedback_description\"></p>" +
                 "<a id=\"feedback_details\" href=\"\"></a>";
 
-                       
-
-            var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(map);
+            var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(markersLayer);
             marker.feedback = feedback;
+            markerCoordinates.push([feedback.lat, feedback.long]);
             marker.on('click', function(e) {
                 if (highlight !== null) {
                     // is highlighted, store id of marker
@@ -52,8 +59,7 @@ function getData(params) {
                     highlight = marker;
                 }
 
-                // @TODO : Add TITLE
-                //$('#feedback_title').text(e.target.feedback.extended_attributes.title);
+                $('#feedback_title').text(e.target.feedback.extended_attributes.title);
                 $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
                 $('.feedback_list_vote_icon').attr("id", e.target.feedback.service_request_id);
                 $('#feedback_service_name').text("Aihe: " + e.target.feedback.service_name);
@@ -69,8 +75,12 @@ function getData(params) {
                 $('#feedback_info').css("visibility", "visible");
                 
             });
+            markers.push(marker);
         });
     });
+    if (markersVisible) {
+        showMarkers(markersVisible);
+    }
 }
 
 var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
@@ -110,10 +120,14 @@ var crs = function() {
     };
     return new L.Proj.CRS(crsName, projDef, crsOpts);
 }
+
 var map = L.map('map', {
     crs: crs(),
     zoomControl: false
 }).setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 11);
+
+// Automatically fwetch user location and center
+getUserLocation();
 
 L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png", {
     attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
@@ -132,8 +146,6 @@ function getUserLocation(e) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var newLocation = L.latLng(position.coords.latitude, position.coords.longitude);
-            //userLocation.setLatLng(newLocation);
-            //storeLocation(newLocation);
             map.panTo(newLocation);
         }.bind(this));
     }
@@ -154,6 +166,34 @@ function addMarker(e){
 	{
 		userLocation.setLatLng(e.latlng);         
 	}
+}
+
+function showMarkers(show) {
+    if (show) {
+        map.addLayer(markersLayer);
+    }
+    else
+    {
+        if (map.hasLayer(markersLayer)) {
+            map.removeLayer(markersLayer);
+        } 
+    }
+}
+
+function showHeatmap(show) {
+    if (show) {
+        console.log(markers);
+        if(heatLayer)
+            map.removeLayer(heatLayer);
+
+        heatLayer = L.heatLayer(markerCoordinates, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
+        console.log(heatLayer);
+    }
+    else
+    {
+        if(heatlayer)
+            map.removeLayer(heatlayer);
+    }
 }
 
 function onToggleMenu() {

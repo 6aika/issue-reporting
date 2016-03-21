@@ -27,11 +27,13 @@ TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form
 def mainpage(request):
     context = {}
     closed_feedbacks = Feedback.objects.filter(status="closed")
-    fixed_feedbacks = Feedback.objects.filter(status="closed")[0:4]
+    fixed_feedbacks = Feedback.objects.filter(status="closed").order_by('-requested_datetime')[:4]
     fixed_feedbacks_count = closed_feedbacks.count()
-    recent_feedbacks = Feedback.objects.filter(status="open")[0:4]
+    recent_feedbacks = Feedback.objects.filter(status="open").order_by('-requested_datetime')[:4]
     feedbacks_count = get_feedbacks_count()
     waiting_time = get_median_duration(closed_feedbacks)
+    emails = get_emails()
+    context["emails"] = emails
     context["waiting_time"] = waiting_time
     context["feedbacks_count"] = feedbacks_count
     context["fixed_feedbacks"] = fixed_feedbacks
@@ -159,6 +161,7 @@ def department(request):
         item["agency_responsible"] = agency_responsible
         item["total"] = get_total_by_agency(agency_responsible)
         item["closed"] = get_closed_by_agency(agency_responsible)
+        item["open"] = get_open_by_agency(agency_responsible)
         item["avg"] = get_avg_duration(get_closed_by_agency_responsible(agency_responsible))
         item["median"] = get_median_duration(get_closed_by_agency_responsible(agency_responsible))
         data.append(item)
@@ -174,9 +177,11 @@ def statistics2(request):
     for service in Service.objects.all():
         item = {}
         service_code = service.service_code
+        item["service_code"]= service_code
         item["service_name"] = service.service_name
         item["total"] = get_total_by_service(service_code)
         item["closed"] = get_closed_by_service(service_code)
+        item["open"] = get_open_by_service(service_code)
         item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
         item["median"] = get_median_duration(get_closed_by_service_code(service_code))
         data.append(item)
@@ -252,6 +257,8 @@ class FeedbackWizard(SessionWizardView):
         data["last_name"] = form_dict["contact"].cleaned_data["last_name"]
         data["email"] = form_dict["contact"].cleaned_data["email"]
         data["phone"] = form_dict["contact"].cleaned_data["phone"]
+
+        data["service_object_id"] = form_dict["closest"].cleaned_data["service_object_id"]
 
         form_id = form_dict["basic_info"].cleaned_data["form_id"]
 

@@ -1,4 +1,5 @@
 import json
+import time
 import urllib.request
 from datetime import datetime, timedelta
 from urllib.error import URLError
@@ -89,7 +90,7 @@ def sync_open311_data(start_datetime):
     time_interval_days = settings.OPEN311_RANGE_LIMIT_DAYS
 
     while start_datetime < datetime.now():
-        open_311_url = settings.OPEN311_URL + "?extensions=true&updated_after=" \
+        open_311_url = settings.OPEN311_URL + "/requests.json?extensions=true&updated_after=" \
                        + start_datetime.isoformat() + "Z&updated_before=" + end_datetime.isoformat()
         print('url to send: {}'.format(open_311_url))
 
@@ -123,6 +124,30 @@ def sync_open311_data(start_datetime):
         end_datetime = start_datetime + timedelta(days=settings.OPEN311_RANGE_LIMIT_DAYS)
 
 
+def sync_with_id_file(path_to_ids):
+    with open(path_to_ids) as f:
+        for service_request_id in f:
+            open_311_url = settings.OPEN311_URL + "/requests/{}.json?extensions=true".format(
+                service_request_id.rstrip())
+            print('url to send: {}'.format(open_311_url))
+
+            try:
+                response = urllib.request.urlopen(open_311_url)
+                content = response.read()
+                json_data = json.loads(content.decode("utf8"))
+            except ValueError:
+                print('Decoding JSON has failed')
+                return
+            except URLError:
+                print('Invalid URL: {}'.format(open_311_url))
+                return
+
+            for feedback_json in json_data:
+                save_feedback(feedback_json)
+
+            time.sleep(1)
+
+
 def sync_all_data():
     start_datetime = datetime_parser.parse(settings.SYNCHRONIZATION_START_DATETIME)
     sync_open311_data(start_datetime)
@@ -137,7 +162,15 @@ def sync_new_data():
 class Command(BaseCommand):
     help = 'Synchronize data with Open311 Server provided in settings.py.'
 
+    def add_arguments(self, parser):
+        parser.add_argument('--path_to_ids', nargs='+', type=str)
+
     def handle(self, *args, **options):
+        path_to_ids = options.get('path_to_ids')
+        if path_to_ids is not None:
+            sync_with_id_file(path_to_ids[0])
+            return
+
         request_count = Feedback.objects.filter(synchronized=True).count()
         if request_count == 0:
             sync_all_data()
