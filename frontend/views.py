@@ -191,10 +191,6 @@ def statistics2(request):
     return render(request, "statistics2.html", {"data": data})
 
 
-def heatmap(request):
-    return render(request, "heatmap.html", {"services": Service.objects.all()})
-
-
 def charts(request):
     return render(request, "charts.html")
 

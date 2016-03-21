@@ -26,15 +26,17 @@
         {{ form.service_object_id }}
 
         <div class="form-group">
-            <div class="col-md-12">
-                <div id="map" class="category-map"></div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="map" class="form-map"></div>
+                </div>
             </div>
         </div>
 
         <div class="form-group">
             <div class="row">
                 <div class="col-sm-3">
-                    <label for="service_selector">Liittyy kohteeseen:</label>
+                    <label for="service_selector" class="hidden-xs">Liittyy kohteeseen:</label>
                 </div>
                 <div class="col-sm-9">
                     <select name="service_object_id" class="form-control" id="service_object_select"></select>
@@ -54,6 +56,7 @@
     <script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
     <script src="{% static 'map.js' %}"></script>
     <script>
+        $("body").css("margin", 0);
         var userLocation = new L.marker(map.getCenter(), {icon: center_icon}).addTo(map);
         storeLocation(userLocation.getLatLng());
 
@@ -99,8 +102,6 @@
                     userLocation.setLatLng(newLocation);
                     storeLocation(newLocation);
                     map.panTo(newLocation);
-
-                    fetch_service_objects(newLocation);
                 }.bind(this));
             }
             else {
@@ -134,5 +135,4 @@
     </script>
 
     <script type="text/javascript" src="{% static 'utils/enable_voting.js' %}"></script>
-    {% include 'footer.html' %}
 {% endblock %}

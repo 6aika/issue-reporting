@@ -65,6 +65,53 @@ body {
     top: 50px;
 }
 
+.banner-well {
+    min-width: 295px;
+    width: 55%;
+    border-color: transparent;
+    margin-top: -280px;
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: rgba(35, 35, 35, 0.8);
+}
+
+.banner-well h2 {
+    padding-bottom: 0;
+    padding-top: 0;
+    color: #ddd;
+}
+
+.banner-well a p {
+    font-size: 18px;
+    text-decoration: solid;
+    padding-left: 10px;
+}
+
+@media (max-width: 991px) {
+    #banner-photo {
+        height: 200px;
+    }
+
+    .banner-well {
+        margin-top: -180px;
+    }
+
+    .banner-well h2 {
+        font-size: 18px;
+    }
+}
+
+#banner-link {
+    padding: 20px;
+    color: #ddd;
+}
+
+#banner-button {
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 20px;
+}
+
 .info-icon {
     font-size: 4em;
 }
@@ -120,7 +167,7 @@ body {
     margin-top: 0.1em;
 }
 
-#map {
+.main-map {
     height: calc(100vh - 51px);
     width: 100%;
     z-index: 1;
@@ -131,9 +178,10 @@ body {
     height: 300px;
 }
 
-.category-map {
-    height: calc(100vh - 220px) !important;
-
+.form-map {
+    height: calc(100vh - 240px);
+    width: 100%;
+    z-index: 1;
 }
 
 /* --- Sidebar --- */
@@ -291,7 +339,6 @@ body {
     border-right-style: solid;
     border-right-width: 1px;
     border-color: #ddd;
-
 }
 
 .feedback_list_row {
@@ -307,10 +354,8 @@ body {
 
 }
 
-
-
 .main_footer {
-    margin-top: 30px;
+    margin-top: 75px;
     padding: 15px;
     color: #9d9d9d;
     background-color: #333;
@@ -318,7 +363,6 @@ body {
     left: 0;
     width: 100%;
     text-align: center;
-
 }
 
 @media (min-width: 992px) {
@@ -356,27 +400,9 @@ body {
 
 }
 
-.report-well {
-    min-width: 280px;
-    width: 55%;
-    border-color: transparent;
-    margin-top: -280px;
-    margin-left: 5px;
-    margin-right: 5px;
-    background-color: rgba(35, 35, 35, 0.8);
-}
 
-.report-well h2 {
-    padding-bottom: 0;
-    padding-top: 0;
-    color: #ddd;
-}
 
 @media (max-width: 767px) {
-    .report-well h2 {
-        font-size: 20px;
-    }
-
     .feedback_list_icons {
         margin-top: 0px;
         margin-right: 0px;
@@ -384,7 +410,7 @@ body {
         margin-bottom: 5px;
     }
 
-    .feedback_list_img, center-cropped  {
+    .feedback_list_img, .center-cropped  {
         border-right-style: none;
         border-right-width: 0;
         border-color: transparent;
@@ -393,22 +419,7 @@ body {
     }
 }
 
-#banner-link {
-    padding: 20px;
-    color: #ddd;
-}
 
-#banner-button {
-    margin-bottom: 10px;
-    padding: 10px;
-    font-size: 20px;
-}
-
-.report-well a p {
-    font-size: 18px;
-    text-decoration: solid;
-    padding-left: 10px;
-}
 
 .feedback_list_title:hover {
     text-decoration: none;

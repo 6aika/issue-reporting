@@ -13,7 +13,6 @@ urlpatterns = [
     url(r'^locations_demo/$', frontend.views.locations_demo, name="locations_demo"),
     url(r'^about/$', frontend.views.about, name="about"),
     url(r'^statistics/$', frontend.views.statistics2, name="statistics"),
-    url(r'^heatmap/$', frontend.views.heatmap, name="heatmap"),
     url(r'^department/$', frontend.views.department, name="department"),
     url(r'^charts/$', frontend.views.charts, name="charts"),
     url(r'^vote_feedback/$', frontend.views.vote_feedback, name="vote_feedback")

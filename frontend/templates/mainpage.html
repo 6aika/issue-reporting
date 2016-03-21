@@ -2,15 +2,13 @@
 {% load staticfiles %}
 {% load custom_tags %}
 {% block content-fluid %}
-
     <img id="banner-photo"
          src="{% static 'bannerphoto.jpg' %}"/>
     <div class="container">
         <div class="row">
-            <div class="col-xs-12 well report-well">
+            <div class="col-xs-12 well banner-well">
                 <h2>Tehdään Helsingistä parempi!</h2>
                 <a type="button" href="{% url 'feedback_form' %}" class="btn btn-primary" id="banner-button">Anna palaute</a>
-                <div class="hidden-xs"><a href="#" id="banner-link">Näin käytät sivustoa</a></div>
             </div>
         </div>
         <div class="row" id="info-row"> <!-- Info graph icons -->
