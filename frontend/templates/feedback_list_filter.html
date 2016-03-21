@@ -60,7 +60,7 @@
                         <div class="col-sm-2">
                             <label for="service_code">Aihealue</label>
                             <select class="form-control" name="service_code" id="service_code">
-                                <option value="">Valitse...</option>
+                                <option value="">Kaikki</option>
                                 {% for service in services %}
                                     <option value="{{ service.service_code }}">{{ service.service_name }}</option>
                                 {% endfor %}
@@ -78,8 +78,8 @@
 
                         <!-- fields required for ordering by distance -->
                         <div>
-                            <input type="text" name="lat" id="lat" style="display: none;"/>
-                            <input type="text" name="lon" id="lon" style="display: none;"/>
+                            <input type="hidden" name="lat" id="lat">
+                            <input type="hidden" name="lon" id="lon">
                         </div>
                     </div>
                     <div class="row" style="margin-top: 20px">
