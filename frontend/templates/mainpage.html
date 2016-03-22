@@ -93,8 +93,8 @@
         <div class="row" id="recent-fix-info">
 		{% if fixed_feedbacks %}
             {% for feedback in fixed_feedbacks %}
-                <div class="col-sm-3 col-xs-6">
-                    {% include "short_feedback_box_recently_fixed.html" %}
+                <div class="col-sm-3">
+                    {% include "short_feedback_box_with_image.html" %}
                 </div>
             {% endfor %}
 		{% else %}
@@ -107,7 +107,7 @@
         <div class="row" id="recent-feedback-info">
 		{% if recent_feedbacks %}
             {% for feedback in recent_feedbacks %}
-                <div class="col-sm-3 col-xs-12 ">
+                <div class="col-sm-3">
                     {% include "short_feedback_box_with_image.html" %}
                 </div>
             {% endfor %}
