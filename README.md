@@ -21,7 +21,8 @@ One of the main criteria was to make the website responsive so that it can be ea
 7. Install requirements: `pip install -r requirements.txt`
 8. Migrate: `python manage.py migrate`
 9. Load sample data: `python manage.py loaddata real_feedbacks.json`
-10. Start local Django server: `python manage.py runserver
+10. Start local Django server: `python manage.py runserver`
+11. Open <http://localhost:8000>
 
 ## Development
 
