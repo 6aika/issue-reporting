@@ -1,3 +1,4 @@
+from api.models import Service
 from django import template
 from django.utils import timezone
 register = template.Library()
@@ -39,3 +40,11 @@ def time_from_now(datetime):
 	else: 
 		return "Ei tiedossa"
 
+# Check if the given service code is among supported service codes. If it is, return the same code. 
+# If not, return code "180".
+@register.filter
+def parse_service_code(service_code):
+	if Service.objects.filter(service_code=service_code).exists():
+		return service_code
+	else:
+		return "180"
