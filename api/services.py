@@ -14,6 +14,7 @@ def get_feedbacks(service_codes=None, service_request_ids=None,
                   lat=None, lon=None, radius=None,
                   order_by=None):
     queryset = Feedback.objects.all()
+
     if service_request_ids:
         queryset = queryset.filter(service_request_id__in=service_request_ids.split(','))
     if service_codes:

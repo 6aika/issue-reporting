@@ -1,4 +1,5 @@
 import json
+import logging
 import urllib
 from urllib.error import URLError
 
@@ -6,6 +7,8 @@ from django.conf import settings
 from django.core.management import BaseCommand
 
 from api.models import Service
+
+logger = logging.getLogger(__name__)
 
 
 def get_existing_service(service_code):
@@ -38,23 +41,23 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         open_311_url = settings.OPEN311_SERVICE_URL.format('fi')
-        print('url to send: {}'.format(open_311_url))
+        logger.info('url to send: {}'.format(open_311_url))
 
         try:
             response = urllib.request.urlopen(open_311_url)
             content = response.read()
             json_data = json.loads(content.decode("utf8"))
         except ValueError:
-            print('Decoding JSON has failed')
+            logger.info('Decoding JSON has failed')
             return
         except URLError:
-            print('Invalid URL: {}'.format(open_311_url))
+            logger.info('Invalid URL: {}'.format(open_311_url))
             return
 
         service_count = len(json_data)
-        print('Service count: {}'.format(service_count))
+        logger.info('Service count: {}'.format(service_count))
 
         for service in json_data:
             save_service(service)
 
-        print("Service synchronization complete")
+        logger.info("Service synchronization complete")

@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 import urllib.request
 from datetime import datetime, timedelta
@@ -12,6 +13,8 @@ from django.db import transaction
 from django.db.models import Max
 
 from api.models import Feedback, Task, MediaURL
+
+logger = logging.getLogger(__name__)
 
 
 def get_existing_feedback(service_request_id):
@@ -92,25 +95,25 @@ def sync_open311_data(start_datetime):
     while start_datetime < datetime.now():
         open_311_url = settings.OPEN311_URL + "/requests.json?extensions=true&updated_after=" \
                        + start_datetime.isoformat() + "Z&updated_before=" + end_datetime.isoformat()
-        print('url to send: {}'.format(open_311_url))
+        logger.info('url to send: {}'.format(open_311_url))
 
         try:
             response = urllib.request.urlopen(open_311_url)
             content = response.read()
             json_data = json.loads(content.decode("utf8"))
         except ValueError:
-            print('Decoding JSON has failed')
+            logger.error('Decoding JSON has failed')
             return
         except URLError:
-            print('Invalid URL: {}'.format(open_311_url))
+            logger.error('Invalid URL: {}'.format(open_311_url))
             return
 
         feedback_count = len(json_data)
 
-        print("Number of feedbacks to synchronize: {}".format(len(json_data)))
+        logger.info("Number of feedbacks to synchronize: {}".format(len(json_data)))
 
         if feedback_count >= settings.OPEN311_FEEDBACKS_PER_RESPONSE_LIMIT:
-            print("Number of feedbacks is more than API limit! Should send additional requests.")
+            logger.info("Number of feedbacks is more than API limit! Should send additional requests.")
             time_interval_days /= 2
             end_datetime = start_datetime + timedelta(days=int(time_interval_days))
             continue
@@ -128,18 +131,18 @@ def sync_with_id_file(path_to_ids):
     with open(path_to_ids) as f:
         for service_request_id in f:
             open_311_url = settings.OPEN311_URL + "/requests/{}.json?extensions=true".format(
-                service_request_id.rstrip())
-            print('url to send: {}'.format(open_311_url))
+                    service_request_id.rstrip())
+            logger.info('url to send: {}'.format(open_311_url))
 
             try:
                 response = urllib.request.urlopen(open_311_url)
                 content = response.read()
                 json_data = json.loads(content.decode("utf8"))
             except ValueError:
-                print('Decoding JSON has failed')
+                logger.error('Decoding JSON has failed')
                 return
             except URLError:
-                print('Invalid URL: {}'.format(open_311_url))
+                logger.error('Invalid URL: {}'.format(open_311_url))
                 return
 
             for feedback_json in json_data:
@@ -177,4 +180,4 @@ class Command(BaseCommand):
         else:
             sync_new_data()
 
-        print("Synchronization complete")
+        logger.info("Synchronization complete")

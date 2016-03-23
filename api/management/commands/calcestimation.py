@@ -1,9 +1,12 @@
+import logging
 from datetime import timedelta
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
-from api.models import Feedback
 from api.analysis import calc_fixing_time
+from api.models import Feedback
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -16,4 +19,4 @@ class Command(BaseCommand):
             expected_datetime = f.requested_datetime + timedelta(milliseconds=fixing_time)
             f.expected_datetime = expected_datetime
             f.save()
-        print("Estimation calculation completed")
+        logger.info("Estimation calculation completed")

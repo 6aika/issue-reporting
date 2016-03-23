@@ -134,6 +134,8 @@ MEDIA_URL = "/media/"
 DATETIME_FORMAT = "j.n.Y - G:i"
 DATE_FORMAT = "j.n.Y"
 
+ALLOW_HELSINKI_SPECIFIC_FEATURES = True
+
 # OPEN311 synchronization options
 OPEN311_URL = "https://asiointi.hel.fi/palautews/rest/v1"
 OPEN311_SERVICE_URL = "https://asiointi.hel.fi/palautews/rest/v1/services.json?locale={}"
