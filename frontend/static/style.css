@@ -499,3 +499,7 @@ body {
 .panel-group .panel-heading + .panel-collapse > .panel-body {
     border-top-color: white;
 }
+
+.nowrap {
+	white-space: nowrap;
+}
