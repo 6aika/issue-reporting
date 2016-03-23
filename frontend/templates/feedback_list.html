@@ -11,7 +11,7 @@
             <div class="row feedback_list_row">
                 <div class="col-xs-12 col-md-3 feedback_list_img ">
                     <img class="img img-responsive center-cropped"
-                         src="{{ item.media_url|default:'http://goo.gl/pqGzYQ' }}" alt="Feedback image"/>
+                         src={% include "feedback_image_url.html" with service_code=item.service_code media_url=item.media_url %} alt="Feedback image"/>
                 </div>
 
                 <div class="col-xs-12 col-md-2 feedback_list_details col-md-push-7">
