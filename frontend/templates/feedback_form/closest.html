@@ -58,19 +58,19 @@
     <script>
         $("body").css("margin", 0);
         map.setZoom(13);
-        var userLocation = new L.marker(map.getCenter(), {icon: center_icon}).addTo(map);
-        storeLocation(userLocation.getLatLng());
+        var newFeedbackLocation = new L.marker(map.getCenter(), {icon: new_feedback_icon, zIndexOffset: 1}).addTo(map);
+        storeLocation(newFeedbackLocation.getLatLng());
 
         // Provide initial list - if the user doesn't allow geolocating
-        fetch_service_objects(userLocation.getLatLng());
+        fetch_service_objects(newFeedbackLocation.getLatLng());
 
         map.on('move', function (e) {
-            userLocation.setLatLng(map.getCenter());
-            storeLocation(userLocation.getLatLng());
+            newFeedbackLocation.setLatLng(map.getCenter());
+            storeLocation(newFeedbackLocation.getLatLng());
         });
 
         map.on("moveend", function (event) {
-            fetch_service_objects(userLocation.getLatLng())
+            fetch_service_objects(newFeedbackLocation.getLatLng())
         });
 
         $("#location").submit(function (event){
@@ -99,11 +99,11 @@
             });
         }
 
-        function getUserLocation(e) {
+        function getNewFeedbackLocation(e) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
                     var newLocation = L.latLng(position.coords.latitude, position.coords.longitude);
-                    userLocation.setLatLng(newLocation);
+                    newFeedbackLocation.setLatLng(newLocation);
                     storeLocation(newLocation);
                     map.panTo(newLocation);
                 }.bind(this));
@@ -114,13 +114,13 @@
         }
 
         function updateMarker(e) {
-            if (typeof(userLocation) === 'undefined') {
-                userLocation = new L.marker(e.latlng).addTo(map);
+            if (typeof(newFeedbackLocation) === 'undefined') {
+                newFeedbackLocation = new L.marker(e.latlng).addTo(map);
                 map.panTo(e.latlng);
                 storeLocation(e.latlng);
             }
             else {
-                userLocation.setLatLng(e.latlng);
+                newFeedbackLocation.setLatLng(e.latlng);
                 map.panTo(e.latlng);
                 storeLocation(e.latlng)
             }

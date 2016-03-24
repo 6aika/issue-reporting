@@ -9,6 +9,8 @@ var markersLayer = L.markerClusterGroup({
     });
 var heatLayer = null;
 
+var userLocation = null;
+
 moment.locale('fi');
 
 $(document).ready(function() {
@@ -27,6 +29,8 @@ function getData(params, markersVisible) {
         if (markerCoordinates.length > 0) {
             markerCoordinates.length = 0;
         }
+
+        markersLayer.clearLayers();
 
         $.each(data, function (key, feedback) {
 
@@ -88,6 +92,7 @@ function getData(params, markersVisible) {
 }
 
 var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
+var new_feedback_icon = L.MakiMarkers.icon({icon: "marker", color: "#0072C6", size: "l"});
 var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
 var highlight_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "m"});
 
@@ -151,26 +156,21 @@ function getUserLocation(e) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var newLocation = L.latLng(position.coords.latitude, position.coords.longitude);
+            userLocation = new L.marker(newLocation, {icon: center_icon}).addTo(map);
             map.panTo(newLocation);
-        }.bind(this));
+        }.bind(this),
+        function(error) {
+            if (error.code == error.PERMISSION_DENIED)
+            {
+                var newLocation = L.latLng(HelsinkiCoord.lat, HelsinkiCoord.lng);
+                userLocation = new L.marker(newLocation, {icon: center_icon}).addTo(map);
+                map.panTo(newLocation); 
+            }
+        });
     }
     else {
         console.error("Geolocation is not supported by this browser.");
     }
-}
-
-var userLocation;
-
-function addMarker(e){
-    // Add marker to map at click location; add popup window
-    if ( typeof(userLocation) === 'undefined' )
-	{
-    	userLocation = new L.marker(e.latlng, {draggable:true}).addTo(map);
-    }
-    else 
-	{
-		userLocation.setLatLng(e.latlng);         
-	}
 }
 
 function showMarkers(show) {
@@ -187,14 +187,14 @@ function showMarkers(show) {
 
 function showHeatmap(show) {
     if (show) {
-        if(heatLayer)
+        if (heatLayer)
             map.removeLayer(heatLayer);
 
         heatLayer = L.heatLayer(markerCoordinates, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
     }
     else
     {
-        if(heatLayer)
+        if (heatLayer)
             map.removeLayer(heatLayer);
     }
 }

@@ -29,7 +29,7 @@
 
 		<div class="row">
 			<div class="col-xs-4">
-				<label for="markers">Markers</label>
+				<label for="markers">Palautteet</label>
 			</div>
 			<div class="col-xs-8 toggle-switch">
 				<input type="checkbox" data-toggle="toggle" id="toggle-markers" data-width="100" checked>
@@ -40,7 +40,7 @@
 
 		<div class="row">
 			<div class="col-xs-4">
-				<label for="heatmap">Heatmap</label>
+				<label for="heatmap">Tiheyskartta</label>
 			</div>
 			<div class="col-xs-8 toggle-switch">
 				<input type="checkbox" data-toggle="toggle" id="toggle-heatmap" data-width="100">
@@ -53,9 +53,9 @@
 			<div class="col-xs-12">
 				<label for="status">Tila</label>
 				<select class="form-control" id="status" name="status">
-					<option selected="selected" value="">Status</option>
-					<option value="open">Open</option>
-					<option value="closed">Closed</option>
+					<option value="">Kaikki</option>
+					<option selected value="open">Avoin</option>
+					<option value="closed">Suljettu</option>
 				</select>
 			</div>
 		</div>
@@ -64,7 +64,7 @@
 			<div class="col-xs-12">
 				<label for="service_code">Aihealue</label>
 	            <select class="form-control" name="service_code" id="service_code">
-	                <option selected="selected" value="">Service name</option>
+	                <option selected="selected" value="">Kaikki</option>
 	                {% for service in services %}
 	                    <option value="{{ service.service_code }}">{{ service.service_name }}</option>
 	                {% endfor %}
@@ -108,7 +108,7 @@
 
 		<div class="space"></div>
 
-        <button class="btn btn-primary btn-lg btn-block" type="submit" value="apply" onclick="sendRequest()">Apply</button>
+        <button class="btn btn-primary btn-lg btn-block" type="submit" value="apply" onclick="sendRequest()">Päivitä</button>
 	</div>
 
     <div id="toggleButtonContainer" class="toggled">
@@ -122,6 +122,7 @@
 <script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
 <script src="{% static 'map.js' %}"></script>
 <script>
+
     function dateStrToIso(dateStr) {
         var dateParts = dateStr.split(".");
         date = new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]);
