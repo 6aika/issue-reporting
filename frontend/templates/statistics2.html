@@ -19,10 +19,10 @@
                 {% for item in data %}
                     <tr>
 
-                        <td><a href="/feedbacks/?service_code={{item.service_code}}">{{ item.service_name }}</a></td>
-                        <td>{{ item.total }}</td>
-                        <td>{{ item.closed }}</td>
-                        <td>{{ item.open }}</td>
+                        <td>{{ item.service_name }}</td>
+                        <td><a href="/feedbacks/?service_code={{item.service_code}}">{{ item.total }}</a></td>
+                        <td><a href="/feedbacks/?status=closed&service_code={{item.service_code}}">{{ item.closed }}</a></td>
+                        <td><a href="/feedbacks/?status=open&service_code={{item.service_code}}">{{ item.open }}</a></td>
                         <td>{{ item.median| td_humanize }}</td>
                     </tr>
                 {% endfor %}
