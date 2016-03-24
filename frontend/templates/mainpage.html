@@ -82,7 +82,9 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12"> <!-- The value -->
-                                <h3>{{waiting_time|td_humanize}}</h3>
+								<div class="nowrap">
+									<h3>{{waiting_time|td_humanize}}</h3>
+								</div>
                             </div>
                         </div>
                     </div>
@@ -93,8 +95,8 @@
         <div class="row" id="recent-fix-info">
 		{% if fixed_feedbacks %}
             {% for feedback in fixed_feedbacks %}
-                <div class="col-sm-3 col-xs-6">
-                    {% include "short_feedback_box_recently_fixed.html" %}
+                <div class="col-sm-3">
+                    {% include "short_feedback_box_with_image.html" %}
                 </div>
             {% endfor %}
 		{% else %}
@@ -107,7 +109,7 @@
         <div class="row" id="recent-feedback-info">
 		{% if recent_feedbacks %}
             {% for feedback in recent_feedbacks %}
-                <div class="col-sm-3 col-xs-12 ">
+                <div class="col-sm-3">
                     {% include "short_feedback_box_with_image.html" %}
                 </div>
             {% endfor %}
@@ -119,5 +121,5 @@
         </div>
     </div>
 
-    {% include "footer.html" with photocredit='<p><a href="https://commons.wikimedia.org/wiki/File:HelsinkiPanorama_rocco.jpg">Photo</a> by <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">(CC BY-SA)</a></p>' %}
+    {% include "footer.html" with photocredit='<p>Original <a href="https://commons.wikimedia.org/wiki/File:HelsinkiPanorama_rocco.jpg">photo</a> by Roccodm <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">(CC BY-SA)</a></p>' %}
 {% endblock %}

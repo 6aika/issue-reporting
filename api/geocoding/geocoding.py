@@ -1,9 +1,12 @@
 import json
 import urllib
+import logging
 from urllib.error import URLError
 
 from django.conf import settings
 from geopy.geocoders import Nominatim
+
+logger = logging.getLogger(__name__)
 
 
 def reverse_geocode(lat, lon):
@@ -16,23 +19,23 @@ def reverse_geocode(lat, lon):
 def reverse_geocode_nominatim(lat, lon):
     geolocator = Nominatim()
     location = geolocator.reverse("{}, {}".format(lat, lon))
-    print("found address: " + location.address)
+    logger.info('found address: ' + location.address)
     return location.address
 
 
 def reverse_geocode_servicemap(lat, lon):
     reverse_geocoding_url = settings.REVERSE_GEO_URL.format(lat, lon)
-    print('url to send: {}'.format(reverse_geocoding_url))
+    logger.info('url to send: {}'.format(reverse_geocoding_url))
 
     try:
         response = urllib.request.urlopen(reverse_geocoding_url)
         content = response.read()
         json_data = json.loads(content.decode("utf8"))
     except ValueError:
-        print('Decoding JSON has failed')
+        logger.error('Decoding JSON has failed')
         return
     except URLError:
-        print('Invalid URL: {}'.format(reverse_geocoding_url))
+        logger.error('Invalid URL: {}'.format(reverse_geocoding_url))
         return
     pass
 
@@ -42,8 +45,8 @@ def reverse_geocode_servicemap(lat, lon):
         street = res['street']['name']['fi'] + ' ' + res['number']
         municipality = res['street']['municipality'].capitalize()
         address_string = street + ', ' + municipality
-        print(address_string)
+        logger.info('found address: ' + address_string)
         return address_string
 
-    print('address not found')
+    logger.info('address not found')
     return ''

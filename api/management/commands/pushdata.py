@@ -1,10 +1,13 @@
 import json
+import logging
 
 import requests
 from django.conf import settings
 from django.core.management import BaseCommand
 
 from api.models import Feedback
+
+logger = logging.getLogger(__name__)
 
 
 def send_feedback_to_open311(f):
@@ -35,7 +38,7 @@ def send_feedback_to_open311(f):
         f.service_notice = content[0]['service_notice']
         f.save()
     else:
-        print(content)
+        logger.info(content)
 
 
 class Command(BaseCommand):
@@ -43,9 +46,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         feedbacks = Feedback.objects.filter(service_request_id='')
-        print("Number of feedback to send: {}".format(len(feedbacks)))
+        logger.info("Number of feedback to send: {}".format(len(feedbacks)))
 
         for feedback in feedbacks:
             send_feedback_to_open311(feedback)
 
-        print('Feedbacks are sent to remote system')
+        logger.info('Feedbacks are sent to remote system')

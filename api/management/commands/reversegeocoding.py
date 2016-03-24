@@ -1,8 +1,12 @@
+import logging
+
 from django.core.management import BaseCommand
 from django.db.models import Q
 
 from api.geocoding.geocoding import reverse_geocode
 from api.models import Feedback
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -16,4 +20,4 @@ class Command(BaseCommand):
             address = reverse_geocode(f.lat, f.lon)
             f.address_string = address
             f.save()
-        print('reverse geocoding complete')
+        logger.info('reverse geocoding complete')

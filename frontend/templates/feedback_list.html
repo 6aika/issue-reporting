@@ -6,16 +6,12 @@
 
 {% block content %}
     {% include "feedback_list_filter.html" %}
-
     {% if feedbacks %}
-
-
-
         {% for item in feedbacks %}
             <div class="row feedback_list_row">
                 <div class="col-xs-12 col-md-3 feedback_list_img ">
                     <img class="img img-responsive center-cropped"
-                         src="{{ item.media_url|default:'http://goo.gl/pqGzYQ' }}" alt="Feedback image"/>
+                         src={% include "feedback_image_url.html" with service_code=item.service_code media_url=item.media_url %} alt="Feedback image"/>
                 </div>
 
                 <div class="col-xs-12 col-md-2 feedback_list_details col-md-push-7">
@@ -197,16 +193,16 @@
                 <div class="pagination">
                     {% if feedbacks.has_previous %}
                         <a href="?{{ queries.urlencode }}&amp;page={{ feedbacks.previous_page_number }}"
-                           class="btn btn-primary" role="button"><<</a>
+                           class="btn btn-primary" role="button">&lt;&lt;</a>
                     {% else %}
-                        <a class="btn btn-primary" role="button" disabled><<</a>
+                        <a class="btn btn-primary disabled" role="button" >&lt;&lt;</a>
                     {% endif %}
                     <span>{{ feedbacks.number }} / {{ feedbacks.paginator.num_pages }}</span>
                     {% if feedbacks.has_next %}
                         <a href="?{{ queries.urlencode }}&amp;page={{ feedbacks.next_page_number }}"
-                           class="btn btn-primary" role="button">>></a>
+                           class="btn btn-primary" role="button">&gt;&gt;</a>
                     {% else %}
-                        <a class="btn btn-primary" role="button" disabled>>></a>
+                        <a class="btn btn-primary disabled" role="button">&gt;&gt;</a>
                     {% endif %}
                 </div>
             </div>

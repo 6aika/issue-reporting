@@ -2,22 +2,24 @@
 {% load custom_tags %}
 <div class="short-feedback-box-with-image">
     <div class="row">
-        <div class="col-xs-8 col-sm-12 col-xs-offset-2 col-sm-offset-0 shadow">
+        <div class="col-xs-12 shadow">
             <div class="row">
                 <div class="col-xs-12 short-img">
-                    <img class="img-responsive" src="http://goo.gl/pqGzYQ"/>
+                    <img class="img-responsive" src="{% include 'feedback_image_url.html' with service_code=feedback.service_code media_url=feedback.media_url %}"/>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-12 short-text">
                     <a href="{% url 'feedback_details' feedback.id %}"><h5>{{ feedback.title|default:"NO TITLE" }}</h5></a>
                     <h5 class="text-muted">{{ feedback.service_name }}</h5>
+                    {% if feedback.status == "open" %}
                     <span>Avattu: {{ feedback.requested_datetime|date }}</span><br>
                     <span>Korjausarvio: {{ feedback.expected_datetime|time_from_now }}</span><br>
+                    {% else %}
+                    <span>Suljettu: {{ feedback.updated_datetime|date }}</span><br>
+                    {% endif %}
                 </div>
             </div>
-
         </div>
-
     </div>
 </div>

@@ -287,7 +287,7 @@ body {
 
 /* Color for item under mouse in category selection */
 .feedback_form_category_item:hover {
-    background-color: #eee
+    background-color: #eee;
 }
 
 .feedback_form_category_item.active {
@@ -526,4 +526,8 @@ body {
 
 .panel-group .panel-heading + .panel-collapse > .panel-body {
     border-top-color: white;
+}
+
+.nowrap {
+	white-space: nowrap;
 }

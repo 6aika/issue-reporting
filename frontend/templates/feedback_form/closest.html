@@ -61,6 +61,9 @@
         var userLocation = new L.marker(map.getCenter(), {icon: center_icon}).addTo(map);
         storeLocation(userLocation.getLatLng());
 
+        // Provide initial list - if the user doesn't allow geolocating
+        fetch_service_objects(userLocation.getLatLng());
+
         map.on('move', function (e) {
             userLocation.setLatLng(map.getCenter());
             storeLocation(userLocation.getLatLng());
