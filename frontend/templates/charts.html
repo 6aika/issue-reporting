@@ -43,18 +43,22 @@
                     closed
                 ],
                 type: 'bar',
-                labels: true
+
 
             },
 
 
             axis: {
-                rotated:true,
+
                 x: {
-                    min: 1,
 
 
-                    type: 'category' // this needed to load string x value
+                    type: 'category', // this needed to load string x value
+                    tick: {
+                rotate: 75,
+                multiline: false
+            },
+            height: 130
                 }
             }
 
@@ -73,10 +77,15 @@
             },
             axis: {
 
-        rotated: true,
+
                 x: {
 
-                    type: 'category' // this needed to load string x value
+                    type: 'category', // this needed to load string x value
+                    tick: {
+                rotate: 75,
+                multiline: false
+            },
+            height: 130
                 }
             }
         });
@@ -102,7 +111,6 @@
                     closed
                 ],
                 type: 'bar',
-                labels: true
             },
             zoom: {
                 enabled: true,
@@ -110,11 +118,15 @@
                 },
 
             axis: {
-                rotated:true,
+
                 x: {
                  
-                    type: 'category' // this needed to load string x value
-
+                    type: 'category' ,// this needed to load string x value
+                    tick: {
+                        rotate:75,
+                        multiline: false
+            },
+            height: 150
                 }
             }
         });
