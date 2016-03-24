@@ -186,7 +186,7 @@ body {
 
 /* --- Sidebar --- */
 
-#toggleButton {
+#toggleButtonContainer {
     top: 100px;
     left: 300px;
     position: absolute;
@@ -198,7 +198,7 @@ body {
     -o-transition: all 0.5s ease-in 0s;
 }
 
-#toggleButton.toggled {
+#toggleButtonContainer.toggled {
     left: 0;
     transition: all 0.5s ease-in 0s;
     -webkit-transition: all 0.5s ease-in 0s;
@@ -397,7 +397,6 @@ body {
         padding: 10px;
 
     }
-
 }
 
 
@@ -483,6 +482,35 @@ body {
     .feedback_list_date_picker #datepicker-end {
         margin-left: -10px;
         width: 60vw;
+    }
+
+    .sidebar-element {
+        width: 240px;
+    }
+
+    #toggleButtonContainer {
+        width: 40px;
+        left: calc(100vw - 40px);
+        top: 60px;
+    }
+
+    #toggleButtonContainer.toggled {
+        left: 0;
+    }
+
+    #sidebar-wrapper {
+        left: -100vw;
+        width: 100vw;
+    }
+
+    #sidebar-wrapper.toggled {
+        left: 0;
+        width: 100vw;
+    }
+
+    .toggle-switch {
+        padding-right: 80px;
+        data-width: 80;
     }
 }
 

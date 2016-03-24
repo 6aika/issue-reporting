@@ -201,6 +201,6 @@ function showHeatmap(show) {
 
 function onToggleMenu() {
     $("#sidebar-wrapper").toggleClass("toggled");
-    $("#toggleButton").toggleClass("toggled");
+    $("#toggleButtonContainer").toggleClass("toggled");
     $("#toggleButtonIcon").toggleClass("glyphicon-chevron-left glyphicon-chevron-right");
 }
