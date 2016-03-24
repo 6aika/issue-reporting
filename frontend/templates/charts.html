@@ -49,13 +49,18 @@
 
 
             axis: {
+                rotated:true,
                 x: {
+                    min: 1,
+
+
                     type: 'category' // this needed to load string x value
                 }
             }
 
         });
         c3.generate({
+
             bindto: '#timeStatistics',
             data: {
                 x: 'x',
@@ -67,7 +72,10 @@
                 labels: true
             },
             axis: {
+
+        rotated: true,
                 x: {
+
                     type: 'category' // this needed to load string x value
                 }
             }
@@ -102,8 +110,11 @@
                 },
 
             axis: {
+                rotated:true,
                 x: {
+                 
                     type: 'category' // this needed to load string x value
+
                 }
             }
         });
