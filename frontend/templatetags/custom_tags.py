@@ -1,5 +1,6 @@
 from api.models import Service
 from django import template
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 register = template.Library()
 
@@ -48,3 +49,14 @@ def parse_service_code(service_code):
 		return service_code
 	else:
 		return "180"
+
+# Returns the service name based on given service code. This is done because somtimes 
+# service_name is in the wrong language
+@register.filter
+def get_service_name(service_code):
+	try:
+		service = Service.objects.get(service_code=service_code)
+	except ObjectDoesNotExist:
+		return "Muu"
+	return service.service_name
+
