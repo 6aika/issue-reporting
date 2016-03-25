@@ -116,15 +116,8 @@ body {
     font-size: 4em;
 }
 
-.short-feedback-box, .short-feedback-box-with-image {
-    /* border-color: #aaa;*/
-    /* border-style: solid;*/
-    /* border-width: 1px;*/
-    /* border-radius: 10px;*/
+.short-feedback-box-with-image {
     padding: 0.5em;
-    /* box-shadow: 1px 1px 3px 1px #aaa; */
-    margin: 0px 0px 0px 15px;
-
 }
 
 .shadow {
@@ -135,8 +128,8 @@ body {
 }
 
 .short-img {
-    width: 100%;
-    padding: 0;
+    height: 120px;
+    margin: 0 auto;
 }
 
 .short-text {
@@ -144,7 +137,7 @@ body {
     margin-top: 0px;
     margin-left: auto;
     margin-right: auto;
-
+    height: 100px
 }
 
 .short-text h4 {
