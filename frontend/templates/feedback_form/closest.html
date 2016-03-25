@@ -69,8 +69,9 @@
             storeLocation(newFeedbackLocation.getLatLng());
         });
 
+        var keep_selected = null;   // Variable to hold service_object_id to keep selected in the list
         map.on("moveend", function (event) {
-            fetch_service_objects(newFeedbackLocation.getLatLng())
+            fetch_service_objects(newFeedbackLocation.getLatLng());
         });
 
         $("#location").submit(function (event){
@@ -79,16 +80,29 @@
             $("#{{form.service_object_id.id_for_label}}").val(service_object_id);
         });
 
+        $("#service_object_select").change(function () {
+            var id = $(this).val();            
+            $.each(service_object_results, function(index, value) {
+                if(value.id == id) {
+                    map.panTo([value.location.coordinates[1], value.location.coordinates[0]]);
+                    keep_selected = id;
+                    return false; // break
+                }
+            });
+        });
+
         // Populate the list by nearby service objects. Only shows max 20 (the 1st page)
+        var service_object_results;
         function fetch_service_objects(location) {
             var data = {
-                "only": "name",
+                "only": "name,location",
                 "lat": location.lat,
                 "lon": location.lng,
                 "distance": 300
             };
             var url = "http://api.hel.fi/servicemap/v1/unit/";
             $.get(url, data, function (data) {
+                service_object_results = data.results;
                 $("#service_object_select").empty();
                 $("#service_object_select").append("<option value=''>Voit valita listalta...</option>");
                 $.each(data.results, function (index, value) {
@@ -96,6 +110,8 @@
                     $(option).text(value.name.fi);
                     $("#service_object_select").append(option);
                 });
+                $("#service_object_select").val(keep_selected);
+                keep_selected = null;
             });
         }
 
