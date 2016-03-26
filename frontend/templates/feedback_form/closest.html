@@ -115,33 +115,6 @@
             });
         }
 
-        function getNewFeedbackLocation(e) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    var newLocation = L.latLng(position.coords.latitude, position.coords.longitude);
-                    newFeedbackLocation.setLatLng(newLocation);
-                    storeLocation(newLocation);
-                    map.panTo(newLocation);
-                }.bind(this));
-            }
-            else {
-                console.error("Geolocation is not supported by this browser.");
-            }
-        }
-
-        function updateMarker(e) {
-            if (typeof(newFeedbackLocation) === 'undefined') {
-                newFeedbackLocation = new L.marker(e.latlng).addTo(map);
-                map.panTo(e.latlng);
-                storeLocation(e.latlng);
-            }
-            else {
-                newFeedbackLocation.setLatLng(e.latlng);
-                map.panTo(e.latlng);
-                storeLocation(e.latlng)
-            }
-        }
-
         function storeLocation(latlng) {
             $("#{{ form.latitude.id_for_label }}").val(latlng.lat);
             $("#{{ form.longitude.id_for_label }}").val(latlng.lng);
