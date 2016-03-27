@@ -31,9 +31,9 @@
                             {% endif %}
                             <p class="text-muted">Luotu: {{ feedback.requested_datetime }}</p>
                             <p class="text-muted">Tila: {{ feedback|real_status }}
-                            {% if not feedback|is_open %}
-                                <span>({{feedback.updated_datetime}})</span>
-                            {% endif %}
+                                {% if not feedback|is_open %}
+                                    <span>({{feedback.updated_datetime}})</span>
+                                {% endif %}
                             </p>
                             <p>{{ feedback.description }}</p>
                             {% if feedback|is_open %}
