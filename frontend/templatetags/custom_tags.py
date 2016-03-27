@@ -27,9 +27,9 @@ def td_humanize(diff):
 	else:
 		hours, remainder = divmod(diff.seconds, 3600)
 		minutes, seconds = divmod(remainder, 60)
+		if minutes >= 30:
+			hours += 1
 		result = str(hours) + " h"
-		if minutes:
-			result += " " + str(minutes) + " min"
 		return result
 
 # Takes a datetime object and returns the difference between now and then
@@ -61,7 +61,7 @@ def get_service_name(service_code):
 	return service.service_name
 
 # Check if the feedback really is open or not. Return true if:
-# 	- status == open
+# 	- status == open/moderation
 #	- detailed_status contains specified substrings
 @register.filter
 def is_open(feedback):
