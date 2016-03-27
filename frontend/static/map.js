@@ -17,20 +17,24 @@ $(document).ready(function() {
     getData({"status" : "open"}, true);
 });
 
+function clearMarkers() {
+    if (markers.length > 0) {
+        for (var i = 0; i < markers.length; i++) {
+            map.removeLayer(markers[i]);
+        }
+    }
+
+    if (markerCoordinates.length > 0) {
+        markerCoordinates.length = 0;
+    }
+
+    markersLayer.clearLayers();
+}
+
 function getData(params, markersVisible) {
     $.getJSON("/api/v1/requests.json/?extensions=true", params, function (data) {
 
-        if (markers.length > 0) {
-            for (var i = 0; i < markers.length; i++) {
-                map.removeLayer(markers[i]);
-            }
-        }
-
-        if (markerCoordinates.length > 0) {
-            markerCoordinates.length = 0;
-        }
-
-        markersLayer.clearLayers();
+        clearMarkers();
 
         $.each(data, function (key, feedback) {
 
@@ -41,6 +45,7 @@ function getData(params, markersVisible) {
                     'className' : 'custom'
                 }
 
+            // Generate popup-window content
             var popupContent = "";
 
             popupContent += "<h4 id=\"feedback_title\"></h4>" +
@@ -49,10 +54,14 @@ function getData(params, markersVisible) {
                 "<p id=\"feedback_description\"></p>" +
                 "<a id=\"feedback_details\" href=\"\"></a>";
 
+            // Initiate marker of feedback
             var marker = L.marker([feedback.lat, feedback.long], {icon: feedback_icon}).bindPopup(popupContent, customOptions).addTo(markersLayer);
             marker.feedback = feedback;
             markerCoordinates.push([feedback.lat, feedback.long]);
+
             marker.on('click', function(e) {
+ 
+                // Highlight selected marker
                 if (highlight !== null) {
                     // is highlighted, store id of marker
                     var id = highlight._leaflet_id;
@@ -66,6 +75,7 @@ function getData(params, markersVisible) {
                     // Assign highlight
                     highlight = marker;
                 }
+                
 
                 $('#feedback_title').text(e.target.feedback.extended_attributes.title);
                 $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
@@ -86,6 +96,7 @@ function getData(params, markersVisible) {
             markers.push(marker);
         });
     });
+    
     if (markersVisible) {
         showMarkers(markersVisible);
     }
@@ -135,6 +146,14 @@ var map = L.map('map', {
     zoomControl: false,
     maxZoom: 15
 }).setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 11);
+
+map.on('popupclose', function(e) {
+    removeHighlight();
+});
+
+map.on('click', function(e) {
+    removeHighlight();
+});
 
 // Automatically fetch user location and center
 getUserLocation();
