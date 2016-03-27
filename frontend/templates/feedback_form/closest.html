@@ -109,6 +109,7 @@
             var url = "http://api.hel.fi/servicemap/v1/unit/";
             $.get(url, data, function (data) {
                 service_object_results = data.results;
+                // Clear and populate the list
                 $("#service_object_select").empty();
                 $("#service_object_select").append("<option value=''>Voit valita listalta...</option>");
                 $.each(data.results, function (index, value) {
@@ -116,6 +117,7 @@
                     $(option).text(value.name.fi);
                     $("#service_object_select").append(option);
                 });
+                // Pre-select an option if the user had just selected one
                 $("#service_object_select").val(keep_selected);
                 keep_selected = null;
             });

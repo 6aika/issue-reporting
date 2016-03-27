@@ -17,20 +17,15 @@
                 <div class="col-xs-12 col-md-2 feedback_list_details col-md-push-7">
                     <div class="row">
                         <div class="col-sm-12">
-                            {% if item.status == 'open' %}
+                            {% if item|is_open %}
                                 <h4 class="text-success">
-                                    {{ item.status|capfirst }}<br/>
+                                    {{ item|real_status }}<br/>
                                     <small>{{ item.requested_datetime|default_if_none:""|date:"d.m.o " }}</small>
-                                </h4>
-                            {% elif item.status == 'moderation' %}
-                                <h4 class="text-warning">
-                                    {{ item.status|capfirst }}<br/>
-                                    <small>{{ item.updated_datetime|default_if_none:"" }}</small>
                                 </h4>
                             {% else %}
                                 <h4 class="text-danger">
-                                    {{ item.status|capfirst }}<br/>
-                                    <small>{{ item.updated_datetime|default_if_none:"" }}</small>
+                                    {{ item|real_status }}<br/>
+                                    <small>{{ item.updated_datetime|default_if_none:""|date:"d.m.o " }}</small>
                                 </h4>
                             {% endif %}
                         </div>

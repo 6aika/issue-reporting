@@ -30,13 +30,15 @@
                                 <p class="text-muted">Vastuullinen taho: {{ feedback.agency_responsible }}</p>
                             {% endif %}
                             <p class="text-muted">Luotu: {{ feedback.requested_datetime }}</p>
-                            <p class="text-muted">Tila: {{ feedback.status }}
-                            {% if feedback.status == "closed" %}
+                            <p class="text-muted">Tila: {{ feedback|real_status }}
+                            {% if not feedback|is_open %}
                                 <span>({{feedback.updated_datetime}})</span>
                             {% endif %}
                             </p>
                             <p>{{ feedback.description }}</p>
-                            <p>Estimated time of fixing: {{ feedback.expected_datetime }}</p>
+                            {% if feedback|is_open %}
+                                <p>Korjausarvio: {{ feedback.expected_datetime }}</p>
+                            {% endif %}
                             <p>Osoite: {{ feedback.address_string }}</p>
                         </div>
                     </div>

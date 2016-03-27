@@ -60,3 +60,24 @@ def get_service_name(service_code):
 		return "Muu"
 	return service.service_name
 
+# Check if the feedback really is open or not. Return true if:
+# 	- status == open
+#	- detailed_status contains specified substrings
+@register.filter
+def is_open(feedback):
+	open_strings = ["PUBLIC_WORKS_NEW", "PUBLIC_WORKS_COMPLETED_SCHEDULED_LATER"]
+	if feedback.status == "open" or feedback.status == "moderation":
+		return True
+	else:
+		for string in open_strings:
+			if string in feedback.detailed_status:
+				return True
+		return False
+
+# Returns the real status string of the feedback
+@register.filter
+def real_status(feedback):
+	if is_open(feedback):
+		return "Avoin"
+	else:
+		return "Suljettu"
