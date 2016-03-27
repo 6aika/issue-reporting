@@ -36,13 +36,13 @@
                                 <small>{{ item.agency_responsible }}</small>
                             </p>
                         </div>
+                        {% if item|is_open and item.expected_datetime%}
                         <div class="col-sm-12 text-info">
-                            {% if item.expected_datetime and not item.status == "closed" %}
-                                <p>Arvio: <br/>
-                                    <small>{{ item.expected_datetime|time_from_now }}</small>
-                                </p>
-                            {% endif %}
+                            <p>Arvio: <br/>
+                                <small>{{ item.expected_datetime|time_from_now }}</small>
+                            </p>
                         </div>
+                        {% endif %}
                     </div>
                     {% if item.distance %}
                         <div class="row">
