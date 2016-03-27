@@ -56,20 +56,22 @@
     <script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
     <script src="{% static 'map.js' %}"></script>
     <script>
+        var service_object_results;
+        var keep_selected = null;   // Variable to hold service_object_id to keep selected in the list
+
         $("body").css("margin", 0);
         map.setZoom(13);
         var newFeedbackLocation = new L.marker(map.getCenter(), {icon: new_feedback_icon, zIndexOffset: 1}).addTo(map);
-        storeLocation(newFeedbackLocation.getLatLng());
 
         // Provide initial list - if the user doesn't allow geolocating
         fetch_service_objects(newFeedbackLocation.getLatLng());
 
+        // Update marker when the map is being moved
         map.on('move', function (e) {
             newFeedbackLocation.setLatLng(map.getCenter());
-            storeLocation(newFeedbackLocation.getLatLng());
         });
 
-        var keep_selected = null;   // Variable to hold service_object_id to keep selected in the list
+        // Fetch new service objects when the map movement stops 
         map.on("moveend", function (event) {
             fetch_service_objects(newFeedbackLocation.getLatLng());
         });
@@ -78,6 +80,11 @@
             // Assign the selected service_object_id to form
             var service_object_id = $("#service_object_select").val();
             $("#{{form.service_object_id.id_for_label}}").val(service_object_id);
+
+            // Assign selected location to form 
+            var latlng = newFeedbackLocation.getLatLng();
+            $("#{{ form.latitude.id_for_label }}").val(latlng.lat);
+            $("#{{ form.longitude.id_for_label }}").val(latlng.lng);
         });
 
         $("#service_object_select").change(function () {
@@ -86,16 +93,15 @@
                 if(value.id == id) {
                     map.panTo([value.location.coordinates[1], value.location.coordinates[0]]);
                     keep_selected = id;
-                    return false; // break
+                    return false; // break from $.each
                 }
             });
         });
 
         // Populate the list by nearby service objects. Only shows max 20 (the 1st page)
-        var service_object_results;
         function fetch_service_objects(location) {
             var data = {
-                "only": "name,location",
+                "only": "name,location",    // Fetch service object names and coordinates
                 "lat": location.lat,
                 "lon": location.lng,
                 "distance": 300
@@ -113,11 +119,6 @@
                 $("#service_object_select").val(keep_selected);
                 keep_selected = null;
             });
-        }
-
-        function storeLocation(latlng) {
-            $("#{{ form.latitude.id_for_label }}").val(latlng.lat);
-            $("#{{ form.longitude.id_for_label }}").val(latlng.lng);
         }
     </script>
 
