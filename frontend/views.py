@@ -154,7 +154,7 @@ def map(request):
 #different departments
 def department(request):
     data = []
-    agencies = Feedback.objects.all().distinct("agency_responsible")
+    agencies = Feedback.objects.filter(status__in=["open", "closed"]).distinct("agency_responsible")
     for agency in agencies:
         item = {}
         agency_responsible = agency.agency_responsible
