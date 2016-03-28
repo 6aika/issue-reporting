@@ -12,7 +12,7 @@
                     <h5 class="text-muted">{{ feedback.service_code|get_service_name }}</h5>
                     {% if feedback|is_open %}
                         <span>Avattu: {{ feedback.requested_datetime|date }}</span><br>
-                        <span>Korjausarvio: {{ feedback.expected_datetime|time_from_now }}</span><br>
+                        <span>Korjausarvio: {{ feedback|get_expected_datetime|time_from_now }}</span><br>
                     {% else %}
                         <span>Suljettu: {{ feedback.updated_datetime|date }}</span><br>
                     {% endif %}

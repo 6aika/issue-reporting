@@ -37,7 +37,7 @@
                             </p>
                             <p>{{ feedback.description }}</p>
                             {% if feedback|is_open %}
-                                <p>Korjausarvio: {{ feedback.expected_datetime }}</p>
+                                <p>Korjausarvio: {{ feedback|get_expected_datetime }}</p>
                             {% endif %}
                             <p>Osoite: {{ feedback.address_string }}</p>
                         </div>
