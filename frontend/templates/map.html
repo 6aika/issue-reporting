@@ -109,7 +109,14 @@
 
 		<div class="space"></div>
 
-        <button id="submitButton" class="btn btn-primary btn-lg btn-block" type="submit" value="apply" onclick="sendRequest()">Päivitä</button>
+        <button 
+	        id="submitButton" 
+	        class="btn btn-primary btn-lg btn-block" 
+	        type="submit" value="apply" 
+	        onclick="sendRequest()" 
+	        style="position: relative;">
+	        Päivitä
+        </button>
 	</div>
 
     <div id="toggleButtonContainer" class="toggled">
@@ -124,19 +131,32 @@
 <script src="{% static 'map.js' %}"></script>
 <script>
 
-	/*
+	var legend = L.control({position: "bottomright"});
+
+	legend.onAdd = function (map) {
+	    var div = L.DomUtil.create("div", "map-legend");
+	    div.innerHTML += "<i style='background: #0072C6'></i>" + "Palaute<br>";
+	    div.innerHTML += "<i style='background: #62c462'></i>" + "Sijaintisi<br>";
+	    div.innerHTML += "<i style='background: #FFC61E'></i>" + "Valittu palaute<br>";
+	    return div;
+	};
+
+	legend.addTo(map);	
+
 	// Spinner for when loading data
 	var opts = {
 		lines: 11,
 		length: 3,
 		width: 2,
-		radius:4,
+		radius: 4,
+	 	zIndex: 2,
+	 	left: '35%',
+	 	color: '#fff'
 	};
-	var spinner = new Spinner(opts).spin(document.getElementById("submitButton"));
-	*/
+	var spinner = new Spinner(opts);
 
     function sendRequest() {
-
+    	spinner.spin(document.getElementById("submitButton"));
 
     	var params = {};
 
@@ -155,9 +175,8 @@
 	    $('#submitButton').attr("disabled", true);
 
         getData(params, show, function() {
-        	console.log("enable apply button");
-        	$('#submitButton').attr("disabled", false);
         	spinner.stop();
+        	$('#submitButton').attr("disabled", false);
         });
     }
 
