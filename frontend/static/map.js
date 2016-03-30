@@ -25,7 +25,7 @@ function clearMarkers() {
     markersLayer.clearLayers();
 }
 
-function getData(params, markersVisible) {
+function getData(params, markersVisible, onSuccess) {
     $.getJSON("/api/v1/requests.json/?extensions=true", params, function (data) {
 
         clearMarkers();
@@ -87,8 +87,10 @@ function getData(params, markersVisible) {
                 
             });
         });
+    }).always(function() {
+        if (onSuccess) { onSuccess(); }
     });
-    
+
     if (markersVisible) {
         showMarkers(markersVisible);
     }
