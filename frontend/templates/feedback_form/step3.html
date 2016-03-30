@@ -106,7 +106,7 @@
             // Initialize dropzone
             Dropzone.options.dropzone = {
                 url: "{% url 'media_upload' %}",
-                maxFilesize: 1,
+                maxFilesize: 10,
                 maxFiles: 3,
                 acceptedFiles: "image/*",
                 init: function () {
