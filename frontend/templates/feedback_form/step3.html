@@ -24,7 +24,7 @@
             {% for error in form.title.errors %}
                 <div class="col-sm-offset-2 col-sm-8">
                     {% if error == "This field is required." %}
-                        Tämä kenttä on pakollinen!
+                        <span class="alert-danger">Tämä kenttä on pakollinen!</span>
                     {% else %}
                         {{error}}
                     {% endif %}
@@ -39,7 +39,7 @@
             {% for error in form.description.errors %}
                 <div class="col-sm-offset-2 col-sm-8">
                     {% if error == "This field is required." %}
-                        Tämä kenttä on pakollinen!
+                        <span class="alert-danger">Tämä kenttä on pakollinen!</span>
                     {% else %}
                         {{error}}
                     {% endif %}
@@ -47,7 +47,7 @@
             {% endfor %}
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-4 col-xs-4" id="char_counter"><span>5000 merkkiä jäljellä</span></div>
+            <div class="col-sm-offset-2 col-sm-6 col-xs-6" id="char_counter"><span>5000 merkkiä jäljellä</span></div>
         </div>
         {{ form.form_id }}
     </form>
