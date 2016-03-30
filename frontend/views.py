@@ -2,13 +2,12 @@ import operator
 import os
 import uuid
 from datetime import timedelta
+
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.urlresolvers import reverse
-from django.db.models import Count
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render
 from formtools.wizard.views import SessionWizardView
@@ -221,7 +220,7 @@ class FeedbackWizard(SessionWizardView):
             GLYPHICONS = ["glyphicon-fire", "glyphicon-trash", "glyphicon-tint", "glyphicon-road",
                           "glyphicon-warning-sign",
                           "glyphicon-picture", "glyphicon-tree-conifer", "glyphicon-cloud", "glyphicon-tree-deciduous",
-                          "glyphicon-option-horizontal"]
+                          "glyphicon-wrench"]
 
             idx = 0
             for item in data:

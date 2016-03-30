@@ -440,7 +440,7 @@ html {
     }
 
     .main_footer {
-        /*bottom: 0;*/
+        bottom: 0;
     }
 
     .shadow {
@@ -518,4 +518,8 @@ html {
 
 p {
     margin-bottom: 0;
+}
+
+.pagination-buttons {
+    text-align: center;
 }
