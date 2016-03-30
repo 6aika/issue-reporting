@@ -1,5 +1,7 @@
 # City Feedback Hub
 
+[![Build Status](http://94.237.25.111:8080/job/city-feedback-hub/badge/icon)](http://94.237.25.111:8080/job/city-feedback-hub)
+
 Link to the latest development version: <http://feedback.hel.ninja>
 
 ## Description
@@ -29,5 +31,3 @@ One of the main criteria was to make the website responsive so that it can be ea
 CFH is a Django application. The application is divided into two apps: frontend, which handles UI and all client side logic, and API, which handles the Feedback and statistic APIs, data synchronization etc. DB layout is defined in `api/models.py`. Client side logic is defined in `frontend/views.py` and the page layout is defined in various templates in `frontend/templates/`. Client URL scheme is in a typical place `frontend/urls.py`. Various Javascript/jQuery scripts are stored in `frontend/static/`.
 
 The default configuration assumes that the software is using the Helsinki Open311 API but it is possible to use CFH as a standalone feedback system with some modifications.
-
-[![Build Status](http://94.237.25.111:8080/job/city-feedback-hub/badge/icon)](http://94.237.25.111:8080/job/city-feedback-hub)
