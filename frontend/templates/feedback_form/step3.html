@@ -109,6 +109,11 @@
                 maxFilesize: 10,
                 maxFiles: 3,
                 acceptedFiles: "image/*",
+                dictDefaultMessage: "Klikkaa tätä laatikkoa valitaksesi kuvat. Voit myös ottaa kuvat kännykkäkamerallasi tai raahata tiedoston tähän laatikkoon.",
+                dictFallbackMessage: "Selaimesi ei tue kuvien lähettämistä!",
+                dictFileTooBig: "Tiedosto on liian suuri ({% verbatim %}{{filesize}}{% endverbatim %} MB)! Suurin sallittu koko on {% verbatim %}{{maxFilesize}}{% endverbatim %} MB.",
+                dictInvalidFileType: "Tätä tiedostotyyppiä ei tueta!",
+                dictResponseError: "Tiedoston lähetys epäonnistui!",
                 init: function () {
                     // Disable next button during file upload
                     this.on("addedfile", function (file) {
