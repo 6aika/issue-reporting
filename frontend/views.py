@@ -76,7 +76,8 @@ def feedback_list(request):
         'service_codes': request.GET.get("service_code"),
         'search': request.GET.get("search"),
         'lat': request.GET.get("lat"),
-        'lon': request.GET.get("lon")
+        'lon': request.GET.get("lon"),
+        'agency_responsible': request.GET.get('agency_responsible')
     }
 
     feedbacks = get_feedbacks(**filter_params)
