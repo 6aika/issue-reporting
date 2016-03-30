@@ -123,12 +123,6 @@
 <script src="{% static 'map.js' %}"></script>
 <script>
 
-    function dateStrToIso(dateStr) {
-        var dateParts = dateStr.split(".");
-        date = new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]);
-        return date.toISOString();
-    }
-
     function sendRequest() {
     	var params = {};
 

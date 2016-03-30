@@ -105,12 +105,6 @@
     $("#service_code").val(service_code);
     $("#search").val(search);
 
-    function dateStrToIso(dateStr) {
-        var dateParts = dateStr.split(".");
-        date = new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]);
-        return date.toISOString();
-    }
-
     $("#feedback-filter").submit(function (event) {
         event.preventDefault();
         if ($("#order_by").val() === 'distance') {
