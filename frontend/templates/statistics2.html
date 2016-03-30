@@ -9,7 +9,6 @@
                 <thead>
                 <tr>
                     <th>Aihe</th>
-                    <th>Yhteensä</th>
                     <th>Suljettu</th>
                     <th>Avoinna</th>
                     <th>Käsittelyajat</th>
@@ -20,7 +19,6 @@
                     <tr>
 
                         <td>{{ item.service_name }}</td>
-                        <td><a href="/feedbacks/?service_code={{item.service_code}}">{{ item.total }}</a></td>
                         <td><a href="/feedbacks/?status=closed&service_code={{item.service_code}}">{{ item.closed }}</a></td>
                         <td><a href="/feedbacks/?status=open&service_code={{item.service_code}}">{{ item.open }}</a></td>
                         <td>{{ item.median| td_humanize }}</td>
