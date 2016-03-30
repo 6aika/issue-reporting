@@ -64,8 +64,9 @@ def feedback_list(request):
     if filter_end_date:
         filter_end_date = datetime.datetime.strptime(filter_end_date, "%d.%m.%Y").isoformat()
 
-    if filter_order_by is None:
+    if not filter_order_by:
         filter_order_by = "-requested_datetime"
+        queries_without_page["order_by"] = filter_order_by
 
     filter_params = {
         'start_date': filter_start_date,
