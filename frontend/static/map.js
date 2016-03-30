@@ -172,6 +172,10 @@ L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function ()
 }, {position: 'topright'}).addTo(map);
 
 function getUserLocation(e) {
+    if (userLocation) {
+        map.removeLayer(userLocation);
+    }
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var newLocation = L.latLng(position.coords.latitude, position.coords.longitude);
