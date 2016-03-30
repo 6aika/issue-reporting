@@ -11,6 +11,8 @@
 <script>
 $(function () {
 	var stage = "#stage" + {{stage}};
-	$(stage).css("background-color","lightgrey");
+	$(stage).css({ "background-color": "#428bca", "color": "snow" });
+	$(stage).prevAll().css({ "background-color": "white", "color": "darkgrey" });
+	$(stage).nextAll().css({ "background-color": "lightgrey", "color": "darkgrey" });
 });
 </script>
