@@ -44,11 +44,8 @@
                     </div>
                     <div class="row">
                         <div class="xs-col-3">
-                            <span class="badge feedback_list_vote_icon"
+                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon"
                                   id="{{ feedback.id }}">
-                                <span>
-                                    +1
-                                </span>
                             </span>
                             <span class="badge feedback_list_vote_badge">{{ feedback.vote_counter }}</span>
                             <div class="fb-share-button" data-href="http://feedback.hel.ninja{% url 'feedback_details' feedback.id %}" data-layout="button"></div>
@@ -102,7 +99,7 @@
     }).addTo(map);
 
     L.marker([lat, lon]).addTo(map);
-    
+
 </script>
 
 <script type="text/javascript">
