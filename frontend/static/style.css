@@ -510,6 +510,10 @@ html {
         data-width: 80;
         padding-right: 80px;
     }
+
+    .statistic_table {
+        font-size: 8px;
+    }
 }
 
 p {
