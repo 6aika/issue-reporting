@@ -88,16 +88,20 @@
                 $('#main_form').append('<input type="hidden" name="wizard_goto_step" value="{{ wizard.steps.prev }}" />');
                 $("#main_form").submit();
             });
+
             // Display how many characters left until 5000
-            $("#{{form.description.id_for_label}}").keyup(function () {
-                var text_length = $('#{{form.description.id_for_label}}').val().length;
-                var text_remaining = 5000 - text_length;
-                $('#char_counter').text(text_remaining + " merkkiä jäljellä");
-            });
+            var charfunc = function() {
+              var text_length = $('#{{form.description.id_for_label}}').val().length;
+              var text_remaining = 5000 - text_length;
+              $('#char_counter').text(text_remaining + " merkkiä jäljellä");
+            };
+            // The function is called whenever the page has loaded or something is being written
+            $(document).ready(charfunc);
+            $("#{{form.description.id_for_label}}").keyup(charfunc);
 
             // If first time in this step, assign a new form_id. Otherwise use previous
             form_id = "{{form.form_id.value|default_if_none:''}}";
-            if(form_id === "") 
+            if(form_id === "")
                 form_id = "{{form_id}}";
 
             $("#{{form.form_id.id_for_label}}").attr("value", form_id);
@@ -106,7 +110,7 @@
             // Initialize dropzone
             Dropzone.options.dropzone = {
                 url: "{% url 'media_upload' %}",
-                maxFilesize: 1,
+                maxFilesize: 10,
                 maxFiles: 3,
                 acceptedFiles: "image/*",
                 init: function () {

@@ -1,4 +1,6 @@
 from api.models import Service
+from api.analysis import *
+from datetime import timedelta
 from django import template
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
@@ -81,3 +83,11 @@ def real_status(feedback):
 		return "Avoin"
 	else:
 		return "Suljettu"
+
+@register.filter
+def get_expected_datetime(feedback):
+	if feedback.expected_datetime:
+		return feedback.expected_datetime
+	else:
+		median = timedelta(milliseconds=calc_fixing_time(feedback.service_code))
+		return (timezone.now() + median)

@@ -154,7 +154,7 @@ def map(request):
 #different departments
 def department(request):
     data = []
-    agencies = Feedback.objects.all().distinct("agency_responsible")
+    agencies = Feedback.objects.filter(status__in=["open", "closed"]).distinct("agency_responsible")
     for agency in agencies:
         item = {}
         agency_responsible = agency.agency_responsible
@@ -265,7 +265,7 @@ class FeedbackWizard(SessionWizardView):
 
         fixing_time = calc_fixing_time(data["service_code"])
         waiting_time = timedelta(milliseconds=fixing_time)
-        new_feedback.expected_datetime = new_feedback.requested_datetime + waiting_time
+        new_feedback.expected_datetime = None #new_feedback.requested_datetime + waiting_time
         new_feedback.save()
 
         # Attach media urls to the feedback

@@ -46,10 +46,10 @@
                                 <small>{{ item.agency_responsible }}</small>
                             </p>
                         </div>
-                        {% if item|is_open and item.expected_datetime %}
+                        {% if item|is_open %}
                             <div class="col-sm-12 text-info">
                                 <p>Arvio: <br/>
-                                    <small>{{ item.expected_datetime|time_from_now }}</small>
+                                    <small>{{ item|get_expected_datetime|time_from_now }}</small>
                                 </p>
                             </div>
                         {% endif %}
