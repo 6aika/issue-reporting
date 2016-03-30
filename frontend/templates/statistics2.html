@@ -2,6 +2,7 @@
 {% load custom_tags %}
 {% block content %}
 {%include "statistics_menu.html" with statistics_active="active"%}
+    <div class="container">
     <div class="row">
         <div class="col-sm-12">
             <h3 class="text-center">Palvelu Tilastotiedot</h3>
@@ -27,6 +28,7 @@
                 </tbody>
             </table>
         </div>
+    </div>
     </div>
     {% include "footer.html" %}
 {% endblock %}
