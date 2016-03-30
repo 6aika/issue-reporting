@@ -20,6 +20,13 @@
                 </div>
 
                 <div class="col-xs-12 col-sm-2 feedback_list_details col-sm-push-7">
+                    <div class=row>
+                        <div class="col-sm-9 hidden-sm hidden-md hidden-lg">
+                            <a class="feedback_list_title" href="{% url 'feedback_details' item.id %}">
+                                <h4>{{ item.title|default:'NO TITLE' }}</h4>
+                            </a>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-sm-12 col-xs-7">
                             {% if item|is_open %}
@@ -70,7 +77,7 @@
                         </div>
                     {% endif %}
                     <div class="row">
-                        <div class="col-sm-12 hidden-xs">
+                        <div class="col-sm-12">
                             <p>
                                 <small>{{ item.address_string|default:'No Address' }}</small>
                             </p>
@@ -162,7 +169,7 @@
                     <div class="row">
                         <div class="col-xs-12 col-sm-9 col-md-10">
                             <div class=row>
-                                <div class="col-sm-9">
+                                <div class="col-sm-9 hidden-xs">
                                     <a class="feedback_list_title" href="{% url 'feedback_details' item.id %}">
                                         <h4>{{ item.title|default:'NO TITLE' }}</h4>
                                     </a>
@@ -191,7 +198,7 @@
         {% endfor %}
 
         <div class="row">
-            <div class="col-xs-6 col-xs-offset-4 col-sm-offset-5 centered">
+            <div class="col-xs-12 pagination-buttons">
                 <div class="pagination">
                     {% if feedbacks.has_previous %}
                         <a href="?{{ queries.urlencode }}&amp;page={{ feedbacks.previous_page_number }}"
