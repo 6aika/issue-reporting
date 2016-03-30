@@ -1,16 +1,15 @@
 "use strict";
 
-var markers = [];
-var markerCoordinates = [];
 var markersLayer = L.markerClusterGroup({
         spiderfyOnMaxZoom: true,
         showCoverageOnHover: false,
         disableClusteringAtZoom: 13
     });
+// Coordinates for Heatmap
+var markerCoordinates = [];
 var heatLayer = null;
-
 var userLocation = null;
-
+// Localisation initiation for datepickers
 moment.locale('fi');
 
 $(document).ready(function() {
@@ -18,12 +17,7 @@ $(document).ready(function() {
 });
 
 function clearMarkers() {
-    if (markers.length > 0) {
-        for (var i = 0; i < markers.length; i++) {
-            map.removeLayer(markers[i]);
-        }
-    }
-
+    // Coordinates for Heatmap
     if (markerCoordinates.length > 0) {
         markerCoordinates.length = 0;
     }
@@ -76,7 +70,6 @@ function getData(params, markersVisible) {
                     highlight = marker;
                 }
                 
-
                 $('#feedback_title').text(e.target.feedback.extended_attributes.title);
                 $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
                 $('.feedback_list_vote_icon').attr("id", e.target.feedback.service_request_id);
@@ -93,7 +86,6 @@ function getData(params, markersVisible) {
                 $('#feedback_info').css("visibility", "visible");
                 
             });
-            markers.push(marker);
         });
     });
     
@@ -172,6 +164,10 @@ L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function ()
 }, {position: 'topright'}).addTo(map);
 
 function getUserLocation(e) {
+    if (userLocation) {
+        map.removeLayer(userLocation);
+    }
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var newLocation = L.latLng(position.coords.latitude, position.coords.longitude);
