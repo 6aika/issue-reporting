@@ -440,7 +440,7 @@ html {
     }
 
     .main_footer {
-        /*bottom: 0;*/
+        bottom: 0;
     }
 
     .shadow {
@@ -510,8 +510,16 @@ html {
         data-width: 80;
         padding-right: 80px;
     }
+
+    .statistic_table {
+        font-size: 8px;
+    }
 }
 
 p {
     margin-bottom: 0;
+}
+
+.pagination-buttons {
+    text-align: center;
 }

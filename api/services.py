@@ -12,7 +12,7 @@ def get_feedbacks(service_codes=None, service_request_ids=None,
                   service_object_type=None, service_object_id=None,
                   updated_after=None, updated_before=None,
                   lat=None, lon=None, radius=None,
-                  order_by=None):
+                  order_by=None, agency_responsible=None):
     queryset = Feedback.objects.all()
 
     if service_request_ids:
@@ -25,6 +25,8 @@ def get_feedbacks(service_codes=None, service_request_ids=None,
         queryset = queryset.filter(requested_datetime__lt=end_date)
     if statuses:
         queryset = queryset.filter(status__in=statuses.split(','))
+    if agency_responsible:
+        queryset = queryset.filter(agency_responsible__iexact=agency_responsible)
 
     if settings.SHOW_ONLY_MODERATED:
         queryset = queryset.exclude(status__iexact='MODERATION')

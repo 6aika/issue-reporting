@@ -2,10 +2,11 @@
 {% load custom_tags %}
 {% block content %}
     {% include "statistics_menu.html" with department_active="active" %}
+    <div class="container">
     <div class="row">
         <div class="col-sm-12">
             <h3 class="text-center">Virasto Tilastotiedot</h3>
-            <table class="table table-striped">
+            <table class="table table-condensed statistic_table">
                 <thead>
                 <tr>
                     <th>Aihe</th>
@@ -18,14 +19,15 @@
                 {% for item in data %}
                     <tr>
                         <td>{{ item.agency_responsible }}</td>
-                        <td>{{ item.closed}}</td>
-                        <td>{{ item.open}}</td>
+                        <td><a href="/feedbacks/?status=closed&agency_responsible={{item.agency_responsible}}">{{ item.closed }}</a></td>
+                        <td><a href="/feedbacks/?status=open&agency_responsible={{item.agency_responsible}}">{{ item.open }}</a></td>
                         <td>{{ item.median| td_humanize }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
+    </div>
     </div>
     {% include "footer.html" %}
 {% endblock %}
