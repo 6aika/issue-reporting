@@ -174,7 +174,7 @@
 }
 
 .feedback_list_content {
-    padding: 10px;
+    padding: 15px;
 }
 
 .feedback_list_content_desc p {
@@ -236,7 +236,7 @@
     border-radius: 10px;
     color: #FFF;
     font-size: 1.5em;
-    margin-left: 15px;
+    margin-left: 0;
     padding: 5px;
     vertical-align: middle;
 }
@@ -394,7 +394,8 @@ html {
         border-color: transparent;
         border-right-style: none;
         border-right-width: 0;
-        margin-left: 5px;
+        margin-right: auto;
+        margin-left: auto;
         padding: 0;
     }
 
@@ -403,6 +404,12 @@ html {
         margin-right: auto;
         width: 270px;
     }
+
+    .feedback_list_icons {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding-right: 20px;
+    }
 }
 
 @media (min-width: 576px) {
@@ -410,7 +417,7 @@ html {
         border-color: #ddd;
         border-left-style: solid;
         border-left-width: 1px;
-        height: 240px;
+        /*height: 240px;*/
         padding: 10px;
     }
 
@@ -475,7 +482,7 @@ html {
     .feedback_list_row {
         margin-left: auto;
         margin-right: auto;
-        width: 80vw;
+        /*width: 67vw;*/
     }
 
     .sidebar-element {
@@ -486,4 +493,8 @@ html {
         data-width: 80;
         padding-right: 80px;
     }
+}
+
+p {
+    margin-bottom: 0;
 }

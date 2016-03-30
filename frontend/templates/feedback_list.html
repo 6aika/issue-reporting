@@ -10,14 +10,18 @@
         {% for item in feedbacks %}
             <div class="row feedback_list_row">
                 <div class="col-xs-12 col-sm-3 feedback_list_img ">
-                    <img class="img img-responsive center-cropped"
-                         src={% include "feedback_image_url.html" with service_code=item.service_code media_url=item.media_url %} alt="Feedback
-                         image"/>
+                    <a class="feedback_list_title" href="{% url 'feedback_details' item.id %}">
+
+
+                        <img class="img img-responsive center-cropped"
+                             src={% include "feedback_image_url.html" with service_code=item.service_code media_url=item.media_url %} alt="Feedback
+                             image"/>
+                    </a>
                 </div>
 
                 <div class="col-xs-12 col-sm-2 feedback_list_details col-sm-push-7">
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-12 col-xs-7">
                             {% if item|is_open %}
                                 <h4 class="text-success">
                                     {{ item|real_status }}<br/>
@@ -30,9 +34,14 @@
                                 </h4>
                             {% endif %}
                         </div>
+                        <div class="col-xs-5 feedback_list_icons hidden-sm hidden-md hidden-lg text-right">
+                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon"
+                                  id="{{ item.id }}"></span>
+                            <span class="badge feedback_list_vote_badge">{{ item.vote_counter }}</span>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-12 hidden-xs">
                             <p>Vastuullinen taho: <br/>
                                 <small>{{ item.agency_responsible }}</small>
                             </p>
@@ -61,7 +70,7 @@
                         </div>
                     {% endif %}
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-12 hidden-xs">
                             <p>
                                 <small>{{ item.address_string|default:'No Address' }}</small>
                             </p>
@@ -151,9 +160,9 @@
 -->
                 <div class="col-xs-12 col-sm-7 feedback_list_content col-sm-pull-2">
                     <div class="row">
-                        <div class="col-xs-12 col-sm-10">
+                        <div class="col-xs-12 col-sm-9 col-md-10">
                             <div class=row>
-                                <div class="col-sm-12">
+                                <div class="col-sm-9">
                                     <a class="feedback_list_title" href="{% url 'feedback_details' item.id %}">
                                         <h4>{{ item.title|default:'NO TITLE' }}</h4>
                                     </a>
@@ -165,10 +174,7 @@
                                 </div>
                             </div>
                         </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-6 col-sm-6 feedback_list_icons">
+                        <div class="col-sm-3 col-md-2 feedback_list_icons hidden-xs text-right">
                             <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon"
                                   id="{{ item.id }}"></span>
                             <span class="badge feedback_list_vote_badge">{{ item.vote_counter }}</span>
