@@ -343,7 +343,7 @@
 
 .short-text {
     color: #333;
-    height: 100px;
+    height: 140px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 0;
@@ -420,7 +420,7 @@ html {
     .feedback_list_row {
         margin-left: auto;
         margin-right: auto;
-        width: 270px;
+        width: 86vw;
     }
 
     .feedback_list_icons {
@@ -440,7 +440,7 @@ html {
     }
 
     .main_footer {
-        bottom: 0;
+        /*bottom: 0;*/
     }
 
     .shadow {
@@ -500,7 +500,6 @@ html {
     .feedback_list_row {
         margin-left: auto;
         margin-right: auto;
-        /*width: 67vw;*/
     }
 
     .sidebar-element {
