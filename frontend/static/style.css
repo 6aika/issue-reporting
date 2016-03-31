@@ -92,6 +92,11 @@
     transition: all .5s ease-in 0s;
 }
 
+#toggleButton {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
 .banner-well {
     background: rgba(35, 35, 35, 0.8);
     border-color: transparent;
@@ -139,7 +144,8 @@
 
 /* css to customize Leaflet default styles  */
 .custom .leaflet-popup-content-wrapper {
-    max-height: 300px;
+    max-height: 250px;
+    min-height: 220px;
     overflow-y: auto;
     width: 300px;
 }

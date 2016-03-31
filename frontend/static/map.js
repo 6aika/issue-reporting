@@ -57,39 +57,28 @@ function getData(params, markersVisible, onSuccess) {
             markerCoordinates.push([feedback.lat, feedback.long]);
 
             marker.on('click', function(e) {
- 
-                /*
-                // Highlight selected marker
-                if (highlight !== null) {
-                    // is highlighted, store id of marker
-                    var id = highlight._leaflet_id;
+                var title_len = 50;
+                var title = e.target.feedback.extended_attributes.title;
+                if (title.length > title_len) {
+                    title = title.substring(0, title_len) + "...";
                 }
 
-                removeHighlight();
-                
-                if (id !== marker._leaflet_id) {
-                    // Set highlight icon
-                    marker.setIcon(highlight_icon);
-                    // Assign highlight
-                    highlight = marker;
-                }
-                */
-                
-                $('#feedback_title').text(e.target.feedback.extended_attributes.title);
+                $('#feedback_title').text(title);
                 $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
                 $('.feedback_list_vote_icon').attr("id", e.target.feedback.service_request_id);
                 $('#feedback_service_name').text("Aihe: " + e.target.feedback.service_name);
                 var datetime = moment(e.target.feedback.requested_datetime).fromNow();
                 $('#feedback_requested_datetime').text("Lisätty: " + datetime);
-                var len = 135;
+                var desc_len = 135;
                 var desc = e.target.feedback.description;
-                var trunc_desc = desc.substring(0, len)  + "...";
-                $('#feedback_description').text(trunc_desc);
+                if (desc.length > desc_len) {
+                    desc = desc.substring(0, desc_len)  + "...";
+                }
+                $('#feedback_description').text(desc);
                 var feedback_url = "/feedbacks/" + e.target.feedback.id;
                 $('#feedback_details').text("Lisää");
                 $('#feedback_details').attr("href", feedback_url);
                 $('#feedback_info').css("visibility", "visible");
-                
             });
         });
     }).always(function() {
@@ -105,32 +94,6 @@ var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l
 var new_feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "l"});
 var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
 var highlight_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "m"});
-
-/*
-// Variable to keep track of highlighted marker
-var highlight = null;
-
-// Function for removing highlight 
-function removeHighlight () {
-    // Check for highlight
-    if (highlight !== null) {
-        // Set default icon
-        highlight.setIcon(feedback_icon);
-        // Unset highlight
-        highlight = null;
-        $('#feedback_info').css("visibility", "hidden");
-    }
-}
-
-function addHighlight() {
-    // Check for highlight
-    if (highlight !== null) {
-        // Set highlight icon
-        highlight.setIcon(highlight_icon);
-    }
-}
-*/
-
 
 var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
 // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
@@ -155,22 +118,6 @@ var map = L.map('map', {
     zoomControl: false,
     maxZoom: 15
 }).setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 11);
-
-/*
-map.on('popupopen', function(e) {
-    addHighlight();
-});
-*/
-
-/*
-map.on('popupclose', function(e) {
-    removeHighlight();
-});
-
-map.on('click', function(e) {
-    removeHighlight();
-});
-*/
 
 // Automatically fetch user location and center
 getUserLocation();
