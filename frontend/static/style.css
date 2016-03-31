@@ -163,9 +163,10 @@
 .feedback_form_category_item {
     box-shadow: 1px 1px 3px 1px #aaa;
     color: #777;
-    font-size: 5em;
-    height: 180px;
-    padding: 15px 15px 0;
+    font-size: 5.0em;
+    height: 145px;
+    line-height: 0.8em;
+    padding: 15px 5px;
 }
 
 .feedback_form_category_item.active {
