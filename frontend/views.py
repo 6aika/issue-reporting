@@ -8,7 +8,7 @@ from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr, GEOSGeometry
 from django.contrib.gis.measure import D
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from formtools.wizard.views import SessionWizardView
 
@@ -205,14 +205,14 @@ class FeedbackWizard(SessionWizardView):
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)
         if self.steps.current == 'closest':
-            print('duplicates step')
             closest = get_feedbacks(
                     statuses='Open',
                     lat=60.17067,
                     lon=24.94152,
                     radius=3000,
                     order_by='distance')[:10]
-            context.update({'closest': closest})
+            form_id = uuid.uuid4().hex
+            context.update({'closest': closest, "form_id": form_id})
         elif self.steps.current == 'category':
             categories = []
             data = Service.objects.all()
@@ -235,7 +235,9 @@ class FeedbackWizard(SessionWizardView):
                 context.update({'categories': categories})
                 idx += 1
         elif self.steps.current == "basic_info":
-            context.update({'form_id': uuid.uuid4().hex})
+            prev = self.storage.get_step_data("closest")
+            form_id = prev.get("closest-form_id",'')
+            context.update({'form_id': form_id})
         return context
 
     def done(self, form_list, form_dict, **kwargs):
@@ -260,7 +262,7 @@ class FeedbackWizard(SessionWizardView):
             data["service_object_id"] = service_object_id
             data["service_object_type"] = "http://www.hel.fi/servicemap/v2"
 
-        form_id = form_dict["basic_info"].cleaned_data["form_id"]
+        form_id = form_dict["closest"].cleaned_data["form_id"]
 
         new_feedback = Feedback(**data)
 
@@ -291,23 +293,37 @@ class FeedbackWizard(SessionWizardView):
 # It receives files with a form_id, saves the file and saves the info to DB so
 # the files can be processed when the form wizard is actually complete in done()
 def media_upload(request):
-    files = request.FILES.getlist("file")
     form_id = request.POST["form_id"]
-    if(files):
+    action = request.POST["action"]
+    print("form_id", form_id)
+    if(action == "upload_file"):
+        files = request.FILES.getlist("file")
+        if(files):
         # Create new unique random filename preserving extension
-        file = files[0]
-        extension = os.path.splitext(file.name)[1]
-        file.name = uuid.uuid4().hex + extension
-        f_object = MediaFile(file=file, form_id=form_id)
-        f_object.save()
-    else:
+            file = files[0]
+            extension = os.path.splitext(file.name)[1]
+            file.name = uuid.uuid4().hex + extension
+            f_object = MediaFile(file=file, form_id=form_id)
+            f_object.save()
+            return JsonResponse({"status": "success", "filename": file.name})
+        else:
+            return HttpResponseBadRequest
+    elif(action == "get_files"):
         # Just return the filenames associated with the form_id
         mediafiles = MediaFile.objects.filter(form_id=form_id)
         files = []
         for item in mediafiles:
-            files.append(item.file.name)
+            files.append(os.path.basename(item.file.name))
         return JsonResponse({"status": "success", "files": files})
-    return JsonResponse({"status": "success"})
+    elif(action == "delete_file"):
+        server_filename = "./" + request.POST["server_filename"]
+        f_object = MediaFile.objects.filter(file=server_filename, form_id=form_id)
+        if(f_object):
+            f_object[0].file.delete()
+            f_object[0].delete()
+        return JsonResponse({"status": "success"})
+    else:
+        return HttpResponseBadRequest
 
 def about(request):
     context = {}

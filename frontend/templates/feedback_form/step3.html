@@ -49,7 +49,6 @@
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-6 col-xs-6" id="char_counter"><span>5000 merkkiä jäljellä</span></div>
         </div>
-        {{ form.form_id }}
     </form>
 
     <div class="row">
@@ -61,8 +60,6 @@
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
             <form class="dropzone" action="{% url 'media_upload' %}" id="dropzone">
-                {% csrf_token %}
-                <input type=hidden name="form_id" value="{{ form_id }}">
             </form>
         </div>
     </div>
@@ -99,13 +96,7 @@
             $(document).ready(charfunc);
             $("#{{form.description.id_for_label}}").keyup(charfunc);
 
-            // If first time in this step, assign a new form_id. Otherwise use previous
-            form_id = "{{form.form_id.value|default_if_none:''}}";
-            if(form_id === "")
-                form_id = "{{form_id}}";
-
-            $("#{{form.form_id.id_for_label}}").attr("value", form_id);
-            $("input[name='form_id']").attr("value", form_id);
+            form_id = "{{form_id}}";
 
             // Initialize dropzone
             Dropzone.options.dropzone = {
@@ -113,12 +104,19 @@
                 maxFilesize: 10,
                 maxFiles: 3,
                 acceptedFiles: "image/*",
+                addRemoveLinks: true,
                 dictDefaultMessage: "Klikkaa tätä laatikkoa valitaksesi kuvat. Voit myös ottaa kuvat kännykkäkamerallasi tai raahata tiedoston tähän laatikkoon.",
                 dictFallbackMessage: "Selaimesi ei tue kuvien lähettämistä!",
                 dictFileTooBig: "Tiedosto on liian suuri ({% verbatim %}{{filesize}}{% endverbatim %} MB)! Suurin sallittu koko on {% verbatim %}{{maxFilesize}}{% endverbatim %} MB.",
                 dictInvalidFileType: "Tätä tiedostotyyppiä ei tueta!",
+                dictRemoveFile: "Poista",
                 dictResponseError: "Tiedoston lähetys epäonnistui!",
                 init: function () {
+                    this.on("sending", function(file, xhr, formData) {
+                      formData.append("action", "upload_file"); 
+                      formData.append("csrfmiddlewaretoken", "{{csrf_token}}"); 
+                      formData.append("form_id", "{{ form_id }}"); 
+                    });
                     // Disable next button during file upload
                     this.on("addedfile", function (file) {
                         $("#next_button").prop("disabled", true);
@@ -128,15 +126,25 @@
                     this.on("queuecomplete", function (file) {
                         $("#next_button").prop("disabled", false);
                     });
+                    // File upload succesfull. We save the server side filename
+                    this.on("success", function (file, response) {
+                        file.server_filename = response.filename
+                    });
+                    // File removed. Delete also from server using server side filename
+                    this.on("removedfile", function (file) {
+                        data = {"action": "delete_file", "server_filename": file.server_filename, "form_id": form_id, "csrfmiddlewaretoken": "{{csrf_token}}"};
+                        $.post("{% url 'media_upload' %}", data, function (data) {
+                        });
+                    });
                 }
             };
 
             // Populate Dropzone if user already has uploaded some images
-            data = {"form_id": form_id, "csrfmiddlewaretoken": "{{csrf_token}}"};
+            data = {"action": "get_files", "form_id": form_id, "csrfmiddlewaretoken": "{{csrf_token}}"};
             $.post("{% url 'media_upload' %}", data, function (data) {
                 $.each(data.files, function(index, element) {
                     var myDropzone = Dropzone.forElement("#dropzone");
-                    var mockFile = { name: "Filename", size: 12345 };
+                    var mockFile = { name: "Filename", size: 12345, server_filename: element };
                     url = "/media/" + element;
                     myDropzone.emit("addedfile", mockFile);
                     myDropzone.createThumbnailFromUrl(mockFile, url);

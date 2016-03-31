@@ -24,6 +24,7 @@
         {{ form.latitude }}
         {{ form.longitude }}
         {{ form.service_object_id }}
+        {{ form.form_id }}
 
         <div class="form-group">
             <div class="row">
@@ -56,6 +57,7 @@
     <script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
     <script src="{% static 'map.js' %}"></script>
     <script>
+        $("#{{form.form_id.id_for_label}}").attr("value", "{{form_id}}");
         var service_object_results;
         var keep_selected = null;   // Variable to hold service_object_id to keep selected in the list
 
