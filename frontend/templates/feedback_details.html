@@ -22,7 +22,7 @@
         <div class="row">
             <div class="col-xs-12 col-md-8" style="padding: 40px">
                 <div class="row">
-                    <h1 class="feedback_title">{{ feedback.title }}</h1>
+                    <h1 class="feedback_title" title="{{feedback.service_request_id}}">{{ feedback.title }}</h1>
                     <div class="row">
                         <div class="col-md-12">
                             <p class="text-muted">Aihe: {{ feedback.service_code|get_service_name }}</p>
@@ -64,7 +64,7 @@
     </div>
 </div>
 
-
+<script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
 <script>
     "use strict";
 
@@ -97,8 +97,9 @@
         continuousWorld: true,
         tms: false
     }).addTo(map);
-
-    L.marker([lat, lon]).addTo(map);
+    
+    var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
+    L.marker([lat, lon], {icon: feedback_icon}).addTo(map);
 
 </script>
 

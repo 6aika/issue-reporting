@@ -127,7 +127,6 @@
 
         // Populate the list by nearby service objects. Only shows max 20 (the 1st page)
         function fetch_service_objects(location) {
-            console.log("Fetching!");
             var data = {
                 "only": "name,location",    // Fetch service object names and coordinates
                 "lat": location.lat,
