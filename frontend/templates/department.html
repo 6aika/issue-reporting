@@ -10,6 +10,7 @@
                 <thead>
                 <tr>
                     <th>Aihe</th>
+                    <th class="hidden-xs">Yhteensä</th>
                     <th>Suljettu</th>
                     <th>Avoinna</th>
                     <th>Käsittelyajat</th>
@@ -19,6 +20,7 @@
                 {% for item in data %}
                     <tr>
                         <td>{{ item.agency_responsible }}</td>
+                        <td class="hidden-xs"><a href="/feedbacks/?agency_responsible={{item.agency_responsible}}">{{ item.total }}</a></td>
                         <td><a href="/feedbacks/?status=closed&agency_responsible={{item.agency_responsible}}">{{ item.closed }}</a></td>
                         <td><a href="/feedbacks/?status=open&agency_responsible={{item.agency_responsible}}">{{ item.open }}</a></td>
                         <td>{{ item.median| td_humanize }}</td>
