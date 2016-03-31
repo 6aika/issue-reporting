@@ -78,6 +78,12 @@
 
 
         legend.addTo(map);
+
+        L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function () {
+            getUserLocation();
+            keep_selected = null;
+        }, {position: 'topright'}).addTo(map);
+
         
         // Provide initial list - if the user doesn't allow geolocating
         fetch_service_objects(newFeedbackLocation.getLatLng());
@@ -85,6 +91,10 @@
         // Update marker when the map is being moved
         map.on('move', function (e) {
             newFeedbackLocation.setLatLng(map.getCenter());
+        });
+
+        map.on('dragstart', function (e) {
+            keep_selected = null;
         });
 
         // Fetch new service objects when the map movement stops 
@@ -117,6 +127,7 @@
 
         // Populate the list by nearby service objects. Only shows max 20 (the 1st page)
         function fetch_service_objects(location) {
+            console.log("Fetching!");
             var data = {
                 "only": "name,location",    // Fetch service object names and coordinates
                 "lat": location.lat,
@@ -136,7 +147,6 @@
                 });
                 // Pre-select an option if the user had just selected one
                 $("#service_object_select").val(keep_selected);
-                keep_selected = null;
             });
         }
     </script>

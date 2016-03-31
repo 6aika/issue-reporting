@@ -143,6 +143,11 @@
 
 	legend.addTo(map);	
 
+	L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function () {
+	    getUserLocation();
+	}, {position: 'topright'}).addTo(map);
+
+
 	// Spinner for when loading data
 	var opts = {
 		lines: 11,
