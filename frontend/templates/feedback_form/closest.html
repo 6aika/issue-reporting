@@ -65,19 +65,6 @@
         map.setZoom(13);
         var newFeedbackLocation = new L.marker(map.getCenter(), {icon: new_feedback_icon, zIndexOffset: 1}).addTo(map);
 
-        
-        var legend = L.control({position: "bottomright"});
-
-        legend.onAdd = function (map) {
-            var div = L.DomUtil.create("div", "map-legend");
-            div.innerHTML += "<i style='background: #FFC61E'></i>" + "Valittu sijainti<br>";
-            div.innerHTML += "<i style='background: #62c462'></i>" + "Sijaintisi<br>";
-            div.innerHTML += "<i style='background: #0072C6'></i>" + "Palaute<br>";
-            return div;
-        };
-
-
-        legend.addTo(map);
 
         L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function () {
             getUserLocation();
