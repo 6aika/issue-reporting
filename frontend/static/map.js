@@ -3,7 +3,7 @@
 var markersLayer = L.markerClusterGroup({
         spiderfyOnMaxZoom: true,
         showCoverageOnHover: false,
-        disableClusteringAtZoom: 13
+        disableClusteringAtZoom: 12
     });
 // Coordinates for Heatmap
 var markerCoordinates = [];
@@ -49,12 +49,16 @@ function getData(params, markersVisible, onSuccess) {
                 "<a id=\"feedback_details\" href=\"\"></a>";
 
             // Initiate marker of feedback
-            var marker = L.marker([feedback.lat, feedback.long], 
-                { 
-                    icon: feedback_icon
-                }).bindPopup(popupContent, customOptions).addTo(markersLayer);
+            var marker = L.marker([feedback.lat, feedback.long]).bindPopup(popupContent, customOptions).addTo(markersLayer);
             marker.feedback = feedback;
             markerCoordinates.push([feedback.lat, feedback.long]);
+            console.log(feedback.status);
+            if (feedback.status === "open") {
+                marker.setIcon(feedback_icon_open);
+            }
+            else {
+                marker.setIcon(feedback_icon_closed);
+            }
 
             marker.on('click', function(e) {
                 var title_len = 50;
@@ -93,6 +97,8 @@ function getData(params, markersVisible, onSuccess) {
 var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
 var new_feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "l"});
 var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
+var feedback_icon_open = L.MakiMarkers.icon({icon: "circle", color: "#D4251C", size: "m"});
+var feedback_icon_closed = L.MakiMarkers.icon({icon: "circle", color: "#16A427", size: "m"});
 var highlight_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "m"});
 
 var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
