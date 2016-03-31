@@ -21,30 +21,14 @@
             <div class="col-sm-8">
                 {{ form.title }}
             </div>
-            {% for error in form.title.errors %}
-                <div class="col-sm-offset-2 col-sm-8">
-                    {% if error == "This field is required." %}
-                        <span class="alert-danger">Tämä kenttä on pakollinen!</span>
-                    {% else %}
-                        {{error}}
-                    {% endif %}
-                </div>
-            {% endfor %}
+
         </div>
         <div class="form-group">
             <label for="{{ form.description.id_for_label }}" class="col-sm-2 control-label">Kuvaus:</label>
             <div class="col-sm-8">
                 {{ form.description }}
             </div>
-            {% for error in form.description.errors %}
-                <div class="col-sm-offset-2 col-sm-8">
-                    {% if error == "This field is required." %}
-                        <span class="alert-danger">Tämä kenttä on pakollinen!</span>
-                    {% else %}
-                        {{error}}
-                    {% endif %}
-                </div>
-            {% endfor %}
+
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-6 col-xs-6" id="char_counter"><span>5000 merkkiä jäljellä</span></div>
@@ -79,10 +63,13 @@
             var errors = '{{form.title.errors}}';
             if(errors) {
                 $("#{{form.title.id_for_label}}").addClass("alert-danger");
+                $("#{{form.title.id_for_label}}").attr("placeholder", "Tämä kenttä on pakollinen!");
             }
+            
             errors = '{{form.description.errors}}';
             if(errors) {
                 $("#{{form.description.id_for_label}}").addClass("alert-danger");
+                $("#{{form.description.id_for_label}}").attr("placeholder", "Tämä kenttä on pakollinen!");
             }
 
             $("#{{form.title.id_for_label}}").on("input", function () {
