@@ -189,16 +189,18 @@ L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function ()
 }, {position: 'topright'}).addTo(map);
 
 function getUserLocation(e) {
-    if (userLocation) {
-        map.removeLayer(userLocation);
-    }
-
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var newLocation = L.latLng(position.coords.latitude, position.coords.longitude);
-            userLocation = new L.marker(newLocation, {icon: center_icon}).addTo(map);
+            if(userLocation) {
+                userLocation.setLatLng(newLocation);
+            }
+            else {
+                userLocation = new L.marker(newLocation, {icon: center_icon}).addTo(map);
+            }
             map.panTo(newLocation);
-        }.bind(this),
+        }.bind(this));
+        /*,
         function(error) {
             if (error.code == error.PERMISSION_DENIED)
             {
@@ -206,7 +208,7 @@ function getUserLocation(e) {
                 userLocation = new L.marker(newLocation, {icon: center_icon}).addTo(map);
                 map.panTo(newLocation); 
             }
-        });
+        });*/
     }
     else {
         console.error("Geolocation is not supported by this browser.");
