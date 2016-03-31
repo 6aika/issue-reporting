@@ -76,6 +76,22 @@
 
     <script>
         $(function () {
+            var errors = '{{form.title.errors}}';
+            if(errors) {
+                $("#{{form.title.id_for_label}}").addClass("alert-danger");
+            }
+            errors = '{{form.description.errors}}';
+            if(errors) {
+                $("#{{form.description.id_for_label}}").addClass("alert-danger");
+            }
+
+            $("#{{form.title.id_for_label}}").on("input", function () {
+                $(this).removeClass("alert-danger");
+            });
+
+            $("#{{form.description.id_for_label}}").on("input", function () {
+                $(this).removeClass("alert-danger");
+            });
             // Bind functionality to prev/next buttons. They are outside the form for layout purposes
             $("#next").click(function () {
                 $("#main_form").submit();
