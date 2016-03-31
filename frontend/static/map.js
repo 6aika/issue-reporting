@@ -184,10 +184,6 @@ L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{
 
 map.addControl(L.control.zoom({position: 'topright'}));
 
-L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function () {
-    getUserLocation();
-}, {position: 'topright'}).addTo(map);
-
 function getUserLocation(e) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
