@@ -9,12 +9,12 @@
 {% endblock %}
 {% block content %}
 {%include "statistics_menu.html" with charts_active="active"%}
-<h1>Palvelu Kaaviot</h1>
+<h1>Palvelukaaviot</h1>
 <div id="serviceStatistics" style="margin-top: 20px"></div>
-<h1>Virasto Kaaviot</h1>
-<div id="agencyStatistics" style="margin-top: 20px"></div>
-<h1>Aika Kaaviot</h1>
-<div id="timeStatistics" style="margin-top: 20px"></div>
+<h1>Virastokaaviot</h1>
+<div id="agencyStatistics" style="margin-top:20px"></div>
+<h1>Aikakaaviot</h1>
+<div id="timeStatistics" style="margin-top: 20px; padding-right: 5px;"></div>
 
 <script>
 
@@ -103,6 +103,11 @@
         });
         c3.generate({
             bindto: '#agencyStatistics',
+            padding: {
+
+        right: 12,
+
+    },
             data: {
                 x: 'x',
                 columns: [
@@ -126,7 +131,7 @@
                         rotate:75,
                         multiline: false
             },
-            height: 150
+            height: 160
                 }
             }
         });
