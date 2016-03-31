@@ -21,7 +21,7 @@
             var services = ['x'];
             var total = ['total'];
             var closed = ['closed'];
-            var fixing_time_in_hours = ['Fixing Time In Days'];
+            var fixing_time_in_hours = ['Fixing Time In Days and Hours'];
             $.each(data, function (key, item) {
                 services.push(item.service_name);
                 total.push(item.total);
@@ -67,7 +67,7 @@
                     y: {
                         tick: {
                             format: function humanize(value) {
-                                return Math.floor(value / 86400);
+                                return Math.round(value / 86400);
                             }
                         }
                     },
