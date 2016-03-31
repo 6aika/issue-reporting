@@ -107,6 +107,7 @@
             var id = $(this).val();            
             $.each(service_object_results, function(index, value) {
                 if(value.id == id) {
+                    map.setZoom(13);
                     map.panTo([value.location.coordinates[1], value.location.coordinates[0]]);
                     keep_selected = id;
                     return false; // break from $.each
