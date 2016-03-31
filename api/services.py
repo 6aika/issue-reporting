@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.db.models.sql import DistanceField
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
+from django.db.models import Case, When
 
 from api.models import Feedback
 
@@ -47,7 +49,12 @@ def get_feedbacks(service_codes=None, service_request_ids=None,
 
     if lat and lon:
         point = fromstr('SRID=4326;POINT(%s %s)' % (lon, lat))
-        queryset = queryset.annotate(distance=Distance('location', point))
+        empty_point = fromstr('POINT(0 0)', srid=4326)
+        queryset = queryset.annotate(distance=Case(
+            When(location__distance_gt=(empty_point, D(m=0.0)), then=Distance('location', point)),
+            default=None,
+            output_field=DistanceField('m')
+        ))
 
         if radius:
             queryset = queryset.filter(location__distance_lte=(point, D(m=radius)))
@@ -56,11 +63,6 @@ def get_feedbacks(service_codes=None, service_request_ids=None,
 
     if order_by:
         queryset = queryset.order_by(order_by)
-
-    # TODO: replace with conditional expression?
-    for item in queryset:
-        if hasattr(item, 'distance') and item.location.x == 0.0 and item.location.y == 0.0:
-            del item.distance
 
     return queryset
 
