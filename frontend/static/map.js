@@ -52,7 +52,7 @@ function getData(params, markersVisible, onSuccess) {
             var marker = L.marker([feedback.lat, feedback.long]).bindPopup(popupContent, customOptions).addTo(markersLayer);
             marker.feedback = feedback;
             markerCoordinates.push([feedback.lat, feedback.long]);
-            console.log(feedback.status);
+            // Assign colour to marker based on status
             if (feedback.status === "open") {
                 marker.setIcon(feedback_icon_open);
             }
@@ -60,7 +60,9 @@ function getData(params, markersVisible, onSuccess) {
                 marker.setIcon(feedback_icon_closed);
             }
 
+            // On click, fill the popup with feedback details
             marker.on('click', function(e) {
+                // Truncate feedback details so that they fit the popup window
                 var title_len = 50;
                 var title = e.target.feedback.extended_attributes.title;
                 if (title.length > title_len) {
@@ -94,12 +96,11 @@ function getData(params, markersVisible, onSuccess) {
     }
 }
 
-var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
+var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "l"});
 var new_feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "l"});
 var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
 var feedback_icon_open = L.MakiMarkers.icon({icon: "circle", color: "#D4251C", size: "m"});
 var feedback_icon_closed = L.MakiMarkers.icon({icon: "circle", color: "#16A427", size: "m"});
-var highlight_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "m"});
 
 var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
 // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
@@ -141,9 +142,10 @@ var legend = L.control({position: "bottomright"});
 
 legend.onAdd = function (map) {
     var div = L.DomUtil.create("div", "map-legend");
-    div.innerHTML += "<i style='background: #0072C6'></i>" + "Palaute<br>";
-    div.innerHTML += "<i style='background: #62c462'></i>" + "Sijaintisi<br>";
-    div.innerHTML += "<i style='background: #FFC61E'></i>" + "Valittu palaute<br>";
+    div.innerHTML += "<i style='background: #D4251C'></i>" + "Avoin palaute<br>";
+    div.innerHTML += "<i style='background: #16A427'></i>" + "Suljettu palaute<br>";
+    div.innerHTML += "<i style='background: #0072C6'></i>" + "Sijaintisi<br>";
+    div.innerHTML += "<i style='background: #FFC61E'></i>" + "Uusi palaute<br>";
     return div;
 };
 
