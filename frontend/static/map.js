@@ -13,7 +13,13 @@ var userLocation = null;
 moment.locale('fi');
 
 $(document).ready(function() {
-    getData({"status" : "open"}, true);
+    var params = {};
+    var start_date = $("#datepicker-start").data("DateTimePicker").date().toISOString();
+    params["start_date"] = start_date;
+    var end_date = $("#datepicker-end").data("DateTimePicker").date().toISOString();
+    params["end_date"] = end_date;
+    params["status"] = "open";
+    getData(params, true);
 });
 
 function clearMarkers() {

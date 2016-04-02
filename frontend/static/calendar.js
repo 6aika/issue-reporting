@@ -1,6 +1,6 @@
 $(function () {
 	$('#datepicker-start').datetimepicker({
-		defaultDate: moment().subtract(1, 'months'),
+		defaultDate: moment().subtract(12, 'months'),
 		maxDate: moment(),
 		locale: 'fi',
 		format: 'L',
