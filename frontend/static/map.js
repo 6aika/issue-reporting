@@ -22,10 +22,14 @@ function clearMarkers() {
         markerCoordinates.length = 0;
     }
 
+    if (heatLayer) {
+        map.removeLayer(heatLayer);
+    }
+
     markersLayer.clearLayers();
 }
 
-function getData(params, markersVisible, onSuccess) {
+function getData(params, markersVisible, heatmapVisible, onSuccess) {
     $.getJSON("/api/v1/requests.json/?extensions=true", params, function (data) {
 
         clearMarkers();
@@ -88,12 +92,18 @@ function getData(params, markersVisible, onSuccess) {
             });
         });
     }).always(function() {
-        if (onSuccess) { onSuccess(); }
-    });
+        if (onSuccess) { 
+            onSuccess(); 
+        }
+    }).done(function() {
+        if (markersVisible) {
+            showMarkers(markersVisible);
+        }
 
-    if (markersVisible) {
-        showMarkers(markersVisible);
-    }
+        if (heatmapVisible) {
+            showHeatmap(heatmapVisible);
+        }
+    });
 }
 
 var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "l"});
@@ -191,16 +201,18 @@ function showMarkers(show) {
 }
 
 function showHeatmap(show) {
-    if (show) {
-        if (heatLayer)
-            map.removeLayer(heatLayer);
+    console.log("*-----------------------------------------------*");
+    console.log("showHeatmap: " + show);
 
-        heatLayer = L.heatLayer(markerCoordinates, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
+    if (heatLayer) {
+        console.log("showHeatmap: removeLayer");
+        map.removeLayer(heatLayer);
     }
-    else
-    {
-        if (heatLayer)
-            map.removeLayer(heatLayer);
+
+    if (show) {
+        console.log("showHeatmap: add heatLayer");
+        console.log(markerCoordinates);
+        heatLayer = L.heatLayer(markerCoordinates, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
     }
 }
 

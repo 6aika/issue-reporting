@@ -165,11 +165,12 @@
 	    if ($("#service_code").val() !== "")
 	    	params["service_code"] = $("#service_code").val();
 
-	    var show = $('#toggle-markers'	).prop('checked') ? true : false;
+	    var markersVisible = $('#toggle-markers').prop('checked') ? true : false;
+	    var heatmapVisible = $('#toggle-heatmap').prop('checked') ? true : false;
 
 	    $('#submitButton').attr("disabled", true);
 
-        getData(params, show, function() {
+        getData(params, markersVisible, heatmapVisible, function() {
         	spinner.stop();
         	$('#submitButton').attr("disabled", false);
         });
