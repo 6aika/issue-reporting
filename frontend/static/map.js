@@ -36,7 +36,7 @@ function clearMarkers() {
 }
 
 function getData(params, markersVisible, heatmapVisible, onSuccess) {
-    $.getJSON("/api/v1/requests.json/?extensions=true", params, function (data) {
+    $.getJSON("/api/v1/requests.json/?", params, function (data) {
 
         clearMarkers();
 
@@ -74,7 +74,7 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
             marker.on('click', function(e) {
                 // Truncate feedback details so that they fit the popup window
                 var title_len = 50;
-                var title = e.target.feedback.extended_attributes.title;
+                var title = e.target.feedback.title;
                 if (title.length > title_len) {
                     title = title.substring(0, title_len) + "...";
                 }
