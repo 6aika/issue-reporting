@@ -90,5 +90,7 @@ class Service(models.Model):
 class MediaFile(models.Model):
     feedback = models.ForeignKey('Feedback', on_delete=models.CASCADE, related_name="media_files", null=True)
     file = models.FileField()
+    original_filename = models.CharField(max_length=255, blank=True)
     form_id = models.CharField(max_length=50)
     date_created = models.DateTimeField(auto_now_add=True)
+    size = models.IntegerField(default=0)
