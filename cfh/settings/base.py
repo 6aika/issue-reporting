@@ -136,6 +136,9 @@ DATE_FORMAT = "j.n.Y"
 
 ALLOW_HELSINKI_SPECIFIC_FEATURES = True
 
+# limit amount of feedback list items if date filters are not provided
+FEEDBACK_LIST_LIMIT = 200
+
 # OPEN311 synchronization options
 OPEN311_URL = "https://asiointi.hel.fi/palautews/rest/v1"
 OPEN311_SERVICE_URL = "https://asiointi.hel.fi/palautews/rest/v1/services.json?locale={}"
