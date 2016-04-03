@@ -36,6 +36,7 @@ class FeedbackList(APIView):
                 updated_after=request.query_params.get('updated_after', None),
                 updated_before=request.query_params.get('updated_before', None),
                 search=request.query_params.get('search', None),
+                agency_responsible=request.query_params.get('agency_responsible', None),
                 order_by=request.query_params.get('order_by', None),
                 use_limit=True
         )
