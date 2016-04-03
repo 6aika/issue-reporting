@@ -15,6 +15,7 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ['task_state', 'task_type', 'owner_name', 'task_modified', 'task_created']
 
+
 # TODO: fix xml serialization
 class FeedbackSerializer(serializers.ModelSerializer):
     distance = serializers.SerializerMethodField()
@@ -83,6 +84,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
             'long': instance.lon,
             'media_url': instance.media_url,
             'vote_counter': instance.vote_counter,
+            'title': instance.title
         }
 
         extensions = self.context.get('extensions')

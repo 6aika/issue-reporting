@@ -172,7 +172,7 @@
 .feedback_form_category_item.active {
     background: #ddd;
     border-color: #000;
-    color: #000;
+    color: #337ab7;
 }
 
 /* Color for item under mouse in category selection */
@@ -375,6 +375,7 @@
 
 .table-stage > thead > tr > th {
     border-bottom: 0 #FFF;
+    color: darkgrey;
 }
 
 .toggle-switch {

@@ -13,7 +13,13 @@ var userLocation = null;
 moment.locale('fi');
 
 $(document).ready(function() {
-    getData({"status" : "open"}, true);
+    var params = {};
+    var start_date = $("#datepicker-start").data("DateTimePicker").date().toISOString();
+    params["start_date"] = start_date;
+    var end_date = $("#datepicker-end").data("DateTimePicker").date().toISOString();
+    params["end_date"] = end_date;
+    params["status"] = "open";
+    getData(params, true);
 });
 
 function clearMarkers() {
@@ -22,11 +28,15 @@ function clearMarkers() {
         markerCoordinates.length = 0;
     }
 
+    if (heatLayer) {
+        map.removeLayer(heatLayer);
+    }
+
     markersLayer.clearLayers();
 }
 
-function getData(params, markersVisible, onSuccess) {
-    $.getJSON("/api/v1/requests.json/?extensions=true", params, function (data) {
+function getData(params, markersVisible, heatmapVisible, onSuccess) {
+    $.getJSON("/api/v1/requests.json/?", params, function (data) {
 
         clearMarkers();
 
@@ -52,7 +62,7 @@ function getData(params, markersVisible, onSuccess) {
             var marker = L.marker([feedback.lat, feedback.long]).bindPopup(popupContent, customOptions).addTo(markersLayer);
             marker.feedback = feedback;
             markerCoordinates.push([feedback.lat, feedback.long]);
-            console.log(feedback.status);
+            // Assign colour to marker based on status
             if (feedback.status === "open") {
                 marker.setIcon(feedback_icon_open);
             }
@@ -60,9 +70,11 @@ function getData(params, markersVisible, onSuccess) {
                 marker.setIcon(feedback_icon_closed);
             }
 
+            // On click, fill the popup with feedback details
             marker.on('click', function(e) {
+                // Truncate feedback details so that they fit the popup window
                 var title_len = 50;
-                var title = e.target.feedback.extended_attributes.title;
+                var title = e.target.feedback.title;
                 if (title.length > title_len) {
                     title = title.substring(0, title_len) + "...";
                 }
@@ -86,20 +98,25 @@ function getData(params, markersVisible, onSuccess) {
             });
         });
     }).always(function() {
-        if (onSuccess) { onSuccess(); }
-    });
+        if (onSuccess) { 
+            onSuccess(); 
+        }
+    }).done(function() {
+        if (markersVisible) {
+            showMarkers(markersVisible);
+        }
 
-    if (markersVisible) {
-        showMarkers(markersVisible);
-    }
+        if (heatmapVisible) {
+            showHeatmap(heatmapVisible);
+        }
+    });
 }
 
-var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#62c462", size: "l"});
+var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "l"});
 var new_feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "l"});
 var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
 var feedback_icon_open = L.MakiMarkers.icon({icon: "circle", color: "#D4251C", size: "m"});
 var feedback_icon_closed = L.MakiMarkers.icon({icon: "circle", color: "#16A427", size: "m"});
-var highlight_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "m"});
 
 var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
 // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
@@ -141,9 +158,10 @@ var legend = L.control({position: "bottomright"});
 
 legend.onAdd = function (map) {
     var div = L.DomUtil.create("div", "map-legend");
-    div.innerHTML += "<i style='background: #0072C6'></i>" + "Palaute<br>";
-    div.innerHTML += "<i style='background: #62c462'></i>" + "Sijaintisi<br>";
-    div.innerHTML += "<i style='background: #FFC61E'></i>" + "Valittu palaute<br>";
+    div.innerHTML += "<i style='background: #D4251C'></i>" + "Avoin palaute<br>";
+    div.innerHTML += "<i style='background: #16A427'></i>" + "Suljettu palaute<br>";
+    div.innerHTML += "<i style='background: #0072C6'></i>" + "Sijaintisi<br>";
+    div.innerHTML += "<i style='background: #FFC61E'></i>" + "Uusi palaute<br>";
     return div;
 };
 
@@ -189,16 +207,18 @@ function showMarkers(show) {
 }
 
 function showHeatmap(show) {
-    if (show) {
-        if (heatLayer)
-            map.removeLayer(heatLayer);
+    console.log("*-----------------------------------------------*");
+    console.log("showHeatmap: " + show);
 
-        heatLayer = L.heatLayer(markerCoordinates, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
+    if (heatLayer) {
+        console.log("showHeatmap: removeLayer");
+        map.removeLayer(heatLayer);
     }
-    else
-    {
-        if (heatLayer)
-            map.removeLayer(heatLayer);
+
+    if (show) {
+        console.log("showHeatmap: add heatLayer");
+        console.log(markerCoordinates);
+        heatLayer = L.heatLayer(markerCoordinates, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
     }
 }
 
