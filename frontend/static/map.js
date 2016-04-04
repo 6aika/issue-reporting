@@ -13,12 +13,18 @@ var userLocation = null;
 moment.locale('fi');
 
 $(document).ready(function() {
+    // Initial query is the same than the attributes in the sidebar
+    // I.e. all open feedback from one year ago until the current date 
     var params = {};
+
     var start_date = moment().subtract(12, 'months').toISOString();
     params["start_date"] = start_date;
+    
     var end_date = moment().toISOString();
     params["end_date"] = end_date;
+    
     params["status"] = "open";
+    
     getData(params, true);
 });
 
@@ -158,6 +164,7 @@ var legend = L.control({position: "bottomright"});
 
 legend.onAdd = function (map) {
     var div = L.DomUtil.create("div", "map-legend");
+    div.innerHTML += "<b>Palautteen merkin selitys</b><br>";
     div.innerHTML += "<i style='background: #D4251C'></i>" + "Avoin palaute<br>";
     div.innerHTML += "<i style='background: #16A427'></i>" + "Suljettu palaute<br>";
     div.innerHTML += "<i style='background: #0072C6'></i>" + "Sijaintisi<br>";
@@ -212,7 +219,10 @@ function showHeatmap(show) {
     }
 
     if (show) {
-        heatLayer = L.heatLayer(markerCoordinates, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
+        heatLayer = L.heatLayer(markerCoordinates, { 
+            minOpacity: 0.4, 
+            maxZoom: 18
+        }).addTo(map);
     }
 }
 

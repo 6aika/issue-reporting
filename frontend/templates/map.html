@@ -73,6 +73,18 @@
 			</div>
 		</div>
 
+		<div class="row">
+			<div class="col-xs-12">
+				<label for="agency">Vastuullinen taho</label>
+	            <select class="form-control" name="agency" id="agency">
+	                <option selected="selected" value="">Kaikki</option>
+	                {% for agency in agencies %}
+	                    <option value="{{ agency }}">{{ agency }}</option>
+	                {% endfor %}
+	            </select>
+			</div>
+		</div>
+
 		<div class="space"></div>
 
 		<div class="row">
@@ -162,8 +174,12 @@
 
     	if ($("#status").val() !== "")
 	    	params["status"] = $("#status").val();
+
 	    if ($("#service_code").val() !== "")
 	    	params["service_code"] = $("#service_code").val();
+
+	    if ($("#agency").val() !== "")
+	    	params["agency_responsible"] = $("#agency").val();
 
 	    var markersVisible = $('#toggle-markers').prop('checked') ? true : false;
 	    var heatmapVisible = $('#toggle-heatmap').prop('checked') ? true : false;
