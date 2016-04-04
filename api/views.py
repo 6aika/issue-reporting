@@ -1,4 +1,3 @@
-import json
 import operator
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -9,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.analysis import *
-from api.models import Service
-from api.services import get_feedbacks
+from api.models import Service, MediaFile
+from api.services import get_feedbacks, attach_files_to_feedback, save_file_to_db
 from .serializers import FeedbackSerializer, ServiceSerializer, FeedbackDetailSerializer
 
 
@@ -47,12 +46,21 @@ class FeedbackList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
+        # TODO: add API key rules
         serializer = FeedbackDetailSerializer(data=request.data)
-        if serializer.is_valid():
-            data = serializer.save()
-            # TODO: what to return in service_request_id?
+        if serializer.is_valid(raise_exception=True):
+            new_feedback = serializer.save()
+
+            # save files in the same manner as it's done in feedback form
+            if request.FILES:
+                for filename, file in request.FILES.items():
+                    save_file_to_db(file, new_feedback.service_request_id)
+                files = MediaFile.objects.filter(form_id=new_feedback.service_request_id)
+                if files:
+                    attach_files_to_feedback(request, new_feedback, files)
+
             response_data = {
-                'service_request_id': data.pk,
+                'service_request_id': new_feedback.service_request_id,
                 'service_notice': ''
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
@@ -84,9 +92,7 @@ class FeedbackDetail(APIView):
 class ServiceList(APIView):
     def get(self, request, format=None):
         queryset = Service.objects.all()
-        # TODO: add localization
-        serializer = ServiceSerializer(queryset, many=True,
-                                       context={'extensions': request.query_params.get('locale', 'en')})
+        serializer = ServiceSerializer(queryset, many=True)
 
         return Response(serializer.data)
 

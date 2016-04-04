@@ -12,5 +12,7 @@ def api_exception_handler(exc, context):
             'code': response.status_code,
             'detail': response.reason_phrase
         }
+        if hasattr(exc, 'detail'):
+            response.data['detail'] = exc.detail
 
     return response

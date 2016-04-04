@@ -15,7 +15,7 @@ from formtools.wizard.views import SessionWizardView
 from api.analysis import *
 from api.geocoding.geocoding import reverse_geocode
 from api.models import Service, MediaFile, MediaURL
-from api.services import get_feedbacks, get_feedbacks_count
+from api.services import get_feedbacks, get_feedbacks_count, attach_files_to_feedback, save_file_to_db
 from frontend.forms import FeedbackFormClosest, FeedbackFormCategory, FeedbackForm3, FeedbackFormContact
 
 FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackForm3), ("contact", FeedbackFormContact) ]
@@ -268,23 +268,15 @@ class FeedbackWizard(SessionWizardView):
 
         fixing_time = calc_fixing_time(data["service_code"])
         waiting_time = timedelta(milliseconds=fixing_time)
-        new_feedback.expected_datetime = None #new_feedback.requested_datetime + waiting_time
+        if waiting_time.total_seconds() >= 0:
+            new_feedback.expected_datetime = new_feedback.requested_datetime + waiting_time
+
         new_feedback.save()
 
         # Attach media urls to the feedback
         files = MediaFile.objects.filter(form_id=form_id)
-        if(files):
-            for file in files:
-                # Todo: Better way to build abs image URL
-                abs_url = ''.join([self.request.build_absolute_uri('/')[:-1], settings.MEDIA_URL, file.file.name])
-                media_url = MediaURL(feedback=new_feedback, media_url=abs_url)
-                media_url.save()
-                new_feedback.media_urls.add(media_url)
-                # Attach the file to feedback - not needed if using external Open311!
-                new_feedback.media_files.add(file)
-            # Update the single media_url field to point to the 1st image
-            new_feedback.media_url = new_feedback.media_urls.all()[0].media_url
-            new_feedback.save()
+        if files:
+            attach_files_to_feedback(self.request, new_feedback, files)
 
         return render(self.request, 'feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
                                                               'waiting_time': waiting_time})
@@ -299,15 +291,8 @@ def media_upload(request):
     if(action == "upload_file"):
         files = request.FILES.getlist("file")
         if(files):
-            # Create new unique random filename preserving extension
-            file = files[0]
-            original_filename = file.name
-            size = file.size
-            extension = os.path.splitext(file.name)[1]
-            file.name = uuid.uuid4().hex + extension
-            f_object = MediaFile(file=file, form_id=form_id, original_filename=original_filename, size=size)
-            f_object.save()
-            return JsonResponse({"status": "success", "filename": file.name})
+            file_name = save_file_to_db(files[0], form_id)
+            return JsonResponse({"status": "success", "filename": file_name})
         else:
             return HttpResponseBadRequest
     elif(action == "get_files"):
