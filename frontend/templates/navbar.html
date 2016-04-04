@@ -1,3 +1,4 @@
+{% load custom_tags %}
 {% block navbar %}
 <div class="container-fluid">
 	<nav class="navbar navbar-inverse navbar-fixed-top">
@@ -8,21 +9,17 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="/">CFH</a>
+				<a class="navbar-brand {% navbar_link_class request 'mainpage' %}" href="/">CFH</a>
 			</div>
 			<div class="collapse navbar-collapse" id="myNavbar">
 				<ul class="nav navbar-nav">
-					<li><a href="{% url 'feedback_form' %}">Anna palaute</a></li>
-					<li><a href="{% url 'feedback_list' %}">Listaa palautteet</a></li>
-					<li><a href="{% url 'map' %}">Kartta</a></li>
-					<li><a href="{% url 'statistics' %}">Tilastotiedot</a></li>
+					<li class="{% navbar_link_class request 'feedback_form' %}"><a href="{% url 'feedback_form' %}">Anna palaute</a></li>
+					<li class="{% navbar_link_class request 'feedback_list' %}" ><a href="{% url 'feedback_list' %}">Listaa palautteet</a></li>
+					<li class="{% navbar_link_class request 'map' %}" ><a href="{% url 'map' %}">Kartta</a></li>
+					<li class="{% navbar_link_class request 'statistics department charts' %}" ><a href="{% url 'statistics' %}">Tilastotiedot</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="{% url 'about' %}">Tietoja</a></li>
-					<!-- Not used presently
-					<li><a href="#"><span class="glyphicon glyphicon-user"></span> Rekisteröidy</a></li>
-					<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Kirjaudu</a></li>
-					-->
+					<li class="{% navbar_link_class request 'about' %}" ><a href="{% url 'about' %}">Tietoja</a></li>
 				</ul>
 			</div>
 		</div>

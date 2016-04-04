@@ -528,6 +528,6 @@ p {
     margin-bottom: 0;
 }
 
-.pagination-buttons {
-    text-align: center;
+.navbar-active-link {
+    background-color: #333;
 }

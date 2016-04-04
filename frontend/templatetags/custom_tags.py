@@ -3,6 +3,7 @@ from api.analysis import *
 from datetime import timedelta
 from django import template
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 from django.utils import timezone
 register = template.Library()
 
@@ -91,3 +92,9 @@ def get_expected_datetime(feedback):
 	else:
 		median = timedelta(milliseconds=calc_fixing_time(feedback.service_code))
 		return (timezone.now() + median)
+
+@register.simple_tag
+def navbar_link_class(request, urls):
+	if request.path in ( reverse(url) for url in urls.split() ):
+		return "active"
+	return ""

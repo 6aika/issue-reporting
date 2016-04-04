@@ -147,8 +147,8 @@
             $.post("{% url 'media_upload' %}", data, function (data) {
                 $.each(data.files, function(index, element) {
                     var myDropzone = Dropzone.forElement("#dropzone");
-                    var mockFile = { name: "Filename", size: 12345, server_filename: element };
-                    url = "/media/" + element;
+                    var mockFile = { name: element.original_filename, size: element.size, server_filename: element.server_filename };
+                    url = "/media/" + element.server_filename;
                     myDropzone.emit("addedfile", mockFile);
                     myDropzone.createThumbnailFromUrl(mockFile, url);
                     myDropzone.emit("complete", mockFile);

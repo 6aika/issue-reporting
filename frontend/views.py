@@ -299,21 +299,27 @@ def media_upload(request):
     if(action == "upload_file"):
         files = request.FILES.getlist("file")
         if(files):
-        # Create new unique random filename preserving extension
+            # Create new unique random filename preserving extension
             file = files[0]
+            original_filename = file.name
+            size = file.size
             extension = os.path.splitext(file.name)[1]
             file.name = uuid.uuid4().hex + extension
-            f_object = MediaFile(file=file, form_id=form_id)
+            f_object = MediaFile(file=file, form_id=form_id, original_filename=original_filename, size=size)
             f_object.save()
             return JsonResponse({"status": "success", "filename": file.name})
         else:
             return HttpResponseBadRequest
     elif(action == "get_files"):
-        # Just return the filenames associated with the form_id
+        # Just return the files (including size and original name) associated with the form_id
         mediafiles = MediaFile.objects.filter(form_id=form_id)
         files = []
         for item in mediafiles:
-            files.append(os.path.basename(item.file.name))
+            entry = {}
+            entry["server_filename"] = (os.path.basename(item.file.name))
+            entry["original_filename"] = item.original_filename
+            entry["size"] = item.size
+            files.append(entry)
         return JsonResponse({"status": "success", "files": files})
     elif(action == "delete_file"):
         server_filename = "./" + request.POST["server_filename"]
