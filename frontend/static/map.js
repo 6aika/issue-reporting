@@ -14,9 +14,9 @@ moment.locale('fi');
 
 $(document).ready(function() {
     var params = {};
-    var start_date = $("#datepicker-start").data("DateTimePicker").date().toISOString();
+    var start_date = moment().subtract(12, 'months').toISOString();
     params["start_date"] = start_date;
-    var end_date = $("#datepicker-end").data("DateTimePicker").date().toISOString();
+    var end_date = moment().toISOString();
     params["end_date"] = end_date;
     params["status"] = "open";
     getData(params, true);
@@ -207,17 +207,11 @@ function showMarkers(show) {
 }
 
 function showHeatmap(show) {
-    console.log("*-----------------------------------------------*");
-    console.log("showHeatmap: " + show);
-
     if (heatLayer) {
-        console.log("showHeatmap: removeLayer");
         map.removeLayer(heatLayer);
     }
 
     if (show) {
-        console.log("showHeatmap: add heatLayer");
-        console.log(markerCoordinates);
         heatLayer = L.heatLayer(markerCoordinates, {minOpacity: 0.4, maxZoom: 18}).addTo(map);
     }
 }
