@@ -42,7 +42,7 @@
                             {% endif %}
                         </div>
                         <div class="col-xs-5 feedback_list_icons hidden-sm hidden-md hidden-lg text-right">
-                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon"
+                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon {% feedback_vote_icon_status request item %}"
                                   id="{{ item.id }}"></span>
                             <span class="badge feedback_list_vote_badge">{{ item.vote_counter }}</span>
                         </div>
@@ -182,7 +182,7 @@
                             </div>
                         </div>
                         <div class="col-sm-3 col-md-2 feedback_list_icons hidden-xs text-right">
-                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon"
+                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon {% feedback_vote_icon_status request item %}"
                                   id="{{ item.id }}"></span>
                             <span class="badge feedback_list_vote_badge">{{ item.vote_counter }}</span>
                         </div>

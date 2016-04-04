@@ -85,6 +85,7 @@ def real_status(feedback):
 	else:
 		return "Suljettu"
 
+# If the expected_datetime is empty, return median estimation
 @register.filter
 def get_expected_datetime(feedback):
 	if feedback.expected_datetime:
@@ -93,8 +94,17 @@ def get_expected_datetime(feedback):
 		median = timedelta(milliseconds=calc_fixing_time(feedback.service_code))
 		return (timezone.now() + median)
 
+# Highlights the active navbar link
 @register.simple_tag
 def navbar_link_class(request, urls):
 	if request.path in ( reverse(url) for url in urls.split() ):
 		return "active"
 	return ""
+
+# Checks if the user has already voted this feedback and returns a proper class. Uses session data.
+@register.simple_tag
+def feedback_vote_icon_status(request, item):
+	if "vote_id_list" in request.session:
+		if str(item.id) in request.session["vote_id_list"]:
+			return "icon_disabled"
+	return "icon_enabled"

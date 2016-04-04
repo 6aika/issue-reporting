@@ -44,7 +44,7 @@
                     </div>
                     <div class="row">
                         <div class="xs-col-3">
-                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon"
+                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon {% feedback_vote_icon_status request feedback %}"
                                   id="{{ feedback.id }}">
                             </span>
                             <span class="badge feedback_list_vote_badge">{{ feedback.vote_counter }}</span>
