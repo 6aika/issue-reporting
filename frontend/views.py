@@ -268,13 +268,9 @@ class FeedbackWizard(SessionWizardView):
 
         fixing_time = calc_fixing_time(data["service_code"])
         waiting_time = timedelta(milliseconds=fixing_time)
-<<<<<<< HEAD
-        new_feedback.expected_datetime = new_feedback.requested_datetime + waiting_time
-=======
         if waiting_time.total_seconds() >= 0:
             new_feedback.expected_datetime = new_feedback.requested_datetime + waiting_time
 
->>>>>>> 6877124064c1d0a83ca67dc0765345dda7676620
         new_feedback.save()
 
         # Attach media urls to the feedback
