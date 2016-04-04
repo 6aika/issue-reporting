@@ -253,6 +253,10 @@
     cursor: pointer;
 }
 
+.icon_disabled, .icon_disabled:hover{
+    color: #8ae;
+}
+
 .feedback_title, .feedback_form_category_title {
     font-weight: 700;
 }
