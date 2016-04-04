@@ -1,3 +1,4 @@
+import json
 import operator
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -166,3 +167,9 @@ def get_agencies_statistics(request):
     agency_statistics.sort(key=operator.itemgetter('total'), reverse=True)
 
     return JsonResponse(agency_statistics, safe=False)
+
+
+def get_agency_responsible_list(request):
+    feedbacks = Feedback.objects.all().distinct("agency_responsible").order_by('agency_responsible')
+    agencies = [f.agency_responsible for f in feedbacks]
+    return JsonResponse(agencies, safe=False)
