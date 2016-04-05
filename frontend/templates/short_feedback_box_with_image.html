@@ -8,7 +8,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 short-text">
-                    <a href="{% url 'feedback_details' feedback.id %}"><h5>{{ feedback.title|default:"NO TITLE" |truncatechars:60}}</h5></a>
+                    <a href="{% url 'feedback_details' feedback.id %}"><h5>{{ feedback.title|default:"Ei otsikkoa" |truncatechars:60}}</h5></a>
                     <h5 class="text-muted">{{ feedback.service_code|get_service_name }}</h5>
                     {% if feedback|is_open %}
                         <span>Avattu: {{ feedback.requested_datetime|date }}</span><br>
