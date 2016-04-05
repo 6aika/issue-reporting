@@ -20,7 +20,7 @@
                     <div class=row>
                         <div class="col-sm-9 hidden-sm hidden-md hidden-lg">
                             <a class="feedback_list_title" href="{% url 'feedback_details' item.id %}">
-                                <h4>{{ item.title|default:'NO TITLE' }}</h4>
+                                <h4>{{ item.title|default:'Ei otsikkoa' }}</h4>
                             </a>
                         </div>
                     </div>
@@ -131,7 +131,7 @@
             </div>
         </div>
     {% else %}
-        <h3>No feedbacks to show!</h3>
+        <h3>Ei palautteita!</h3>
     {% endif %}
 
     <script type="text/javascript">
