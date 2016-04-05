@@ -10,7 +10,6 @@ urlpatterns = [
     url(r'^feedback_form/$', frontend.views.FeedbackWizard.as_view(frontend.views.FORMS), name="feedback_form"),
     url(r'^media_upload/$', frontend.views.media_upload, name="media_upload"),
     url(r'^map/$', frontend.views.map, name="map"),
-    url(r'^locations_demo/$', frontend.views.locations_demo, name="locations_demo"),
     url(r'^about/$', frontend.views.about, name="about"),
     url(r'^statistics/$', frontend.views.statistics2, name="statistics"),
     url(r'^department/$', frontend.views.department, name="department"),

@@ -41,13 +41,6 @@ def mainpage(request):
     return render(request, "mainpage.html", context)
 
 
-def locations_demo(request):
-    point = fromstr('SRID=4326;POINT(%s %s)' % (24.821711, 60.186896))
-    feedbacks = Feedback.objects.annotate(distance=Distance('location', point)) \
-        .filter(location__distance_lte=(point, D(m=3000))).order_by('distance')
-    return render(request, 'locations_demo.html', {'feedbacks': feedbacks})
-
-
 def feedback_list(request):
     queries_without_page = request.GET.copy()
     if 'page' in queries_without_page:
