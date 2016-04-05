@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="col-sm-12 hidden-xs">
                             <p>Vastuullinen taho: <br/>
-                                <small>{{ item.agency_responsible }}</small>
+                                <small>{{ item.agency_responsible|default:'' }}</small>
                             </p>
                         </div>
                         {% if item|is_open %}
