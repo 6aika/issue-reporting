@@ -5,7 +5,6 @@ from api.tests.api_utils import APIClientWrapper
 from api.tests.db_utils import clear_db, insert_feedbacks
 
 
-# TODO: write wrapper to load json from repsonse
 class RequestsAPITest(APITestCase):
     # request constants
     NUMBER_OF_REQUESTS = 4
@@ -88,7 +87,7 @@ class RequestsAPITest(APITestCase):
 
     def test_get_with_extensions(self):
         response, content = self.client.get('api/v1:feedback-list',
-                                   {'service_request_id': '1982hglaqe8pdnpophff', 'extensions': 'true'})
+                                            {'service_request_id': '1982hglaqe8pdnpophff', 'extensions': 'true'})
         self.assertTrue(response.status_code == status.HTTP_200_OK)
         self.assertTrue('extended_attributes' in content[0])
 
@@ -119,8 +118,8 @@ class RequestsAPITest(APITestCase):
         service_object_id = '10844'
         service_object_type = 'http://www.hel.fi/servicemap/v2'
         response, content = self.client.get('api/v1:feedback-list',
-                                   {'extensions': 'true', 'service_object_id': 'service_object_id',
-                                    'service_object_type': 'service_object_type'})
+                                            {'extensions': 'true', 'service_object_id': 'service_object_id',
+                                             'service_object_type': 'service_object_type'})
         self.assertTrue(response.status_code == status.HTTP_200_OK)
         for feedback in content:
             self.assertTrue(feedback['extended_attributes']['service_object_id'] == service_object_id)

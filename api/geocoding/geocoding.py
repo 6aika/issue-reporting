@@ -1,6 +1,6 @@
 import json
-import urllib
 import logging
+import urllib
 from urllib.error import URLError
 
 from django.conf import settings

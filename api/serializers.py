@@ -1,4 +1,5 @@
 from datetime import timedelta, datetime
+
 from django.conf import settings
 from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import serializers
@@ -19,7 +20,6 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = ['task_state', 'task_type', 'owner_name', 'task_modified', 'task_created']
 
 
-# TODO: fix xml serialization
 class FeedbackSerializer(serializers.ModelSerializer):
     distance = serializers.SerializerMethodField()
     extended_attributes = serializers.SerializerMethodField()
@@ -130,7 +130,8 @@ class FeedbackDetailSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        location = GEOSGeometry('SRID=4326;POINT(' + str(validated_data.get('long', 0)) + ' ' + str(validated_data.get('lat', 0)) + ')')
+        location = GEOSGeometry(
+            'SRID=4326;POINT(' + str(validated_data.get('long', 0)) + ' ' + str(validated_data.get('lat', 0)) + ')')
         validated_data['location'] = location
 
         fixing_time = calc_fixing_time(validated_data["service_code"])

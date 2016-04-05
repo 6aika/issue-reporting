@@ -46,7 +46,7 @@ class FeedbackList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        # TODO: add API key rules
+        # TODO: (for future releases) add API key rules
         serializer = FeedbackDetailSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             new_feedback = serializer.save()

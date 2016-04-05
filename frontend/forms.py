@@ -1,5 +1,6 @@
 from django import forms
 
+
 class FeedbackFormClosest(forms.Form):
     latitude = forms.FloatField(widget=forms.HiddenInput(attrs={'class': 'form-control', 'placeholder': "Latitude"}))
     longitude = forms.FloatField(widget=forms.HiddenInput(attrs={'class': 'form-control', 'placeholder': "Longitude"}))
@@ -9,16 +10,24 @@ class FeedbackFormClosest(forms.Form):
 
 class FeedbackFormCategory(forms.Form):
     service_code = forms.CharField(widget=forms.HiddenInput(
-        attrs={'class': 'form-control', 'placeholder': "Enter category..."}))
+            attrs={'class': 'form-control', 'placeholder': "Enter category..."}))
 
 
 class FeedbackForm3(forms.Form):
-	title = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Anna otsikko..."}))
-	description = forms.CharField(widget=forms.Textarea(attrs={'rows': 8, 'maxlength': 5000, 'class': 'form-control', 'placeholder': "Kirjoita tarkka kuvaus..."}))
-	#form_id = forms.CharField(required=False, max_length=50, widget=forms.HiddenInput())
+    title = forms.CharField(max_length=100,
+                            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Anna otsikko..."}))
+    description = forms.CharField(widget=forms.Textarea(
+        attrs={'rows': 8, 'maxlength': 5000, 'class': 'form-control', 'placeholder': "Kirjoita tarkka kuvaus..."}))
+
+
+# form_id = forms.CharField(required=False, max_length=50, widget=forms.HiddenInput())
 
 class FeedbackFormContact(forms.Form):
-	first_name = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Etunimesi..."}))
-	last_name = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Sukunimesi..."}))
-	email = forms.EmailField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Sähköpostiosoitteesi..."}))
-	phone = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Puhelinnumerosi..."}))
+    first_name = forms.CharField(max_length=100, required=False,
+                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Etunimesi..."}))
+    last_name = forms.CharField(max_length=100, required=False,
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Sukunimesi..."}))
+    email = forms.EmailField(max_length=100, required=False, widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': "Sähköpostiosoitteesi..."}))
+    phone = forms.CharField(max_length=100, required=False, widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': "Puhelinnumerosi..."}))

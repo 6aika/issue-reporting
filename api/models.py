@@ -3,7 +3,7 @@ import uuid
 from django.contrib.gis.db import models
 from django.utils import timezone
 
-# TODO: change some TextFields with CharFields, remove null=True where required
+
 class Feedback(models.Model):
     class Meta:
         db_table = 'feedbacks'

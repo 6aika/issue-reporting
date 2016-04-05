@@ -9,4 +9,3 @@ class APIClientWrapper(APIClient):
         response = super(APIClientWrapper, self).get(reverse(path), data, follow)
         content = json.loads(response.content.decode('utf-8'))
         return response, content
-
