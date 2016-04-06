@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% load staticfiles %}
 {% block head %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js" charset="utf-8"></script>
@@ -47,9 +47,9 @@
 
         $.getJSON("/api/v1/statistics/services/", function (data) {
             var services = ['x'];
-            var total = ['total'];
-            var closed = ['closed'];
-            var fixing_time_in_hours = ['Fixing Time In Days and Hours'];
+            var total = ['kaikki'];
+            var closed = ['suljetut'];
+            var fixing_time_in_hours = ['Korjausaika päivissä ja tunneissa'];
             $.each(data, function (key, item) {
                 services.push(item.service_name);
                 total.push(item.total);
@@ -119,8 +119,8 @@
         });
         $.getJSON("/api/v1/statistics/agencies/", function (data) {
             var agencies = ['x'];
-            var total = ['total'];
-            var closed = ['closed'];
+            var total = ['kaikki'];
+            var closed = ['suljetut'];
             $.each(data, function (key, item) {
                 if (key > 9) return;
                 agencies.push(item.agency_responsible);
