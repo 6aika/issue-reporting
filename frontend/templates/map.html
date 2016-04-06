@@ -15,9 +15,6 @@
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
 {% endblock %}
-{% block body %}
-    <body style="margin: 0">
-{% endblock %}
 {% block content-fluid %}
 <style>
 .space {
@@ -27,7 +24,6 @@
 <div id="wrapper">
 	<!-- Sidebar -->
     <div id="sidebar-wrapper">
-
 		<div class="row">
 			<div class="col-xs-4">
 				<label for="markers">Palautteet</label>
@@ -118,9 +114,7 @@
 				</div>
 			</div>
 		</div>
-
 		<div class="space"></div>
-
         <button 
 	        id="submitButton" 
 	        class="btn btn-primary btn-lg btn-block" 
@@ -130,25 +124,20 @@
 	        Päivitä
         </button>
 	</div>
-
     <div id="toggleButtonContainer" class="toggled">
 	    <button id="toggleButton" class="btn btn-primary btn-block" onclick="onToggleMenu()">
 	        <span id="toggleButtonIcon" class="glyphicon glyphicon-chevron-right"></span>
 	    </button>
     </div>
-
 	<div id="map" class="map-main"></div>
 </div>
 <script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
 <script src="{% static 'map.js' %}"></script>
 <script>
-
-	
-
+	$("body").css("margin", 0);
 	L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function () {
 	    getUserLocation();
 	}, {position: 'topright'}).addTo(map);
-
 
 	// Spinner for when loading data
 	var opts = {
@@ -205,6 +194,5 @@
 			showHeatmap(show);
 		})
 	})
-
 </script>
 {% endblock %}

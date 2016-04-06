@@ -1,6 +1,10 @@
+from datetime import timedelta, datetime
+
+from django.conf import settings
 from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import serializers
 
+from api.analysis import calc_fixing_time
 from .models import Feedback, Task, Service
 
 
@@ -16,7 +20,6 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = ['task_state', 'task_type', 'owner_name', 'task_modified', 'task_created']
 
 
-# TODO: fix xml serialization
 class FeedbackSerializer(serializers.ModelSerializer):
     distance = serializers.SerializerMethodField()
     extended_attributes = serializers.SerializerMethodField()
@@ -127,8 +130,20 @@ class FeedbackDetailSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        location = GEOSGeometry('SRID=4326;POINT(' + str(validated_data.get('long', 0)) + ' ' + str(validated_data.get('lat', 0)) + ')')
+        location = GEOSGeometry(
+            'SRID=4326;POINT(' + str(validated_data.get('long', 0)) + ' ' + str(validated_data.get('lat', 0)) + ')')
         validated_data['location'] = location
+
+        fixing_time = calc_fixing_time(validated_data["service_code"])
+        waiting_time = timedelta(milliseconds=fixing_time)
+
+        if waiting_time.total_seconds() >= 0:
+            validated_data['expected_datetime'] = datetime.now() + waiting_time
+
+        if settings.SYNCHRONIZE_WITH_OPEN_311 is False:
+            validated_data['service_request_id'] = Feedback.generate_service_request_id()
+            validated_data['status'] = 'moderation'
+
         validated_data.pop('lat', None)
         validated_data.pop('long', None)
         feedback = Feedback.objects.create(**validated_data)

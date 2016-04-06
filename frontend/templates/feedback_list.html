@@ -11,19 +11,16 @@
             <div class="row feedback_list_row">
                 <div class="col-xs-12 col-sm-3 feedback_list_img ">
                     <a class="feedback_list_title" href="{% url 'feedback_details' item.id %}">
-
-
                         <img class="img img-responsive center-cropped"
                              src={% include "feedback_image_url.html" with service_code=item.service_code media_url=item.media_url %} alt="Feedback
                              image"/>
                     </a>
                 </div>
-
                 <div class="col-xs-12 col-sm-2 feedback_list_details col-sm-push-7">
                     <div class=row>
                         <div class="col-sm-9 hidden-sm hidden-md hidden-lg">
                             <a class="feedback_list_title" href="{% url 'feedback_details' item.id %}">
-                                <h4>{{ item.title|default:'NO TITLE' }}</h4>
+                                <h4>{{ item.title|default:'Ei otsikkoa' }}</h4>
                             </a>
                         </div>
                     </div>
@@ -42,7 +39,7 @@
                             {% endif %}
                         </div>
                         <div class="col-xs-5 feedback_list_icons hidden-sm hidden-md hidden-lg text-right">
-                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon"
+                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon {% feedback_vote_icon_status request item %}"
                                   id="{{ item.id }}"></span>
                             <span class="badge feedback_list_vote_badge">{{ item.vote_counter }}</span>
                         </div>
@@ -50,7 +47,7 @@
                     <div class="row">
                         <div class="col-sm-12 hidden-xs">
                             <p>Vastuullinen taho: <br/>
-                                <small>{{ item.agency_responsible }}</small>
+                                <small>{{ item.agency_responsible|default:'' }}</small>
                             </p>
                         </div>
                         {% if item|is_open %}
@@ -64,7 +61,6 @@
                     {% if item.distance %}
                         <div class="row">
                             <div class="col-sm-12">
-
                                 <p>Etäisyys:
                                     {% if item.distance.m < 1000 %}
                                         {{ item.distance.m|floatformat:"0" }} m
@@ -72,106 +68,25 @@
                                         {{ item.distance.km|floatformat:"2" }} km
                                     {% endif %}
                                 </p>
-
                             </div>
                         </div>
                     {% endif %}
                     <div class="row">
                         <div class="col-sm-12">
                             <p>
-                                <small>{{ item.address_string|default:'No Address' }}</small>
+                                <small>{{ item.address_string|default:'Ei osoitetta' }}</small>
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- TODO Showing detail content in mobile in accordion (Prototype).Remember to hide details in mobile using hidden-xs in feedback_list_details class -->
-
-                <!--
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <div class="panel panel-default">
-
-                        <div class="panel-heading feedback_list_accordion_panel_heading" role="tab" id="headingOne">
-                            <h4 class="panel-title">
-                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
-                                   aria-expanded="false" aria-controls="collapseOne">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            {% if item.status == 'open' %}
-                                                <h4 class="text-success">
-                                                    {{ item.status|capfirst }}<br/>
-                                                    <small>
-                    {{ item.requested_datetime|default_if_none:""|date:"d.m.o " }}</small>
-                                                </h4>
-                                            {% elif item.status == 'moderation' %}
-                                                <h4 class="text-warning">
-                                                    {{ item.status|capfirst }}<br/>
-                                                    <small>{{ item.updated_datetime|default_if_none:"" }}</small>
-                                                </h4>
-                                            {% else %}
-                                                <h4 class="text-danger">
-                                                    {{ item.status|capfirst }}<br/>
-                                                    <small>{{ item.updated_datetime|default_if_none:"" }}</small>
-                                                </h4>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </a>
-                            </h4>
-                        </div>
-
-                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
-                             aria-labelledby="headingOne">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <p>Vastuullinen taho: <br/>
-                                            <small>{{ item.agency_responsible }}</small>
-                                        </p>
-                                    </div>
-                                    <div class="col-sm-12 text-info">
-                                        {% if item.expected_datetime and not item.status == "closed" %}
-                                            <p>Arvio: <br/>
-                                                <small>{{ item.expected_datetime|time_from_now }}</small>
-                                            </p>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                {% if item.distance %}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-
-                                            <p>Etäisyys:
-                                                {% if item.distance.m < 1000 %}
-                                                    {{ item.distance.m|floatformat:"0" }} m
-                                                {% else %}
-                                                    {{ item.distance.km|floatformat:"2" }} km
-                                                {% endif %}
-                                            </p>
-
-                                        </div>
-                                    </div>
-                                {% endif %}
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <p>
-                                            <small>{{ item.address_string|default:'No Address' }}</small>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
--->
                 <div class="col-xs-12 col-sm-7 feedback_list_content col-sm-pull-2">
                     <div class="row">
                         <div class="col-xs-12 col-sm-9 col-md-10">
                             <div class=row>
                                 <div class="col-sm-9 hidden-xs">
                                     <a class="feedback_list_title" href="{% url 'feedback_details' item.id %}">
-                                        <h4>{{ item.title|default:'NO TITLE' }}</h4>
+                                        <h4>{{ item.title|default:'Ei otsikkoa' }}</h4>
                                     </a>
                                 </div>
                             </div>
@@ -182,12 +97,11 @@
                             </div>
                         </div>
                         <div class="col-sm-3 col-md-2 feedback_list_icons hidden-xs text-right">
-                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon"
+                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon {% feedback_vote_icon_status request item %}"
                                   id="{{ item.id }}"></span>
                             <span class="badge feedback_list_vote_badge">{{ item.vote_counter }}</span>
                         </div>
                     </div>
-                    <!--Description-->
                     <div class=row>
                         <div class="col-sm-12 feedback_list_content_desc">
                             <p>{{ item.description | truncatechars:300 }}</p>
@@ -217,7 +131,7 @@
             </div>
         </div>
     {% else %}
-        <h3>No feedbacks to show!</h3>
+        <h3>Ei palautteita!</h3>
     {% endif %}
 
     <script type="text/javascript">
@@ -227,6 +141,5 @@
     </script>
 
     <script type="text/javascript" src="{% static 'utils/enable_voting.js' %}"></script>
-
     {% include 'footer.html' %}
 {% endblock %}

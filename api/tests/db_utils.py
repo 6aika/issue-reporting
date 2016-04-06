@@ -1,5 +1,6 @@
-from api.models import Feedback
 from django.db import connection
+
+from api.models import Feedback
 
 
 def clear_db():

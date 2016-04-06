@@ -1,40 +1,44 @@
 {% extends 'base.html' %}
 {% load custom_tags %}
 {% block content %}
-<div class="row text-center">
-	<div class="col-sm-6 col-sm-offset-3">
-		<h1>Kiitos palautteesta!</h1>
+	<div class="row text-center">
+		<div class="col-sm-6 col-sm-offset-3">
+			<h1>Kiitos palautteesta!</h1>
+		</div>
 	</div>
-</div>
 
-<div class="row text-center">
-	<div class="col-sm-6 col-sm-offset-3">
-		<p>Tyypillinen korjausaika on: {{ waiting_time|td_humanize }} <span data-toggle="tooltip" title="Arvio on keskimääräinen aika, joka on kulunut tämän aihealueen palautteiden käsittelyssä. Palautteen käsittely voi kestää kauemminkin." class="glyphicon glyphicon-question-sign"></span></p>
+	<div class="row text-center">
+		<div class="col-sm-6 col-sm-offset-3">
+			<p>Tyypillinen korjausaika on: {{ waiting_time|td_humanize }} <span data-toggle="tooltip" title="Arvio on keskimääräinen aika, joka on kulunut tämän aihealueen palautteiden käsittelyssä. Palautteen käsittely voi kestää kauemminkin." class="glyphicon glyphicon-question-sign"></span></p>
+		</div>
 	</div>
-</div>
 
-<div class="row">
-	<div class="col-sm-4 col-sm-offset-4">
-		<img class="img-responsive" src="http://www.how-to-draw-funny-cartoons.com/image-files/cartoon-squirrel-8.gif" alt="Squirrel image" />
+	<div class="row">
+		<div class="col-sm-4 col-sm-offset-4">
+			<img class="img-responsive" src="http://www.how-to-draw-funny-cartoons.com/image-files/cartoon-squirrel-8.gif" alt="Squirrel image" />
+		</div>
 	</div>
-</div>
-<div class="row text-center">
-	<div class="col-sm-6 col-sm-offset-3">
-		<p>
-			Palautteesi on vastaanotettu ja se pyritään käsittelemään mahdollisimman nopeasti. Arvostamme sitä, että haluat tehdä Helsingistämme vieläkin paremman paikan asua!
-		</p>
+
+	<div class="row text-center">
+		<div class="col-sm-6 col-sm-offset-3">
+			<p>
+				Palautteesi on vastaanotettu ja se pyritään käsittelemään mahdollisimman nopeasti. Arvostamme sitä, että haluat tehdä Helsingistämme vieläkin paremman paikan asua!
+			</p>
+		</div>
 	</div>
-</div>
-<div class="row text-center">
-	<div class="col-sm-6 col-sm-offset-3">
-		<a href="/" type="button" class="btn btn-primary">Palaa etusivulle</a>
-		<a href="{% url 'feedback_form' %}" type="button" class="btn btn-primary">Anna uusi palaute</a>
+
+	<div class="row text-center">
+		<div class="col-sm-6 col-sm-offset-3">
+			<a href="/" type="button" class="btn btn-primary">Palaa etusivulle</a>
+			<a href="{% url 'feedback_form' %}" type="button" class="btn btn-primary">Anna uusi palaute</a>
+		</div>
 	</div>
-</div>
-{% include 'footer.html' %}
-<script type="text/javascript">
-	$(function () {
-	  $('[data-toggle="tooltip"]').tooltip()
-	})
-</script>
+	
+	{% include 'footer.html' %}
+
+	<script type="text/javascript">
+		$(function () {
+		  $('[data-toggle="tooltip"]').tooltip()
+		})
+	</script>
 {% endblock %}

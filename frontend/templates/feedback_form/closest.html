@@ -11,11 +11,9 @@
     <script type="text/javascript" src="{% static 'utils/proj4leaflet.js' %}"></script>
     <link rel="stylesheet" href="{% static 'utils/easy-button.css' %}"/>
     <script type="text/javascript" src="{% static 'utils/easy-button.js' %}"></script>
-
 {% endblock %}
 
 {% block content %}
-
     {% include 'feedback_form/stagebar.html' with stage=wizard.steps.step1 %}
     <form method="post" id="location">
         {% csrf_token %}
@@ -65,12 +63,10 @@
         map.setZoom(13);
         var newFeedbackLocation = new L.marker(map.getCenter(), {icon: new_feedback_icon, zIndexOffset: 1}).addTo(map);
 
-
         L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function () {
             getUserLocation();
             keep_selected = null;
         }, {position: 'topright'}).addTo(map);
-
         
         // Provide initial list - if the user doesn't allow geolocating
         fetch_service_objects(newFeedbackLocation.getLatLng());

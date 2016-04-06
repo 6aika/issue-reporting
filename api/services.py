@@ -1,3 +1,6 @@
+import os
+import uuid
+
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.db.models.sql import DistanceField
@@ -5,7 +8,7 @@ from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
 from django.db.models import Case, When
 
-from api.models import Feedback
+from api.models import Feedback, MediaURL, MediaFile
 
 
 def get_feedbacks(service_codes=None, service_request_ids=None,
@@ -76,3 +79,28 @@ def get_feedbacks_count():
     if settings.SHOW_ONLY_MODERATED:
         queryset = queryset.exclude(status__iexact='MODERATION')
     return queryset.count()
+
+
+def attach_files_to_feedback(request, feedback, files):
+    for file in files:
+        abs_url = ''.join([request.build_absolute_uri('/')[:-1], settings.MEDIA_URL, file.file.name])
+        media_url = MediaURL(feedback=feedback, media_url=abs_url)
+        media_url.save()
+        feedback.media_urls.add(media_url)
+        # Attach the file to feedback - not needed if using external Open311!
+        feedback.media_files.add(file)
+
+    # Update the single media_url field to point to the 1st image
+    feedback.media_url = feedback.media_urls.all()[0].media_url
+    feedback.save()
+
+
+def save_file_to_db(file, form_id):
+    # Create new unique random filename preserving extension
+    original_filename = file.name
+    size = file.size
+    extension = os.path.splitext(file.name)[1]
+    file.name = uuid.uuid4().hex + extension
+    f_object = MediaFile(file=file, form_id=form_id, original_filename=original_filename, size=size)
+    f_object.save()
+    return file.name

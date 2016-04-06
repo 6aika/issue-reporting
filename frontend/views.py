@@ -3,10 +3,7 @@ import os
 import uuid
 from datetime import timedelta
 
-from django.conf import settings
-from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.geos import fromstr, GEOSGeometry
-from django.contrib.gis.measure import D
+from django.contrib.gis.geos import GEOSGeometry
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http.response import JsonResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, render
@@ -14,11 +11,12 @@ from formtools.wizard.views import SessionWizardView
 
 from api.analysis import *
 from api.geocoding.geocoding import reverse_geocode
-from api.models import Service, MediaFile, MediaURL
-from api.services import get_feedbacks, get_feedbacks_count
+from api.models import Service, MediaFile
+from api.services import get_feedbacks, get_feedbacks_count, attach_files_to_feedback, save_file_to_db
 from frontend.forms import FeedbackFormClosest, FeedbackFormCategory, FeedbackForm3, FeedbackFormContact
 
-FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackForm3), ("contact", FeedbackFormContact) ]
+FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackForm3),
+         ("contact", FeedbackFormContact)]
 TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/category.html",
              "basic_info": "feedback_form/step3.html", "contact": "feedback_form/contact.html"}
 
@@ -39,13 +37,6 @@ def mainpage(request):
     context["fixed_feedbacks_count"] = fixed_feedbacks_count
     context["recent_feedbacks"] = recent_feedbacks
     return render(request, "mainpage.html", context)
-
-
-def locations_demo(request):
-    point = fromstr('SRID=4326;POINT(%s %s)' % (24.821711, 60.186896))
-    feedbacks = Feedback.objects.annotate(distance=Distance('location', point)) \
-        .filter(location__distance_lte=(point, D(m=3000))).order_by('distance')
-    return render(request, 'locations_demo.html', {'feedbacks': feedbacks})
 
 
 def feedback_list(request):
@@ -109,7 +100,7 @@ def vote_feedback(request):
     if request.method == "POST":
         try:
             id = request.POST["id"]
-            if(id):
+            if id:
                 feedback = Feedback.objects.get(pk=id)
             else:
                 return JsonResponse({"status": "error", "message": "Ääntä ei voitu tallentaa. Palautetta ei löydetty!"})
@@ -155,7 +146,8 @@ def map(request):
     }
     return render(request, "map.html", context)
 
-#different departments
+
+# different departments
 def department(request):
     data = []
     agencies = Feedback.objects.filter(status__in=["open", "closed"]).distinct("agency_responsible")
@@ -176,12 +168,12 @@ def department(request):
     return render(request, "department.html", {"data": data})
 
 
-def statistics2(request):
+def statistics(request):
     data = []
     for service in Service.objects.all():
         item = {}
         service_code = service.service_code
-        item["service_code"]= service_code
+        item["service_code"] = service_code
         item["service_name"] = service.service_name
         item["total"] = get_total_by_service(service_code)
         item["closed"] = get_closed_by_service(service_code)
@@ -192,7 +184,7 @@ def statistics2(request):
 
     # Sort the rows by "total" column
     data.sort(key=operator.itemgetter('total'), reverse=True)
-    return render(request, "statistics2.html", {"data": data})
+    return render(request, "statistics.html", {"data": data})
 
 
 def charts(request):
@@ -202,6 +194,7 @@ def charts(request):
 class FeedbackWizard(SessionWizardView):
     # Set the default category
     initial_dict = {"category": {"service_code": "180"}}
+
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
 
@@ -239,7 +232,7 @@ class FeedbackWizard(SessionWizardView):
                 idx += 1
         elif self.steps.current == "basic_info":
             prev = self.storage.get_step_data("closest")
-            form_id = prev.get("closest-form_id",'')
+            form_id = prev.get("closest-form_id", '')
             context.update({'form_id': form_id})
         return context
 
@@ -271,26 +264,19 @@ class FeedbackWizard(SessionWizardView):
 
         fixing_time = calc_fixing_time(data["service_code"])
         waiting_time = timedelta(milliseconds=fixing_time)
-        new_feedback.expected_datetime = None #new_feedback.requested_datetime + waiting_time
+        if waiting_time.total_seconds() >= 0:
+            new_feedback.expected_datetime = new_feedback.requested_datetime + waiting_time
+
         new_feedback.save()
 
         # Attach media urls to the feedback
         files = MediaFile.objects.filter(form_id=form_id)
-        if(files):
-            for file in files:
-                # Todo: Better way to build abs image URL
-                abs_url = ''.join([self.request.build_absolute_uri('/')[:-1], settings.MEDIA_URL, file.file.name])
-                media_url = MediaURL(feedback=new_feedback, media_url=abs_url)
-                media_url.save()
-                new_feedback.media_urls.add(media_url)
-                # Attach the file to feedback - not needed if using external Open311!
-                new_feedback.media_files.add(file)
-            # Update the single media_url field to point to the 1st image
-            new_feedback.media_url = new_feedback.media_urls.all()[0].media_url
-            new_feedback.save()
+        if files:
+            attach_files_to_feedback(self.request, new_feedback, files)
 
         return render(self.request, 'feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
-                                                              'waiting_time': waiting_time})
+                                                                'waiting_time': waiting_time})
+
 
 # This view handles media uploads from user during submitting a new feedback
 # It receives files with a form_id, saves the file and saves the info to DB so
@@ -299,40 +285,35 @@ def media_upload(request):
     form_id = request.POST["form_id"]
     action = request.POST["action"]
     print("form_id", form_id)
-    if(action == "upload_file"):
+    if action == "upload_file":
         files = request.FILES.getlist("file")
-        if(files):
-            # Create new unique random filename preserving extension
-            file = files[0]
-            original_filename = file.name
-            size = file.size
-            extension = os.path.splitext(file.name)[1]
-            file.name = uuid.uuid4().hex + extension
-            f_object = MediaFile(file=file, form_id=form_id, original_filename=original_filename, size=size)
-            f_object.save()
-            return JsonResponse({"status": "success", "filename": file.name})
+        if files:
+            file_name = save_file_to_db(files[0], form_id)
+            return JsonResponse({"status": "success", "filename": file_name})
         else:
             return HttpResponseBadRequest
-    elif(action == "get_files"):
+    elif action == "get_files":
         # Just return the files (including size and original name) associated with the form_id
         mediafiles = MediaFile.objects.filter(form_id=form_id)
         files = []
         for item in mediafiles:
-            entry = {}
-            entry["server_filename"] = (os.path.basename(item.file.name))
-            entry["original_filename"] = item.original_filename
-            entry["size"] = item.size
+            entry = {
+                "server_filename": (os.path.basename(item.file.name)),
+                "original_filename": item.original_filename,
+                "size": item.size
+            }
             files.append(entry)
         return JsonResponse({"status": "success", "files": files})
-    elif(action == "delete_file"):
+    elif action == "delete_file":
         server_filename = "./" + request.POST["server_filename"]
         f_object = MediaFile.objects.filter(file=server_filename, form_id=form_id)
-        if(f_object):
+        if f_object:
             f_object[0].file.delete()
             f_object[0].delete()
         return JsonResponse({"status": "success"})
     else:
         return HttpResponseBadRequest
+
 
 def about(request):
     context = {}

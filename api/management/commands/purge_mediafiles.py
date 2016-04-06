@@ -31,7 +31,8 @@ class Command(BaseCommand):
         all_files = MediaFile.objects.all()
         old_files = MediaFile.objects.filter(date_created__lt=delete_date)
         if not options["silent"]:
-            message = "Deleting " + str(old_files.count()) + "/" + str(all_files.count()) + " files created before " + delete_date.strftime("%A %d.%m.%y %H:%M")
+            message = "Deleting " + str(old_files.count()) + "/" + str(
+                all_files.count()) + " files created before " + delete_date.strftime("%A %d.%m.%y %H:%M")
             logger.info(message)
         if not old_files.count():
             if not options["silent"]:

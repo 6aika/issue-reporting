@@ -6,9 +6,6 @@
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
     <script type="text/javascript" src="{% static 'utils/proj4-compressed.js' %}" ></script>
     <script type="text/javascript" src="{% static 'utils/proj4leaflet.js' %}" ></script>
-
-    <!-- TODO: Add FB app and get ID -->
-    <!--<meta property="fb:app_id"                  content="1688926801391900" />-->
     <meta property="og:type"                    content="og:article" />
     <meta property="og:site_name"               content="City Feedback Hub" />
     <meta property="og:url"                     content="http://feedback.hel.ninja{% url 'feedback_details' feedback.id %}" />
@@ -17,99 +14,98 @@
     <meta property="og:description"             content="{{feedback.description}}" />
 {% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="row">
-            <div class="col-xs-12 col-md-8" style="padding: 40px">
-                <div class="row">
-                    <h1 class="feedback_title" title="{{feedback.service_request_id}}">{{ feedback.title }}</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-xs-12 col-md-8" style="padding: 40px">
                     <div class="row">
-                        <div class="col-md-12">
-                            <p class="text-muted">Aihe: {{ feedback.service_code|get_service_name }}</p>
-                            {% if feedback.agency_responsible %}
-                                <p class="text-muted">Vastuullinen taho: {{ feedback.agency_responsible }}</p>
-                            {% endif %}
-                            <p class="text-muted">Luotu: {{ feedback.requested_datetime }}</p>
-                            <p class="text-muted">Tila: {{ feedback|real_status }}
-                                {% if not feedback|is_open %}
-                                    <span>({{feedback.updated_datetime}})</span>
+                        <h1 class="feedback_title" title="{{feedback.service_request_id}}">{{ feedback.title }}</h1>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p class="text-muted">Aihe: {{ feedback.service_code|get_service_name }}</p>
+                                {% if feedback.agency_responsible %}
+                                    <p class="text-muted">Vastuullinen taho: {{ feedback.agency_responsible }}</p>
                                 {% endif %}
-                            </p>
-                            <p>{{ feedback.description }}</p>
-                            {% if feedback|is_open %}
-                                <p>Korjausarvio: {{ feedback|get_expected_datetime }}</p>
-                            {% endif %}
-                            <p>Osoite: {{ feedback.address_string }}</p>
+                                <p class="text-muted">Luotu: {{ feedback.requested_datetime }}</p>
+                                <p class="text-muted">Tila: {{ feedback|real_status }}
+                                    {% if not feedback|is_open %}
+                                        <span>({{feedback.updated_datetime}})</span>
+                                    {% endif %}
+                                </p>
+                                <p>{{ feedback.description }}</p>
+                                {% if feedback|is_open %}
+                                    <p>Korjausarvio: {{ feedback|get_expected_datetime }}</p>
+                                {% endif %}
+                                <p>Osoite: {{ feedback.address_string }}</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="xs-col-3">
-                            <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon"
-                                  id="{{ feedback.id }}">
-                            </span>
-                            <span class="badge feedback_list_vote_badge">{{ feedback.vote_counter }}</span>
-                            <div class="fb-share-button" data-href="http://feedback.hel.ninja{% url 'feedback_details' feedback.id %}" data-layout="button"></div>
+                        <div class="row">
+                            <div class="xs-col-3">
+                                <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon {% feedback_vote_icon_status request feedback %}"
+                                      id="{{ feedback.id }}">
+                                </span>
+                                <span class="badge feedback_list_vote_badge">{{ feedback.vote_counter }}</span>
+                                <div class="fb-share-button" data-href="http://feedback.hel.ninja{% url 'feedback_details' feedback.id %}" data-layout="button"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xs-12 col-md-4 feedback-details-sidebar">
-                <p>
-                    <img id="feedback_image" class="img-thumbnail img-responsive center-cropped-details-page"
-                         src="{% include 'feedback_image_url.html' with service_code=feedback.service_code media_url=feedback.media_url %}" alt="Feedback image"/>
-                </p>
-                <div id="map" class="map-feedback-details"></div>
+                <div class="col-xs-12 col-md-4 feedback-details-sidebar">
+                    <p>
+                        <img id="feedback_image" class="img-thumbnail img-responsive center-cropped-details-page"
+                             src="{% include 'feedback_image_url.html' with service_code=feedback.service_code media_url=feedback.media_url %}" alt="Feedback image"/>
+                    </p>
+                    <div id="map" class="map-feedback-details"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
-<script>
-    "use strict";
+    <script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
+    <script>
+        "use strict";
 
-    var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
-    var crs = function() {
-        var bounds, crsName, crsOpts, originNw, projDef;
-        crsName = 'EPSG:3067';
-        projDef = '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
-        bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
-        originNw = [bounds.min.x, bounds.max.y];
-        crsOpts = {
-            resolutions: [8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125],
-            bounds: bounds,
-            transformation: new L.Transformation(1, -originNw[0], -1, originNw[1])
-        };
-        return new L.Proj.CRS(crsName, projDef, crsOpts);
-    }
+        var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
+        var crs = function() {
+            var bounds, crsName, crsOpts, originNw, projDef;
+            crsName = 'EPSG:3067';
+            projDef = '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
+            bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
+            originNw = [bounds.min.x, bounds.max.y];
+            crsOpts = {
+                resolutions: [8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125],
+                bounds: bounds,
+                transformation: new L.Transformation(1, -originNw[0], -1, originNw[1])
+            };
+            return new L.Proj.CRS(crsName, projDef, crsOpts);
+        }
 
-    var lat = "{{feedback.lat}}";
-    var lon = "{{feedback.lon}}";
+        var lat = "{{feedback.lat}}";
+        var lon = "{{feedback.lon}}";
 
-    var map = L.map('map',
-    {
-        crs : crs()
-    }).setView([lat, lon], 12);
+        var map = L.map('map',
+        {
+            crs : crs()
+        }).setView([lat, lon], 12);
 
-    L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png", {
-        attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-        maxZoom: 18,
-        continuousWorld: true,
-        tms: false
-    }).addTo(map);
-    
-    var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
-    L.marker([lat, lon], {icon: feedback_icon}).addTo(map);
+        L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png", {
+            attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+            maxZoom: 18,
+            continuousWorld: true,
+            tms: false
+        }).addTo(map);
+        
+        var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
+        L.marker([lat, lon], {icon: feedback_icon}).addTo(map);
+    </script>
 
-</script>
+    <script type="text/javascript">
+        $(function () {
+            enable_voting("{{csrf_token}}", "{% url 'vote_feedback' %}");
+        });
+    </script>
 
-<script type="text/javascript">
-    $(function () {
-        enable_voting("{{csrf_token}}", "{% url 'vote_feedback' %}");
-    });
-</script>
-
-<script type="text/javascript" src="{% static 'utils/enable_voting.js' %}"></script>
-<script type="text/javascript" src="{% static 'utils/fb-share.js'%}"></script>
-{% include 'footer.html' %}
+    <script type="text/javascript" src="{% static 'utils/enable_voting.js' %}"></script>
+    <script type="text/javascript" src="{% static 'utils/fb-share.js'%}"></script>
+    {% include 'footer.html' %}
 {% endblock %}

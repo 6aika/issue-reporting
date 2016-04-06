@@ -1,7 +1,9 @@
+import uuid
+
 from django.contrib.gis.db import models
 from django.utils import timezone
 
-# TODO: change some TextFields with CharFields, remove null=True where required
+
 class Feedback(models.Model):
     class Meta:
         db_table = 'feedbacks'
@@ -32,7 +34,7 @@ class Feedback(models.Model):
     service_object_type = models.TextField(null=True)
     detailed_status = models.TextField(null=True)
 
-    location = models.PointField(srid=4326)
+    location = models.PointField(srid=4326, null=True)
 
     # Keeps track of votes users have given to the feedback
     vote_counter = models.IntegerField(default=0)
@@ -47,6 +49,10 @@ class Feedback(models.Model):
     @property
     def lat(self):
         return self.location[1]
+
+    @staticmethod
+    def generate_service_request_id():
+        return str(uuid.uuid4())
 
 
 class MediaURL(models.Model):

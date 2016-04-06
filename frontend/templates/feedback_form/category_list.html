@@ -1,16 +1,12 @@
 <div class="row">
 	{% for category in categories %}
-        <div class="col-xs-6 col-sm-3">
-		<div class="thumbnail feedback_form_category_item" data-service-code="{{category.service_code}}" id="{{forloop.counter0}}">
-			<!-- <img src="{{category.src}}" alt="{{category.alt}}"> -->
-			<div class="text-center">
-				<span class=" glyphicon {{category.glyphicon}}"></span>
-			</div>
-            <h5 class="text-center feedback_form_category_title text-muted">{{ category.name }}</h5>
-			<div class="caption">
-				<!-- <p>{{category.description}}</p> -->
+	    <div class="col-xs-6 col-sm-3">
+			<div class="thumbnail feedback_form_category_item" data-service-code="{{category.service_code}}" id="{{forloop.counter0}}">
+				<div class="text-center">
+					<span class=" glyphicon {{category.glyphicon}}"></span>
+				</div>
+	            <h5 class="text-center feedback_form_category_title text-muted">{{ category.name }}</h5>
 			</div>
 		</div>
-	</div>
 	{% endfor %}
 </div>
