@@ -13,12 +13,12 @@ from api.analysis import *
 from api.geocoding.geocoding import reverse_geocode
 from api.models import Service, MediaFile
 from api.services import get_feedbacks, get_feedbacks_count, attach_files_to_feedback, save_file_to_db
-from frontend.forms import FeedbackFormClosest, FeedbackFormCategory, FeedbackForm3, FeedbackFormContact
+from frontend.forms import FeedbackFormClosest, FeedbackFormCategory, FeedbackFormBasicInfo, FeedbackFormContact
 
-FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackForm3),
+FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackFormBasicInfo),
          ("contact", FeedbackFormContact)]
 TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/category.html",
-             "basic_info": "feedback_form/step3.html", "contact": "feedback_form/contact.html"}
+             "basic_info": "feedback_form/basic_info.html", "contact": "feedback_form/contact.html"}
 
 
 def mainpage(request):
@@ -237,21 +237,23 @@ class FeedbackWizard(SessionWizardView):
         return context
 
     def done(self, form_list, form_dict, **kwargs):
-        data = {}
-        data["status"] = "moderation"
-        data["title"] = form_dict["basic_info"].cleaned_data["title"]
-        data["description"] = form_dict["basic_info"].cleaned_data["description"]
-        data["service_code"] = form_dict["category"].cleaned_data["service_code"]
+        data = {
+            "status":       "moderation",
+            "title":        form_dict["basic_info"].cleaned_data["title"],
+            "description":  form_dict["basic_info"].cleaned_data["description"],
+            "service_code": form_dict["category"].cleaned_data["service_code"],
+            "first_name":   form_dict["contact"].cleaned_data["first_name"],
+            "last_name":    form_dict["contact"].cleaned_data["last_name"],
+            "email":        form_dict["contact"].cleaned_data["email"],
+            "phone":        form_dict["contact"].cleaned_data["phone"]
+        }
+
         data["service_name"] = Service.objects.get(service_code=data["service_code"]).service_name
+
         latitude = form_dict["closest"].cleaned_data["latitude"]
         longitude = form_dict["closest"].cleaned_data["longitude"]
         data["location"] = GEOSGeometry('SRID=4326;POINT(' + str(longitude) + ' ' + str(latitude) + ')')
         data["address_string"] = reverse_geocode(latitude, longitude)
-
-        data["first_name"] = form_dict["contact"].cleaned_data["first_name"]
-        data["last_name"] = form_dict["contact"].cleaned_data["last_name"]
-        data["email"] = form_dict["contact"].cleaned_data["email"]
-        data["phone"] = form_dict["contact"].cleaned_data["phone"]
 
         service_object_id = form_dict["closest"].cleaned_data["service_object_id"]
         if service_object_id:
@@ -284,7 +286,6 @@ class FeedbackWizard(SessionWizardView):
 def media_upload(request):
     form_id = request.POST["form_id"]
     action = request.POST["action"]
-    print("form_id", form_id)
     if action == "upload_file":
         files = request.FILES.getlist("file")
         if files:

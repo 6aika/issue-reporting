@@ -13,14 +13,12 @@ class FeedbackFormCategory(forms.Form):
             attrs={'class': 'form-control', 'placeholder': "Enter category..."}))
 
 
-class FeedbackForm3(forms.Form):
+class FeedbackFormBasicInfo(forms.Form):
     title = forms.CharField(max_length=100,
                             widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Anna otsikko..."}))
     description = forms.CharField(widget=forms.Textarea(
         attrs={'rows': 8, 'maxlength': 5000, 'class': 'form-control', 'placeholder': "Kirjoita tarkka kuvaus..."}))
 
-
-# form_id = forms.CharField(required=False, max_length=50, widget=forms.HiddenInput())
 
 class FeedbackFormContact(forms.Form):
     first_name = forms.CharField(max_length=100, required=False,
