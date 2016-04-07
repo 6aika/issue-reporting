@@ -135,6 +135,11 @@
 <script src="{% static 'map.js' %}"></script>
 <script>
 	$("body").css("margin", 0);
+	add_legend();
+	
+	// Automatically fetch user location and center
+	getUserLocation();
+
 	L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function () {
 	    getUserLocation();
 	}, {position: 'topright'}).addTo(map);

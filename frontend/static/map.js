@@ -9,10 +9,21 @@ var markersLayer = L.markerClusterGroup({
 var markerCoordinates = [];
 var heatLayer = null;
 var userLocation = null;
-// Localisation initiation for datepickers
-moment.locale('fi');
+
+var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "l"});
+var new_feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "l"});
+var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
+var feedback_icon_open = L.MakiMarkers.icon({icon: "circle", color: "#D4251C", size: "m"});
+var feedback_icon_closed = L.MakiMarkers.icon({icon: "circle", color: "#16A427", size: "m"});
+
+var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
+
+var map = init_map();
 
 $(document).ready(function() {
+    // Localisation initiation for datepickers
+    moment.locale('fi');
+
     // Initial query is the same than the attributes in the sidebar
     // I.e. all open feedback from one year ago until the current date 
     var params = {};
@@ -27,6 +38,60 @@ $(document).ready(function() {
     
     getData(params, true);
 });
+
+
+
+function init_map() {
+    // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
+    var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
+
+    var crs = function() {
+        var bounds, crsName, crsOpts, originNw, projDef;
+        crsName = 'EPSG:3067';
+        projDef = '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
+        bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
+        originNw = [bounds.min.x, bounds.max.y];
+        crsOpts = {
+            resolutions: [8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125],
+            bounds: bounds,
+            transformation: new L.Transformation(1, -originNw[0], -1, originNw[1])
+        };
+        return new L.Proj.CRS(crsName, projDef, crsOpts);
+    }
+
+    var map = L.map('map', {
+        crs: crs(),
+        zoomControl: false,
+        maxZoom: 15
+    }).setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 11);
+
+    map.addControl(L.control.zoom({position: 'topright'}));
+
+    L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png", {
+        attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+        maxZoom: 18,
+        continuousWorld: true,
+        tms: false
+    }).addTo(map);
+
+    return map;
+}
+
+function add_legend() {
+    var legend = L.control({position: "bottomright"});
+
+    legend.onAdd = function (map) {
+        var div = L.DomUtil.create("div", "map-legend");
+        div.innerHTML += "<h5 class='text-center'>Selite</h5>"
+        div.innerHTML += "<i style='background: #D4251C'></i>" + "Avoin palaute<br>";
+        div.innerHTML += "<i style='background: #16A427'></i>" + "Suljettu palaute<br>";
+        div.innerHTML += "<i style='background: #0072C6'></i>" + "Sijaintisi<br>";
+        div.innerHTML += "<i style='background: #FFC61E'></i>" + "Uusi palaute<br>";
+        return div;
+    };
+
+    legend.addTo(map);
+}
 
 function clearMarkers() {
     // Coordinates for Heatmap
@@ -118,62 +183,6 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
     });
 }
 
-var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "l"});
-var new_feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "l"});
-var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
-var feedback_icon_open = L.MakiMarkers.icon({icon: "circle", color: "#D4251C", size: "m"});
-var feedback_icon_closed = L.MakiMarkers.icon({icon: "circle", color: "#16A427", size: "m"});
-
-var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
-// Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
-var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
-
-var crs = function() {
-    var bounds, crsName, crsOpts, originNw, projDef;
-    crsName = 'EPSG:3067';
-    projDef = '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
-    bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
-    originNw = [bounds.min.x, bounds.max.y];
-    crsOpts = {
-        resolutions: [8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125],
-        bounds: bounds,
-        transformation: new L.Transformation(1, -originNw[0], -1, originNw[1])
-    };
-    return new L.Proj.CRS(crsName, projDef, crsOpts);
-}
-
-var map = L.map('map', {
-    crs: crs(),
-    zoomControl: false,
-    maxZoom: 15
-}).setView([HelsinkiCoord.lat, HelsinkiCoord.lng], 11);
-
-// Automatically fetch user location and center
-getUserLocation();
-
-L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png", {
-    attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-    maxZoom: 18,
-    continuousWorld: true,
-    tms: false
-}).addTo(map);
-
-map.addControl(L.control.zoom({position: 'topright'}));
-
-var legend = L.control({position: "bottomright"});
-
-legend.onAdd = function (map) {
-    var div = L.DomUtil.create("div", "map-legend");
-    div.innerHTML += "<h5 class='text-center'>Selite</h5>"
-    div.innerHTML += "<i style='background: #D4251C'></i>" + "Avoin palaute<br>";
-    div.innerHTML += "<i style='background: #16A427'></i>" + "Suljettu palaute<br>";
-    div.innerHTML += "<i style='background: #0072C6'></i>" + "Sijaintisi<br>";
-    div.innerHTML += "<i style='background: #FFC61E'></i>" + "Uusi palaute<br>";
-    return div;
-};
-
-legend.addTo(map);
-
 function getUserLocation(e) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
@@ -186,15 +195,6 @@ function getUserLocation(e) {
             }
             map.panTo(newLocation);
         }.bind(this));
-        /*,
-        function(error) {
-            if (error.code == error.PERMISSION_DENIED)
-            {
-                var newLocation = L.latLng(HelsinkiCoord.lat, HelsinkiCoord.lng);
-                userLocation = new L.marker(newLocation, {icon: center_icon}).addTo(map);
-                map.panTo(newLocation); 
-            }
-        });*/
     }
     else {
         console.error("Geolocation is not supported by this browser.");

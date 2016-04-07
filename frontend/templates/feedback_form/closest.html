@@ -61,6 +61,9 @@
 
         $("body").css("margin", 0);
         map.setZoom(13);
+        // Automatically fetch user location and center
+        getUserLocation();
+
         var newFeedbackLocation = new L.marker(map.getCenter(), {icon: new_feedback_icon, zIndexOffset: 1}).addTo(map);
 
         L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function () {
