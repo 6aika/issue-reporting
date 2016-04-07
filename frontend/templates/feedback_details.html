@@ -4,6 +4,10 @@
 {% block head %}
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script src="{% static 'utils/leaflet.markercluster-src.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'utils/MarkerCluster.css' %}" />
+    <link rel="stylesheet" href="{% static 'utils/MarkerCluster.Default.css' %}" />
+
     <script type="text/javascript" src="{% static 'utils/proj4-compressed.js' %}" ></script>
     <script type="text/javascript" src="{% static 'utils/proj4leaflet.js' %}" ></script>
     <!-- Register to FB and add FB app_id value for proper usage!! -->
@@ -63,38 +67,14 @@
     </div>
 
     <script src="{% static 'utils/Leaflet.MakiMarkers.js' %}"></script>
+    <script src="{% static 'map.js' %}"></script>
     <script>
         "use strict";
-
-        var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
-        var crs = function() {
-            var bounds, crsName, crsOpts, originNw, projDef;
-            crsName = 'EPSG:3067';
-            projDef = '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
-            bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
-            originNw = [bounds.min.x, bounds.max.y];
-            crsOpts = {
-                resolutions: [8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125],
-                bounds: bounds,
-                transformation: new L.Transformation(1, -originNw[0], -1, originNw[1])
-            };
-            return new L.Proj.CRS(crsName, projDef, crsOpts);
-        }
 
         var lat = "{{feedback.lat}}";
         var lon = "{{feedback.lon}}";
 
-        var map = L.map('map',
-        {
-            crs : crs()
-        }).setView([lat, lon], 12);
-
-        L.tileLayer("http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png", {
-            attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-            maxZoom: 18,
-            continuousWorld: true,
-            tms: false
-        }).addTo(map);
+        map.setView([lat, lon], 12);
         
         var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
         L.marker([lat, lon], {icon: feedback_icon}).addTo(map);

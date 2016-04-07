@@ -19,11 +19,10 @@ var feedback_icon_closed = L.MakiMarkers.icon({icon: "circle", color: "#16A427",
 var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
 
 var map = init_map();
+// Localisation initiation for datepickers
+moment.locale('fi');
 
-$(document).ready(function() {
-    // Localisation initiation for datepickers
-    moment.locale('fi');
-
+function default_query() {
     // Initial query is the same than the attributes in the sidebar
     // I.e. all open feedback from one year ago until the current date 
     var params = {};
@@ -37,9 +36,7 @@ $(document).ready(function() {
     params["status"] = "open";
     
     getData(params, true);
-});
-
-
+}
 
 function init_map() {
     // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
