@@ -79,7 +79,7 @@ function add_legend() {
 
     legend.onAdd = function (map) {
         var div = L.DomUtil.create("div", "map-legend");
-        div.innerHTML += "<h5 class='text-center'>Selite</h5>"
+        div.innerHTML += "<h5 class='text-center' style='margin: 3px 0px'>Selite</h5>"
         div.innerHTML += "<i style='background: #D4251C'></i>" + "Avoin palaute<br>";
         div.innerHTML += "<i style='background: #16A427'></i>" + "Suljettu palaute<br>";
         div.innerHTML += "<i style='background: #0072C6'></i>" + "Sijaintisi<br>";
