@@ -5,19 +5,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js" charset="utf-8"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
-    <script type="text/javascript" src="{% static 'utils/charts.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'utils/charts.js' %}"></script>
 
 {% endblock %}
 {% block content %}
     {% include "statistics_menu.html" with charts_active="active" %}
-    <h2>Palautteet aihealueittain</h2>
-    <div id="serviceStatistics" style="margin-top: 20px"></div>
-    <h2>Palautteet virastoittain</h2>
-    <div id="agencyStatistics" style="margin-top:20px"></div>
-    <h2>Korjausajat</h2>
-    <div id="timeStatistics" style="margin-top: 20px; padding-right: 5px;"></div>
+    <div>
+        <h2>Palautteet aihealueittain</h2>
+        <div id="serviceStatistics" style="margin-top: 20px"></div>
+        <h2>Palautteet virastoittain</h2>
+        <div id="agencyStatistics" style="margin-top:20px"></div>
+        <h2>Korjausajat</h2>
+        <div id="timeStatistics" style="margin-top: 20px; padding-right: 5px;"></div>
+    </div>
     <script>
-     var opts = {
+        var opts = {
             lines: 13 // The number of lines to draw
             , length: 28 // The length of each line
             , width: 14 // The line thickness
