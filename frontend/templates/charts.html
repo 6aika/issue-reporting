@@ -5,20 +5,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js" charset="utf-8"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+    <script type="text/javascript" src="{% static 'utils/charts.js' %}"></script>
+
 {% endblock %}
 {% block content %}
     {% include "statistics_menu.html" with charts_active="active" %}
-    <h2>Palvelukaaviot</h2>
-    <div id="serviceStatistics" style="margin-top: 20px"></div>
-    <h2>Virastokaaviot</h2>
-    <div id="agencyStatistics" style="margin-top:20px"></div>
-    <h2>Aikakaaviot</h2>
-    <div id="timeStatistics" style="margin-top: 20px; padding-right: 5px;"></div>
+    <div>
+        <h2>Palautteet aihealueittain</h2>
+        <div id="serviceStatistics" style="margin-top: 20px"></div>
+        <h2>Palautteet virastoittain</h2>
+        <div id="agencyStatistics" style="margin-top:20px"></div>
+        <h2>Korjausajat</h2>
+        <div id="timeStatistics" style="margin-top: 20px; padding-right: 5px;"></div>
+    </div>
     <script>
-        function humanize(value) {
-            return Math.floor(value / 86400) + 'pv ' + Math.floor((value % 86400) / 3600) + 'h';
-        };
-
         var opts = {
             lines: 13 // The number of lines to draw
             , length: 28 // The length of each line
@@ -43,120 +43,7 @@
         }
         var target = document.getElementById('serviceStatistics');
         var spinner = new Spinner(opts).spin(target);
-
-
-        $.getJSON("/api/v1/statistics/services/", function (data) {
-            var services = ['x'];
-            var total = ['kaikki'];
-            var closed = ['suljetut'];
-            var fixing_time_in_hours = ['Korjausaika päivissä ja tunneissa'];
-            $.each(data, function (key, item) {
-                services.push(item.service_name);
-                total.push(item.total);
-                closed.push(item.closed);
-                fixing_time_in_hours.push(item.median_sec)
-            });
-
-            c3.generate({
-                bindto: '#serviceStatistics',
-                data: {
-                    x: 'x',
-                    columns: [
-                        services,
-                        total,
-                        closed
-                    ],
-                    type: 'bar',
-                },
-                axis: {
-                    x: {
-                        type: 'category', // this needed to load string x value
-                        tick: {
-                            rotate: 75,
-                            multiline: false
-                        },
-                        height: 130
-                    }
-                }
-            });
-
-            c3.generate({
-                bindto: '#timeStatistics',
-                data: {
-                    x: 'x',
-                    columns: [
-                        services,
-                        fixing_time_in_hours
-                    ],
-                    type: 'bar',
-                    labels: {
-                        format: humanize
-                    }
-                },
-                axis: {
-                    y: {
-                        tick: {
-                            format: function humanize(value) {
-                                return Math.round(value / 86400);
-                            }
-                        }
-                    },
-                    x: {
-                        type: 'category', // this needed to load string x value
-                        tick: {
-                            rotate: 75,
-                            multiline: false
-                        },
-                        height: 130
-                    }
-                },
-                tooltip: {
-                    format: {
-                        value: humanize
-                    }
-                }
-            });
-        });
-        $.getJSON("/api/v1/statistics/agencies/", function (data) {
-            var agencies = ['x'];
-            var total = ['kaikki'];
-            var closed = ['suljetut'];
-            $.each(data, function (key, item) {
-                if (key > 9) return;
-                agencies.push(item.agency_responsible);
-                total.push(item.total);
-                closed.push(item.closed);
-            });
-            c3.generate({
-                bindto: '#agencyStatistics',
-                padding: {
-                    right: 12,
-                },
-                data: {
-                    x: 'x',
-                    columns: [
-                        agencies,
-                        total,
-                        closed
-                    ],
-                    type: 'bar',
-                },
-                zoom: {
-                    enabled: true,
-                    rescale: true
-                },
-                axis: {
-                    x: {
-                        type: 'category',// this needed to load string x value
-                        tick: {
-                            rotate: 75,
-                            multiline: false
-                        },
-                        height: 160
-                    }
-                }
-            });
-        });
     </script>
+    <script src="{% static 'charts.js' %}"></script>
     {% include 'footer.html' %}
 {% endblock %}
