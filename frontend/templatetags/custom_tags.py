@@ -40,7 +40,7 @@ def td_humanize(diff):
 @register.filter
 def time_from_now(datetime):
 	now = timezone.now()
-	if(datetime):
+	if(datetime != "Ei tiedossa"):
 		return td_humanize(datetime - now)
 	else: 
 		return "Ei tiedossa"
@@ -96,8 +96,12 @@ def get_expected_datetime(feedback):
 	if feedback.expected_datetime:
 		return feedback.expected_datetime
 	else:
-		median = timedelta(milliseconds=calc_fixing_time(feedback.service_code))
-		return (feedback.requested_datetime + median)
+		time = calc_fixing_time(feedback.service_code)
+		if time > 0:
+			median = timedelta(milliseconds=time)
+			return (feedback.requested_datetime + median)
+		else:
+			return "Ei tiedossa"
 
 # Highlights the active navbar link
 @register.simple_tag
