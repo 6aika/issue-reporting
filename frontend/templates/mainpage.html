@@ -39,7 +39,7 @@
                     <div class="col-sm-8">
                         <div class="row">
                             <div class="col-sm-12"> <!-- The legend -->
-                                <p>Palautteita korjattu</p>
+                                <p>Palautteita käsitelty</p>
                             </div>
                         </div>
                         <div class="row">
@@ -58,7 +58,7 @@
                     <div class="col-sm-8">
                         <div class="row">
                             <div class="col-sm-12"> <!-- The legend -->
-                                <p>Palautetta antaneita</p>
+                                <p>Seuraajia</p>
                             </div>
                         </div>
                         <div class="row">
@@ -77,47 +77,47 @@
                     <div class="col-sm-8">
                         <div class="row">
                             <div class="col-sm-12"> <!-- The legend -->
-                                <p>Odotusaika</p>
+                                <p>Käsittelyaika</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12"> <!-- The value -->
-								<div class="nowrap">
-									<h3>{{waiting_time|td_humanize}}</h3>
-								</div>
+                                <div class="nowrap">
+                                    <h3>{{waiting_time|td_humanize}}</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <h3>Äsken korjattu:</h3>
+        <h3>Äsken käsitelty:</h3>
         <div class="row" id="recent-fix-info">
-		{% if fixed_feedbacks %}
-            {% for feedback in fixed_feedbacks %}
-                <div class="col-sm-3">
-                    {% include "short_feedback_box_with_image.html" %}
-                </div>
-            {% endfor %}
-		{% else %}
+            {% if fixed_feedbacks %}
+                {% for feedback in fixed_feedbacks %}
+                    <div class="col-sm-3">
+                        {% include "short_feedback_box_with_image.html" %}
+                    </div>
+                {% endfor %}
+            {% else %}
                 <div class="col-sm-3 col-xs-6">
                     Ei palautteita.
                 </div>
-		{% endif %}
+            {% endif %}
         </div>
         <h3>Äsken raportoitu:</h3>
         <div class="row" id="recent-feedback-info">
-		{% if recent_feedbacks %}
-            {% for feedback in recent_feedbacks %}
-                <div class="col-sm-3">
-                    {% include "short_feedback_box_with_image.html" %}
-                </div>
-            {% endfor %}
-		{% else %}
+            {% if recent_feedbacks %}
+                {% for feedback in recent_feedbacks %}
+                    <div class="col-sm-3">
+                        {% include "short_feedback_box_with_image.html" %}
+                    </div>
+                {% endfor %}
+            {% else %}
                 <div class="col-sm-3 col-xs-6">
                     Ei palautteita.
                 </div>
-		{% endif %}
+            {% endif %}
         </div>
     </div>
 
