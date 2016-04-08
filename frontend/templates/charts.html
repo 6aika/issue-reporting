@@ -8,11 +8,11 @@
 {% endblock %}
 {% block content %}
     {% include "statistics_menu.html" with charts_active="active" %}
-    <h2>Palvelukaaviot</h2>
+    <h2>Palautteet aihealueittain</h2>
     <div id="serviceStatistics" style="margin-top: 20px"></div>
-    <h2>Virastokaaviot</h2>
+    <h2>Palautteet virastoittain</h2>
     <div id="agencyStatistics" style="margin-top:20px"></div>
-    <h2>Aikakaaviot</h2>
+    <h2>Korjausajat</h2>
     <div id="timeStatistics" style="margin-top: 20px; padding-right: 5px;"></div>
     <script>
         function humanize(value) {
