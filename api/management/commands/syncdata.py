@@ -175,8 +175,7 @@ def sync_new_data():
 
 
 class Command(BaseCommand):
-    help = 'Synchronize data with Open311 Server provided in settings.py. ' \
-           'The command runs only reading from Open311. ' \
+    help = 'Read and save data from Open311 Server provided in settings.py. ' \
            'To write feedbacks to Open311 see \'pushdata\' command.'
 
     def add_arguments(self, parser):
