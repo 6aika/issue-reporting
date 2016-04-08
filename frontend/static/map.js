@@ -10,19 +10,19 @@ var markerCoordinates = [];
 var heatLayer = null;
 var userLocation = null;
 
-var center_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "l"});
-var new_feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "l"});
-var feedback_icon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
-var feedback_icon_open = L.MakiMarkers.icon({icon: "circle", color: "#D4251C", size: "m"});
-var feedback_icon_closed = L.MakiMarkers.icon({icon: "circle", color: "#16A427", size: "m"});
+var centerIcon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "l"});
+var newFeedbackIcon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "l"});
+var feedbackIcon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
+var feedbackIconOpen = L.MakiMarkers.icon({icon: "circle", color: "#D4251C", size: "m"});
+var feedbackIconClosed = L.MakiMarkers.icon({icon: "circle", color: "#16A427", size: "m"});
 
 var HelsinkiCoord = {lat: 60.17067, lng: 24.94152};
 
-var map = init_map();
+var map = initMap();
 // Localisation initiation for datepickers
 moment.locale('fi');
 
-function default_query() {
+function defaultQuery() {
     // Initial query is the same than the attributes in the sidebar
     // I.e. all open feedback from one year ago until the current date 
     var params = {};
@@ -38,7 +38,7 @@ function default_query() {
     getData(params, true);
 }
 
-function init_map() {
+function initMap() {
     // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
     var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
 
@@ -75,7 +75,7 @@ function init_map() {
 }
 
 // Takes mode parameter. 1 == main map, 2 == feedback form map etc. Only 2 used now.
-function add_legend(mode) {
+function addLegend(mode) {
     var legend = L.control({position: "bottomright"});
 
     legend.onAdd = function (map) {
@@ -135,10 +135,10 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
             markerCoordinates.push([feedback.lat, feedback.long]);
             // Assign colour to marker based on status
             if (feedback.status === "open") {
-                marker.setIcon(feedback_icon_open);
+                marker.setIcon(feedbackIconOpen);
             }
             else {
-                marker.setIcon(feedback_icon_closed);
+                marker.setIcon(feedbackIconClosed);
             }
 
             // On click, fill the popup with feedback details
@@ -191,7 +191,7 @@ function getUserLocation(e) {
                 userLocation.setLatLng(newLocation);
             }
             else {
-                userLocation = new L.marker(newLocation, {icon: center_icon}).addTo(map);
+                userLocation = new L.marker(newLocation, {icon: centerIcon}).addTo(map);
             }
             map.panTo(newLocation);
         }.bind(this));

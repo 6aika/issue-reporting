@@ -60,13 +60,13 @@
         var keep_selected = null;   // Variable to hold service_object_id to keep selected in the list
 
         $("body").css("margin", 0);
-        add_legend(2);
+        addLegend(2);
         map.setZoom(13);
         // Automatically fetch user location and center
         getUserLocation();
-        default_query();
+        defaultQuery();
 
-        var newFeedbackLocation = new L.marker(map.getCenter(), {icon: new_feedback_icon, zIndexOffset: 1}).addTo(map);
+        var newFeedbackLocation = new L.marker(map.getCenter(), {icon: newFeedbackIcon, zIndexOffset: 1}).addTo(map);
 
         L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function () {
             getUserLocation();
