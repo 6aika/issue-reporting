@@ -527,10 +527,6 @@ html {
     }
 }
 
-p {
-    margin-bottom: 0;
-}
-
 .navbar-active-link {
     background-color: #333;
 }
