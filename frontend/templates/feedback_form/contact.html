@@ -7,7 +7,7 @@
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-8">
 				<h4>Voit halutessasi antaa myös yhteystietosi</h4>
-				<span>Saatamme lähettää tietoa palautteesi etenemisestä. Yhteystietoja ei julkaista.</span>
+				<span>Saatamme lähettää tietoa palautteesi etenemisestä.</span>
 			</div>
 		</div>
 		<div class="form-group">
@@ -26,6 +26,8 @@
 			<label for="{{form.email.id_for_label}}" class="col-sm-2 control-label">Sähköposti:</label>
 			<div class="col-sm-8">
 				{{form.email}}
+			</div>
+			<div class="col-sm-8 col-sm-offset-2" style="color:red" id="email_error">
 			</div>
 		</div>
 		<div class="form-group">
@@ -46,4 +48,18 @@
 		</div>
 	</form>
     {% include 'footer.html' %}
+
+<script type="text/javascript">
+$(function () {
+	var errors = '{{form.email.errors}}';
+	if(errors) {
+	    $("#{{form.email.id_for_label}}").addClass("alert-danger");
+	    $("#email_error").text("Tarkista sähköpostiosoitteesi!");
+	}
+
+	$("#{{form.email.id_for_label}}").on("input", function () {
+	    $(this).removeClass("alert-danger");
+	});
+});
+</script>
 {% endblock %}

@@ -74,7 +74,8 @@ function init_map() {
     return map;
 }
 
-function add_legend() {
+// Takes mode parameter. 1 == main map, 2 == feedback form map etc. Only 2 used now.
+function add_legend(mode) {
     var legend = L.control({position: "bottomright"});
 
     legend.onAdd = function (map) {
@@ -83,9 +84,12 @@ function add_legend() {
         div.innerHTML += "<i style='background: #D4251C'></i>" + "Avoin palaute<br>";
         div.innerHTML += "<i style='background: #16A427'></i>" + "Suljettu palaute<br>";
         div.innerHTML += "<i style='background: #0072C6'></i>" + "Sijaintisi<br>";
-        div.innerHTML += "<i style='background: #FFC61E'></i>" + "Uusi palaute<br>";
+        console.log(mode);
+        if(mode == 2) {
+            div.innerHTML += "<i style='background: #FFC61E'></i>" + "Uusi palaute<br>";
+        }
         return div;
-    };
+    }.bind(this);
 
     legend.addTo(map);
 }
