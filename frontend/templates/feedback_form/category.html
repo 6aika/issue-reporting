@@ -10,12 +10,12 @@
         <div class="form-group">
             <div class="row">
                 <div class="col-sm-2">
-                    <button type="submit" class="btn btn-primary pull-left" value="{{ wizard.steps.prev }}" name="wizard_goto_step">Edellinen <span
-                            class="glyphicon glyphicon-triangle-left"></span></button>
+                    <button type="submit" class="btn btn-primary pull-left" value="{{ wizard.steps.prev }}" name="wizard_goto_step">
+                      <span class="glyphicon glyphicon-triangle-left pull-left"></span>Edellinen</button>
                 </div>
                 <div class="col-sm-offset-8 col-sm-2">
-                    <button type="submit" class="btn btn-primary pull-right">Seuraava <span
-                            class="glyphicon glyphicon-triangle-right"></span></button>
+                    <button type="submit" class="btn btn-primary pull-right">Seuraava
+                      <span class="glyphicon glyphicon-triangle-right"></span></button>
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
                $(selected).removeClass("active");
            }
            selected = item;
-           item.addClass("active"); 
+           item.addClass("active");
         }
     </script>
     {% include 'footer.html' %}

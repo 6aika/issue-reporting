@@ -82,9 +82,9 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12"> <!-- The value -->
-								<div class="nowrap">
-									<h3>{{waiting_time|td_humanize}}</h3>
-								</div>
+              								<div class="nowrap">
+              									<h3>{{waiting_time|td_humanize}}</h3>
+              								</div>
                             </div>
                         </div>
                     </div>
@@ -93,31 +93,31 @@
         </div>
         <h3>Äsken korjattu:</h3>
         <div class="row" id="recent-fix-info">
-		{% if fixed_feedbacks %}
-            {% for feedback in fixed_feedbacks %}
+		        {% if fixed_feedbacks %}
+              {% for feedback in fixed_feedbacks %}
                 <div class="col-sm-3">
                     {% include "short_feedback_box_with_image.html" %}
                 </div>
-            {% endfor %}
-		{% else %}
-                <div class="col-sm-3 col-xs-6">
-                    Ei palautteita.
-                </div>
-		{% endif %}
+              {% endfor %}
+		        {% else %}
+              <div class="col-sm-3 col-xs-6">
+                  Ei palautteita.
+              </div>
+		        {% endif %}
         </div>
         <h3>Äsken raportoitu:</h3>
         <div class="row" id="recent-feedback-info">
-		{% if recent_feedbacks %}
-            {% for feedback in recent_feedbacks %}
+		        {% if recent_feedbacks %}
+              {% for feedback in recent_feedbacks %}
                 <div class="col-sm-3">
                     {% include "short_feedback_box_with_image.html" %}
                 </div>
-            {% endfor %}
-		{% else %}
-                <div class="col-sm-3 col-xs-6">
-                    Ei palautteita.
-                </div>
-		{% endif %}
+              {% endfor %}
+		        {% else %}
+              <div class="col-sm-3 col-xs-6">
+                Ei palautteita.
+              </div>
+		        {% endif %}
         </div>
     </div>
 
