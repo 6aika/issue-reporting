@@ -4,7 +4,7 @@
 
 Link to the latest development version: <http://feedback.hel.ninja>  
 
-[API description](https://github.com/hep7agon/city-feedback-hub/wiki) 
+[API documentation](https://github.com/hep7agon/city-feedback-hub/wiki) 
 
 ## Description
 
