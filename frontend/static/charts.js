@@ -54,7 +54,7 @@ $.getJSON("/api/v1/statistics/services/", function (data) {
                 total,
                 closed
             ],
-            type: 'bar',
+            type: 'bar'
         },
         axis: {
             y: {
@@ -79,13 +79,11 @@ $.getJSON("/api/v1/statistics/services/", function (data) {
         bindto: '#timeStatistics',
         data: {
             x: 'x',
-
             columns: [
                 services,
                 fixing_time_in_hours
             ],
-            type: 'bar',
-           
+            type: 'bar'
         },
         axis: {
             y: {
@@ -124,7 +122,7 @@ $.getJSON("/api/v1/statistics/agencies/", function (data) {
     c3.generate({
         bindto: '#agencyStatistics',
         padding: {
-            right: 12,
+            right: 12
         },
         data: {
             y: {
@@ -138,7 +136,7 @@ $.getJSON("/api/v1/statistics/agencies/", function (data) {
                 total,
                 closed
             ],
-            type: 'bar',
+            type: 'bar'
         },
         zoom: {
             enabled: true,

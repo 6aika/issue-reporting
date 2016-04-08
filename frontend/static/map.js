@@ -1,10 +1,10 @@
 "use strict";
 
 var markersLayer = L.markerClusterGroup({
-        spiderfyOnMaxZoom: true,
-        showCoverageOnHover: false,
-        disableClusteringAtZoom: 12
-    });
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    disableClusteringAtZoom: 12
+});
 // Coordinates for Heatmap
 var markerCoordinates = [];
 var heatLayer = null;
@@ -29,12 +29,12 @@ function default_query() {
 
     var start_date = moment().subtract(12, 'months').toISOString();
     params["start_date"] = start_date;
-    
+
     var end_date = moment().toISOString();
     params["end_date"] = end_date;
-    
+
     params["status"] = "open";
-    
+
     getData(params, true);
 }
 
@@ -42,7 +42,7 @@ function init_map() {
     // Bounds from Helsinki's Servicemap code (https://github.com/City-of-Helsinki/servicemap/)
     var bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
 
-    var crs = function() {
+    var crs = function () {
         var bounds, crsName, crsOpts, originNw, projDef;
         crsName = 'EPSG:3067';
         projDef = '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
@@ -84,7 +84,7 @@ function add_legend(mode) {
         div.innerHTML += "<i style='background: #D4251C'></i>" + "Avoin palaute<br>";
         div.innerHTML += "<i style='background: #16A427'></i>" + "Suljettu palaute<br>";
         div.innerHTML += "<i style='background: #0072C6'></i>" + "Sijaintisi<br>";
-        if(mode == 2) {
+        if (mode == 2) {
             div.innerHTML += "<i style='background: #FFC61E'></i>" + "Uusi palaute<br>";
         }
         return div;
@@ -115,10 +115,10 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
 
             // specify popup options 
             var customOptions =
-                {
-                    'maxWidth': '300',
-                    'className' : 'custom'
-                }
+            {
+                'maxWidth': '300',
+                'className': 'custom'
+            }
 
             // Generate popup-window content
             var popupContent = "";
@@ -142,7 +142,7 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
             }
 
             // On click, fill the popup with feedback details
-            marker.on('click', function(e) {
+            marker.on('click', function (e) {
                 // Truncate feedback details so that they fit the popup window
                 var title_len = 50;
                 var title = e.target.feedback.title;
@@ -159,7 +159,7 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
                 var desc_len = 135;
                 var desc = e.target.feedback.description;
                 if (desc.length > desc_len) {
-                    desc = desc.substring(0, desc_len)  + "...";
+                    desc = desc.substring(0, desc_len) + "...";
                 }
                 $('#feedback_description').text(desc);
                 var feedback_url = "/feedbacks/" + e.target.feedback.id;
@@ -168,11 +168,11 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
                 $('#feedback_info').css("visibility", "visible");
             });
         });
-    }).always(function() {
-        if (onSuccess) { 
-            onSuccess(); 
+    }).always(function () {
+        if (onSuccess) {
+            onSuccess();
         }
-    }).done(function() {
+    }).done(function () {
         if (markersVisible) {
             showMarkers(markersVisible);
         }
@@ -187,7 +187,7 @@ function getUserLocation(e) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var newLocation = L.latLng(position.coords.latitude, position.coords.longitude);
-            if(userLocation) {
+            if (userLocation) {
                 userLocation.setLatLng(newLocation);
             }
             else {
@@ -205,11 +205,10 @@ function showMarkers(show) {
     if (show) {
         map.addLayer(markersLayer);
     }
-    else
-    {
+    else {
         if (map.hasLayer(markersLayer)) {
             map.removeLayer(markersLayer);
-        } 
+        }
     }
 }
 
@@ -219,8 +218,8 @@ function showHeatmap(show) {
     }
 
     if (show) {
-        heatLayer = L.heatLayer(markerCoordinates, { 
-            minOpacity: 0.4, 
+        heatLayer = L.heatLayer(markerCoordinates, {
+            minOpacity: 0.4,
             maxZoom: 18
         }).addTo(map);
     }

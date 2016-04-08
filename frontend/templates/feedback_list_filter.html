@@ -107,7 +107,6 @@
         event.preventDefault();
         if ($("#order_by").val() === 'distance') {
             if (navigator.geolocation) {
-                // console.log("getting geoloc");
                 var that = this;
                 navigator.geolocation.getCurrentPosition(function (position) {
                     $("#lat").val(position.coords.latitude);

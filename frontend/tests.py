@@ -1,8 +1,8 @@
-from django.test import TestCase
-from django.core.exceptions import *
 from django.core.urlresolvers import reverse
-from api.models import *
+from django.test import TestCase
+
 from .forms import *
+
 
 # Test some developer functions
 class BasicTest(TestCase):
@@ -25,7 +25,6 @@ class BasicTest(TestCase):
         self.assertContains(response, "Lorem ipsum", None, 200)
         self.assertContains(response, "08.04.2016", 1)
 
-
     # Test Feedback list returning empty set
     def test_feedback_list_empty(self):
         response = self.client.get(reverse("feedback_list"), {"service_code": "0000"})
@@ -36,8 +35,8 @@ class BasicTest(TestCase):
     # Test having valid info in FeedbackFormBasicInfo
     def test_basic_info_form_valid(self):
         form_data = {
-            "title":        "Simple title",
-            "description":  "Some description"
+            "title": "Simple title",
+            "description": "Some description"
         }
 
         form = FeedbackFormBasicInfo(form_data)
@@ -47,14 +46,14 @@ class BasicTest(TestCase):
     # Also check that error messages match
     def test_basic_info_form_invalid(self):
         form_data = {
-            "title":        "",
-            "description":  ""
+            "title": "",
+            "description": ""
         }
 
         form = FeedbackFormBasicInfo(form_data)
         self.assertEqual(form.errors, {
-            "title":        ["This field is required."],
-            "description":  ["This field is required."]
+            "title": ["This field is required."],
+            "description": ["This field is required."]
         })
 
     # Test getting filelist from media_upload 
@@ -66,15 +65,14 @@ class BasicTest(TestCase):
     def test_vote_feedback_invalid(self):
         response = self.client.post(reverse("vote_feedback"), {"id": "-1"})
 
-        self.assertJSONEqual(str(response.content, encoding='utf8'), 
-            {   "status": "error", 
-                "message": "Ääntä ei voitu tallentaa. Palautetta ei löydetty!"})
+        self.assertJSONEqual(str(response.content, encoding='utf8'),
+                             {"status": "error",
+                              "message": "Ääntä ei voitu tallentaa. Palautetta ei löydetty!"})
 
     # Testing feedback voting using valid ID
     def test_vote_feedback_valid(self):
         response = self.client.post(reverse("vote_feedback"), {"id": "1"})
 
-        self.assertJSONEqual(str(response.content, encoding='utf8'), 
-            {   "status": "success", 
-                "message": "Kiitos, äänesi on rekisteröity!"})
-
+        self.assertJSONEqual(str(response.content, encoding='utf8'),
+                             {"status": "success",
+                              "message": "Kiitos, äänesi on rekisteröity!"})
