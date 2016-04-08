@@ -42,14 +42,13 @@ $.getJSON("/api/v1/statistics/services/", function (data) {
         bindto: '#timeStatistics',
         data: {
             x: 'x',
+
             columns: [
                 services,
                 fixing_time_in_hours
             ],
             type: 'bar',
-            labels: {
-                format: humanize
-            }
+           
         },
         axis: {
             y: {
