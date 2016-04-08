@@ -114,8 +114,7 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
 
         $.each(data, function (key, feedback) {
 
-            // specify popup options 
-            var customOptions =
+            var popupOptions =
                 {
                     'maxWidth': '300',
                     'className' : 'custom'
@@ -131,7 +130,7 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
                 "<a id=\"feedback_details\" href=\"\"></a>";
 
             // Initiate marker of feedback
-            var marker = L.marker([feedback.lat, feedback.long]).bindPopup(popupContent, customOptions).addTo(markersLayer);
+            var marker = L.marker([feedback.lat, feedback.long]).bindPopup(popupContent, popupOptions).addTo(markersLayer);
             marker.feedback = feedback;
             markerCoordinates.push([feedback.lat, feedback.long]);
             // Assign colour to marker based on status
@@ -145,10 +144,10 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
             // On click, fill the popup with feedback details
             marker.on('click', function(e) {
                 // Truncate feedback details so that they fit the popup window
-                var title_len = 50;
+                var titleLen = 50;
                 var title = e.target.feedback.title;
-                if (title.length > title_len) {
-                    title = title.substring(0, title_len) + "...";
+                if (title.length > titleLen) {
+                    title = title.substring(0, titleLen) + "...";
                 }
 
                 $('#feedback_title').text(title);
@@ -157,10 +156,10 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
                 $('#feedback_service_name').text("Aihe: " + e.target.feedback.service_name);
                 var datetime = moment(e.target.feedback.requested_datetime).fromNow();
                 $('#feedback_requested_datetime').text("Lisätty: " + datetime);
-                var desc_len = 135;
+                var descLen = 135;
                 var desc = e.target.feedback.description;
-                if (desc.length > desc_len) {
-                    desc = desc.substring(0, desc_len)  + "...";
+                if (desc.length > descLen) {
+                    desc = desc.substring(0, descLen)  + "...";
                 }
                 $('#feedback_description').text(desc);
                 var feedback_url = "/feedbacks/" + e.target.feedback.id;
