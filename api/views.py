@@ -127,6 +127,7 @@ def get_service_item_statistics(service):
     avg = get_avg_duration(get_closed_by_service_code(service_code))
     median = get_median_duration(get_closed_by_service_code(service_code))
 
+    item["service_code"] = service.service_code
     item["service_name"] = service.service_name
     item["total"] = get_total_by_service(service_code)
     item["closed"] = get_closed_by_service(service_code)
