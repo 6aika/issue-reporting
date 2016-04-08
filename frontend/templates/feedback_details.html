@@ -52,7 +52,7 @@
                                 {% if feedback|is_open %}
                                     <p>Korjausarvio: {{ feedback|get_expected_datetime }}</p>
                                 {% endif %}
-                                <p>Osoite: {{ feedback.address_string }}</p>
+                                <p>Osoite: {{ item.address_string|default:'Ei osoitetta' }}</p>
                                 <div class="fb-share-button"
                                      data-href="http://feedback.hel.ninja{% url 'feedback_details' feedback.id %}"
                                      data-layout="button"></div>
