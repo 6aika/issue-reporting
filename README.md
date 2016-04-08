@@ -2,7 +2,9 @@
 
 [![Build Status](http://94.237.25.111:8080/job/city-feedback-hub/badge/icon)](http://94.237.25.111:8080/job/city-feedback-hub)
 
-Link to the latest development version: <http://feedback.hel.ninja>
+Link to the latest development version: <http://feedback.hel.ninja>  
+
+[API description](https://github.com/hep7agon/city-feedback-hub/wiki) 
 
 ## Description
 
