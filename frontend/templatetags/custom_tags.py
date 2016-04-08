@@ -2,6 +2,7 @@ from api.models import Service
 from api.analysis import *
 from datetime import timedelta
 from django import template
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.utils import timezone
@@ -66,16 +67,20 @@ def get_service_name(service_code):
 # Check if the feedback really is open or not. Return true if:
 # 	- status == open/moderation
 #	- detailed_status contains specified substrings
+# If ALLOW_HELSINKI_SPECIFIC_FEATURES == False just return basic status
 @register.filter
 def is_open(feedback):
-	open_strings = ["PUBLIC_WORKS_NEW", "PUBLIC_WORKS_COMPLETED_SCHEDULED_LATER"]
-	if feedback.status == "open" or feedback.status == "moderation":
-		return True
+	if settings.ALLOW_HELSINKI_SPECIFIC_FEATURES:
+		open_strings = ["PUBLIC_WORKS_NEW", "PUBLIC_WORKS_COMPLETED_SCHEDULED_LATER"]
+		if feedback.status in ["open", "moderation"]:
+			return True
+		else:
+			for string in open_strings:
+				if string in feedback.detailed_status:
+					return True
+			return False
 	else:
-		for string in open_strings:
-			if string in feedback.detailed_status:
-				return True
-		return False
+		return (feedback.status in ["open", "moderation"])
 
 # Returns the real status string of the feedback
 @register.filter
