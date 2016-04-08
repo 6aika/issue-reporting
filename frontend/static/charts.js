@@ -1,5 +1,5 @@
 function humanize(value) {
-    return Math.floor(value / 86400) + 'pv ' + Math.floor((value % 86400) / 3600) + 'h';
+    return Math.floor(value) + 'pv ' + Math.floor((value * 86400 % 86400) / 3600) + 'h';
 };
 
 
@@ -12,7 +12,7 @@ $.getJSON("/api/v1/statistics/services/", function (data) {
         services.push(item.service_name);
         total.push(item.total);
         closed.push(item.closed);
-        fixing_time_in_hours.push(item.median_sec)
+        fixing_time_in_hours.push(item.median_sec / 86400)
     });
 
     c3.generate({
@@ -53,9 +53,7 @@ $.getJSON("/api/v1/statistics/services/", function (data) {
         axis: {
             y: {
                 tick: {
-                    format: function humanize(value) {
-                        return Math.round(value / 86400);
-                    }
+                    format: d3.format("d")
                 }
             },
             x: {
