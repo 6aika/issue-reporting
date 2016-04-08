@@ -1,0 +1,194 @@
+[
+{
+    "model": "api.feedback",
+    "pk": 1,
+    "fields": {
+        "service_request_id": null,
+        "status_notes": null,
+        "status": "open",
+        "service_code": "246",
+        "service_name": "Roskaaminen",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "agency_responsible": null,
+        "service_notice": null,
+        "requested_datetime": "2016-04-08T19:26:41.531Z",
+        "updated_datetime": null,
+        "expected_datetime": "2016-04-08T19:26:41.531Z",
+        "address_string": "Vanha Turun maantie 17, Helsinki",
+        "media_url": null,
+        "api_key": null,
+        "email": "teemu.testaaja@koti.fi",
+        "first_name": "Teemu",
+        "last_name": "Testaaja",
+        "phone": "040-1234567",
+        "service_object_id": null,
+        "title": "Testipalaute",
+        "service_object_type": null,
+        "detailed_status": null,
+        "location": "SRID=4326;POINT (24.8903830478187587 60.2090526241849133)",
+        "vote_counter": 0,
+        "synchronized": false
+    }
+},
+{
+    "model": "api.feedback",
+    "pk": 2,
+    "fields": {
+        "service_request_id": null,
+        "status_notes": null,
+        "status": "closed",
+        "service_code": "246",
+        "service_name": "Roskaaminen",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "agency_responsible": null,
+        "service_notice": null,
+        "requested_datetime": "2015-04-08T19:26:41.531Z",
+        "updated_datetime": "2015-05-07T19:26:41.531Z",
+        "expected_datetime": "2015-05-08T19:26:41.531Z",
+        "address_string": "Vanha Turun maantie 17, Helsinki",
+        "media_url": null,
+        "api_key": null,
+        "email": "teemu.testaaja@koti.fi",
+        "first_name": "Teemu",
+        "last_name": "Testaaja",
+        "phone": "040-1234567",
+        "service_object_id": null,
+        "title": "Toinen testipalaute",
+        "service_object_type": null,
+        "detailed_status": "PROCESSED",
+        "location": "SRID=4326;POINT (24.8903830478187587 60.2090526241849133)",
+        "vote_counter": 0,
+        "synchronized": false
+    }
+},
+{
+    "model": "api.service",
+    "pk": 1,
+    "fields": {
+        "service_code": 172,
+        "service_name": "Ilkivalta",
+        "description": "Onko puistonpenkki heitetty ojaan tai infotaulu rikottu? Anna palautetta ilkivaltaan liittyen.",
+        "metadata": false,
+        "type": "realtime",
+        "keywords": "ilkivalta, penkit, istuimet,p\u00f6yd\u00e4t, katokset, grillit, lipputangot, roska-astiat",
+        "group": "Puhtaanapito"
+    }
+},
+{
+    "model": "api.service",
+    "pk": 2,
+    "fields": {
+        "service_code": 246,
+        "service_name": "Roskaaminen",
+        "description": "Ilmoita, jos havaitset suuria m\u00e4\u00e4ri\u00e4 roskia yleisill\u00e4 alueilla, puistoissa tai metsiss\u00e4.",
+        "metadata": false,
+        "type": "realtime",
+        "keywords": "roska,j\u00e4te",
+        "group": "Puhtaanapito"
+    }
+},
+{
+    "model": "api.service",
+    "pk": 3,
+    "fields": {
+        "service_code": 176,
+        "service_name": "T\u00f6hryjen poisto",
+        "description": "Ilmoita, jos paikkoja tai seini\u00e4 on t\u00f6hritty.",
+        "metadata": false,
+        "type": "realtime",
+        "keywords": "roska,j\u00e4te",
+        "group": "Puhtaanapito"
+    }
+},
+{
+    "model": "api.service",
+    "pk": 4,
+    "fields": {
+        "service_code": 171,
+        "service_name": "Katujen kunto",
+        "description": "Onko tiess\u00e4 kuoppa? Anna palautetta katujen kuntoon liittyen.",
+        "metadata": false,
+        "type": "realtime",
+        "keywords": "tie,kuoppa",
+        "group": "Katujen kunto ja liikenne"
+    }
+},
+{
+    "model": "api.service",
+    "pk": 5,
+    "fields": {
+        "service_code": 198,
+        "service_name": "Liikennemerkit",
+        "description": "Ilmoita, jos liikennemerkki on ajettu nurin, vinossa tai siin\u00e4 on muuta huomautettavaa.",
+        "metadata": false,
+        "type": "realtime",
+        "keywords": "liikennemerkki,valot",
+        "group": "Katujen kunto ja liikenne"
+    }
+},
+{
+    "model": "api.service",
+    "pk": 6,
+    "fields": {
+        "service_code": 199,
+        "service_name": "Kyltit ja opasteet",
+        "description": "Ilmoita, jos kaupungin kylteiss\u00e4 ja opasteissa on huomautettavaa.",
+        "metadata": false,
+        "type": "realtime",
+        "keywords": "kyltit,opasteet",
+        "group": "Katujen kunto ja liikenne"
+    }
+},
+{
+    "model": "api.service",
+    "pk": 7,
+    "fields": {
+        "service_code": 174,
+        "service_name": "Puistot",
+        "description": "Ilmoita, jos huomaat puiston olevan huonossa kunnossa.",
+        "metadata": false,
+        "type": "realtime",
+        "keywords": "pensaat,kasvit",
+        "group": "Mets\u00e4t ja puistot"
+    }
+},
+{
+    "model": "api.service",
+    "pk": 8,
+    "fields": {
+        "service_code": 211,
+        "service_name": "Leikki- ja liikuntapuistot",
+        "description": "Ilmoita, jos leikki- tai liikuntapuiston v\u00e4lineiss\u00e4 on huomautettavaa.",
+        "metadata": false,
+        "type": "realtime",
+        "keywords": "leikkipuisto,liikuntapaikka",
+        "group": "Mets\u00e4t ja puistot"
+    }
+},
+{
+    "model": "api.service",
+    "pk": 9,
+    "fields": {
+        "service_code": 234,
+        "service_name": "Mets\u00e4t",
+        "description": "Ilmoita, jos mets\u00e4 tarvitsee hoitoa.",
+        "metadata": false,
+        "type": "realtime",
+        "keywords": "mets\u00e4, pelto",
+        "group": "Mets\u00e4t ja puistot"
+    }
+},
+{
+    "model": "api.service",
+    "pk": 10,
+    "fields": {
+        "service_code": 180,
+        "service_name": "Muu korjattava asia",
+        "description": "Onko joku muu asia joka vaatisi kaupungin toimia?",
+        "metadata": false,
+        "type": "realtime",
+        "keywords": "",
+        "group": "Muut korjattavat asiat"
+    }
+}
+]

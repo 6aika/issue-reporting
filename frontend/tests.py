@@ -6,12 +6,32 @@ from .forms import *
 
 # Test some developer functions
 class BasicTest(TestCase):
+    fixtures = ["test_data.json"]
 
-    # Test getting mainpage
+    # Test getting mainpage returns proper code and uses right template
     def test_get_mainpage(self):
         response = self.client.get(reverse("mainpage"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "mainpage.html")
+        self.assertContains(response, "Testipalaute", 1, 200)
+
+    # Test Feedback list having correct first feedback title
+    def test_feedback_list(self):
+        response = self.client.get(reverse("feedback_list"))
+        self.assertTemplateUsed(response, "feedback_list.html")
+        self.assertEqual(response.context["feedbacks"][0].title, "Testipalaute")
+        self.assertEqual(response.context["feedbacks"][1].title, "Toinen testipalaute")
+        self.assertEqual(len(response.context["feedbacks"]), 2)
+        self.assertContains(response, "Lorem ipsum", None, 200)
+        self.assertContains(response, "08.04.2016", 1)
+
+
+    # Test Feedback list returning empty set
+    def test_feedback_list_empty(self):
+        response = self.client.get(reverse("feedback_list"), {"service_code": "0000"})
+        self.assertTemplateUsed(response, "feedback_list.html")
+        self.assertContains(response, "Ei palautteita!", 1, 200)
+        self.assertEqual(len(response.context["feedbacks"]), 0)
 
     # Test having valid info in FeedbackFormBasicInfo
     def test_basic_info_form_valid(self):
@@ -43,10 +63,18 @@ class BasicTest(TestCase):
         self.assertJSONEqual(str(response.content, encoding='utf8'), {"status": "success", "files": []})
 
     # Testing feedback voting using invalid ID
-    def test_vote_feedback(self):
+    def test_vote_feedback_invalid(self):
         response = self.client.post(reverse("vote_feedback"), {"id": "-1"})
 
         self.assertJSONEqual(str(response.content, encoding='utf8'), 
             {   "status": "error", 
                 "message": "Ääntä ei voitu tallentaa. Palautetta ei löydetty!"})
+
+    # Testing feedback voting using valid ID
+    def test_vote_feedback_valid(self):
+        response = self.client.post(reverse("vote_feedback"), {"id": "1"})
+
+        self.assertJSONEqual(str(response.content, encoding='utf8'), 
+            {   "status": "success", 
+                "message": "Kiitos, äänesi on rekisteröity!"})
 
