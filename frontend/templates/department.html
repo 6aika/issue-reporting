@@ -20,8 +20,8 @@
                         {% for item in data %}
                             <tr>
                                 <td>{{ item.agency_responsible }}</td>
-                                <td class="hidden-xs"><a
-                                        href="/feedbacks/?agency_responsible={{ item.agency_responsible }}">{{ item.total }}</a>
+                                <td class="hidden-xs">
+                                  <a href="/feedbacks/?agency_responsible={{ item.agency_responsible }}">{{ item.total }}</a>
                                 </td>
                                 <td>
                                     <a href="/feedbacks/?status=closed&agency_responsible={{ item.agency_responsible }}">{{ item.closed }}</a>

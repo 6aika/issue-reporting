@@ -7,7 +7,7 @@
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-8">
 				<h4>Voit halutessasi antaa myös yhteystietosi</h4>
-				<span>Saatamme lähettää tietoa palautteesi etenemisestä. Yhteystietoja ei julkaista.</span>
+				<span>Saatamme lähettää tietoa palautteesi etenemisestä.</span>
 			</div>
 		</div>
 		<div class="form-group">
@@ -27,6 +27,8 @@
 			<div class="col-sm-8">
 				{{form.email}}
 			</div>
+			<div class="col-sm-8 col-sm-offset-2" style="color:red" id="email_error">
+			</div>
 		</div>
 		<div class="form-group">
 			<label for="{{form.phone.id_for_label}}" class="col-sm-2 control-label">Puhelin:</label>
@@ -36,14 +38,28 @@
 		</div>
 		<div class="form-group">
 	        <div class="col-sm-offset-2 col-sm-2">
-	            <button type="submit" class="btn btn-primary pull-left" value="{{ wizard.steps.prev }}" name="wizard_goto_step">Edellinen <span
-	                    class="glyphicon glyphicon-triangle-left"></span></button>
+						<button type="submit" class="btn btn-primary pull-left" value="{{ wizard.steps.prev }}" name="wizard_goto_step">
+							<span class="glyphicon glyphicon-triangle-left pull-left"></span>Edellinen</button>
 	        </div>
 	        <div class="col-sm-offset-4 col-sm-2">
-	            <button type="submit" class="btn btn-primary pull-right">Lähetä <span
-	                    class="glyphicon glyphicon-triangle-right"></span></button>
+	            <button type="submit" class="btn btn-primary pull-right">Lähetä
+								<span class="glyphicon glyphicon-triangle-right"></span></button>
 	        </div>
 		</div>
 	</form>
     {% include 'footer.html' %}
+
+<script type="text/javascript">
+$(function () {
+	var errors = '{{form.email.errors}}';
+	if(errors) {
+	    $("#{{form.email.id_for_label}}").addClass("alert-danger");
+	    $("#email_error").text("Tarkista sähköpostiosoitteesi!");
+	}
+
+	$("#{{form.email.id_for_label}}").on("input", function () {
+	    $(this).removeClass("alert-danger");
+	});
+});
+</script>
 {% endblock %}

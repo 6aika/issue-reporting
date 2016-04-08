@@ -25,11 +25,11 @@
                             <label>Alku</label>
                             <div class="calendar form-group">
                                 <div class='input-group date' id='datepicker-start'>
-            						<span class="input-group-addon" style="cursor:pointer">
-            							<span class="glyphicon glyphicon-calendar"></span>
-            						</span>
-                                    <input type='text' class="form-control" name="start_date"
-                                           value="{{ queries.start_date }}"/>
+                      						<span class="input-group-addon" style="cursor:pointer">
+                      						  <span class="glyphicon glyphicon-calendar"></span>
+                      						</span>
+                                  <input type='text' class="form-control" name="start_date"
+                                         value="{{ queries.start_date }}"/>
                                 </div>
                             </div>
                         </div>
@@ -38,9 +38,9 @@
                             <label>Loppu</label>
                             <div class="calendar form-group">
                                 <div class='input-group date' id='datepicker-end'>
-            						<span class="input-group-addon" style="cursor:pointer">
-            							<span class="glyphicon glyphicon-calendar"></span>
-            						</span>
+                                    <span class="input-group-addon" style="cursor:pointer">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
                                     <input type='text' class="form-control" name="end_date"
                                            value="{{ queries.end_date }}"/>
                                 </div>
@@ -61,7 +61,7 @@
                             <select class="form-control" name="service_code" id="service_code">
                                 <option value="">Kaikki</option>
                                 {% for service in services %}
-                                    <option value="{{ service.service_code }}">{{ service.service_name }}</option>
+                                  <option value="{{ service.service_code }}">{{ service.service_name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
