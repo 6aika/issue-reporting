@@ -5,26 +5,26 @@
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
     <script src="{% static 'utils/leaflet.markercluster-src.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'utils/MarkerCluster.css' %}" />
-    <link rel="stylesheet" href="{% static 'utils/MarkerCluster.Default.css' %}" />
+    <link rel="stylesheet" href="{% static 'utils/MarkerCluster.css' %}"/>
+    <link rel="stylesheet" href="{% static 'utils/MarkerCluster.Default.css' %}"/>
 
-    <script type="text/javascript" src="{% static 'utils/proj4-compressed.js' %}" ></script>
-    <script type="text/javascript" src="{% static 'utils/proj4leaflet.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'utils/proj4-compressed.js' %}"></script>
+    <script type="text/javascript" src="{% static 'utils/proj4leaflet.js' %}"></script>
     <!-- Register to FB and add FB app_id value for proper usage!! -->
-    <meta property="og:type"                    content="og:article" />
-    <meta property="og:site_name"               content="City Feedback Hub" />
-    <meta property="og:url"                     content="http://feedback.hel.ninja{% url 'feedback_details' feedback.id %}" />
-    <meta property="og:title"                   content="{{feedback.title}}" />
-    <meta property="og:image"                   content="{{feedback.media_url}}" />
-    <meta property="og:description"             content="{{feedback.description}}" />
+    <meta property="og:type" content="og:article"/>
+    <meta property="og:site_name" content="City Feedback Hub"/>
+    <meta property="og:url" content="http://feedback.hel.ninja{% url 'feedback_details' feedback.id %}"/>
+    <meta property="og:title" content="{{ feedback.title }}"/>
+    <meta property="og:image" content="{{ feedback.media_url }}"/>
+    <meta property="og:description" content="{{ feedback.description }}"/>
 {% endblock %}
 {% block content %}
     <div class="row">
         <div class="col-md-12">
             <div class="row">
-                <div class="col-xs-12 col-md-8" style="padding: 40px">
+                <div class="col-xs-12 col-md-7" style="padding: 40px">
                     <div class="row">
-                        <h1 class="feedback_title" title="{{feedback.service_request_id}}">{{ feedback.title }}</h1>
+                        <h1 class="feedback_title" title="{{ feedback.service_request_id }}">{{ feedback.title }}</h1>
                         <div class="row">
                             <div class="col-xs-8">
                                 <p class="text-muted">Aihe: {{ feedback.service_code|get_service_name }}</p>
@@ -34,12 +34,12 @@
                                 <p class="text-muted">Luotu: {{ feedback.requested_datetime }}</p>
                                 <p class="text-muted">Tila: {{ feedback|real_status }}
                                     {% if not feedback|is_open %}
-                                        <span>({{feedback.updated_datetime}})</span>
+                                        <span>({{ feedback.updated_datetime }})</span>
                                     {% endif %}
                                 </p>
 
                             </div>
-                            <div class="col-xs-4">
+                            <div class="col-xs-4 text-right">
                                 <span class="glyphicon glyphicon-thumbs-up feedback_list_vote_icon {% feedback_vote_icon_status request feedback %}"
                                       id="{{ feedback.id }}">
                                 </span>
@@ -59,14 +59,20 @@
                             </div>
                         </div>
                         <div class="row">
-
+                            <div class="col-xs-12">
+                                {% if feedback.status_notes %}
+                                    <h3>Helsingin kaupungin vastaus</h3>
+                                    <p>{{ feedback.status_notes | linebreaks }}</p>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-md-4 feedback-details-sidebar">
+                <div class="col-xs-12 col-md-5 feedback-details-sidebar">
                     <div>
                         <img id="feedback_image" class="img-thumbnail img-responsive center-cropped-details-page"
-                             src="{% include 'feedback_image_url.html' with service_code=feedback.service_code media_url=feedback.media_url %}" alt="Feedback image"/>
+                             src="{% include 'feedback_image_url.html' with service_code=feedback.service_code media_url=feedback.media_url %}"
+                             alt="Feedback image"/>
                     </div>
                     <div id="map" class="map-feedback-details"></div>
                 </div>
@@ -83,7 +89,7 @@
         var lon = "{{feedback.lon}}";
 
         map.setView([lat, lon], 12);
-        
+
         L.marker([lat, lon], {icon: feedback_icon}).addTo(map);
     </script>
 
@@ -94,6 +100,6 @@
     </script>
 
     <script type="text/javascript" src="{% static 'utils/enable_voting.js' %}"></script>
-    <script type="text/javascript" src="{% static 'utils/fb-share.js'%}"></script>
+    <script type="text/javascript" src="{% static 'utils/fb-share.js' %}"></script>
     {% include 'footer.html' %}
 {% endblock %}

@@ -532,3 +532,9 @@ html {
 .navbar-active-link {
     background-color: #333;
 }
+
+@media (max-height: 500px) {
+    body {
+        margin: 0 0 250px;
+    }
+}
