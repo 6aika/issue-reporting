@@ -2,6 +2,7 @@ import json
 import logging
 import time
 import urllib.request
+from dateutil.parser import parse
 from datetime import datetime, timedelta
 from urllib.error import URLError
 
@@ -12,6 +13,7 @@ from django.core.management import BaseCommand
 from django.db import transaction
 from django.db.models import Max
 
+from api.analysis import calc_fixing_time
 from api.models import Feedback, Task, MediaURL
 
 logger = logging.getLogger(__name__)
@@ -27,6 +29,15 @@ def get_existing_feedback(service_request_id):
 @transaction.atomic
 def save_feedback(f):
     existing_feedback = get_existing_feedback(f['service_request_id'])
+
+    expected_datetime = f.get('expected_datetime', None)
+    requested_datetime = f.get('requested_datetime', None)
+    if expected_datetime is None and requested_datetime is not None:
+        requested_datetime = parse(requested_datetime)
+        median = timedelta(milliseconds=calc_fixing_time(f.get('service_code', '')))
+        if median.total_seconds() > 0:
+            expected_datetime = requested_datetime + median
+
     updated_feedback = Feedback(
             service_request_id=f['service_request_id'],
             status_notes=f.get('status_notes', ''),
@@ -38,6 +49,7 @@ def save_feedback(f):
             service_notice=f.get('service_notice', ''),
             requested_datetime=f.get('requested_datetime', ''),
             updated_datetime=f.get('updated_datetime', ''),
+            expected_datetime=expected_datetime,
             address_string=f.get('address', ''),
             media_url=f.get('media_url', ''),
 
@@ -163,7 +175,9 @@ def sync_new_data():
 
 
 class Command(BaseCommand):
-    help = 'Synchronize data with Open311 Server provided in settings.py.'
+    help = 'Synchronize data with Open311 Server provided in settings.py. ' \
+           'The command runs only reading from Open311. ' \
+           'To write feedbacks to Open311 see \'pushdata\' command.'
 
     def add_arguments(self, parser):
         parser.add_argument('--path_to_ids', nargs='+', type=str)
