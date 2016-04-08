@@ -97,7 +97,7 @@ def get_expected_datetime(feedback):
 		return feedback.expected_datetime
 	else:
 		median = timedelta(milliseconds=calc_fixing_time(feedback.service_code))
-		return (timezone.now() + median)
+		return (feedback.requested_datetime + median)
 
 # Highlights the active navbar link
 @register.simple_tag
