@@ -22,10 +22,10 @@ class FeedbackFormBasicInfo(forms.Form):
 
 class FeedbackFormContact(forms.Form):
     first_name = forms.CharField(max_length=100, required=False,
-                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Etunimesi..."}))
+                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Anna etunimesi..."}))
     last_name = forms.CharField(max_length=100, required=False,
-                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Sukunimesi..."}))
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Anna sukunimesi..."}))
     email = forms.EmailField(max_length=100, required=False, widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': "Sähköpostiosoitteesi..."}))
+        attrs={'class': 'form-control', 'placeholder': "Anna sähköpostiosoitteesi..."}))
     phone = forms.CharField(max_length=100, required=False, widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': "Puhelinnumerosi..."}))
+        attrs={'class': 'form-control', 'placeholder': "Anna puhelinnumerosi..."}))
