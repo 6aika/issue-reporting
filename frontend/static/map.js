@@ -84,7 +84,6 @@ function add_legend(mode) {
         div.innerHTML += "<i style='background: #D4251C'></i>" + "Avoin palaute<br>";
         div.innerHTML += "<i style='background: #16A427'></i>" + "Suljettu palaute<br>";
         div.innerHTML += "<i style='background: #0072C6'></i>" + "Sijaintisi<br>";
-        console.log(mode);
         if(mode == 2) {
             div.innerHTML += "<i style='background: #FFC61E'></i>" + "Uusi palaute<br>";
         }
