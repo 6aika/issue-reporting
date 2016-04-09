@@ -145,9 +145,9 @@
 /* css to customize Leaflet default styles  */
 .custom .leaflet-popup-content-wrapper {
     max-height: 250px;
-    min-height: 220px;
+    min-height: 200px;
     overflow-y: auto;
-    width: 300px;
+    width: 250px;
 }
 
 .custom .leaflet-popup-content-wrapper a {

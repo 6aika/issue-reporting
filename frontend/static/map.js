@@ -108,22 +108,21 @@ function clearMarkers() {
 
 function getData(params, markersVisible, heatmapVisible, onSuccess) {
     $.getJSON("/api/v1/requests.json/?", params, function (data) {
-
         clearMarkers();
 
         $.each(data, function (key, feedback) {
-
             var popupOptions =
                 {
-                    'maxWidth': '300',
-                    'className' : 'custom'
+                    'maxWidth': '250',
+                    'maxHeight': '250',
+                    'className' : 'custom',
+                    'autoPanPadding': L.point(10, 25)
                 }
 
             // Generate popup-window content
             var popupContent = "";
 
             popupContent += "<h4 id=\"feedback_title\"></h4>" +
-                "<div id=\"feedback_service_name\"></div>" +
                 "<div id=\"feedback_requested_datetime\"></div>" +
                 "<p id=\"feedback_description\"></p>" +
                 "<a id=\"feedback_details\" href=\"\"></a>";
@@ -143,23 +142,18 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
             // On click, fill the popup with feedback details
             marker.on('click', function (e) {
                 // Truncate feedback details so that they fit the popup window
-                var titleLen = 50;
                 var title = e.target.feedback.title;
-                if (title.length > titleLen) {
-                    title = title.substring(0, titleLen) + "...";
-                }
+                title = truncate_string(title, 30);
 
                 $('#feedback_title').text(title);
                 $('.feedback_list_vote_badge').text(e.target.feedback.vote_counter);
                 $('.feedback_list_vote_icon').attr("id", e.target.feedback.service_request_id);
-                $('#feedback_service_name').text("Aihe: " + e.target.feedback.service_name);
                 var datetime = moment(e.target.feedback.requested_datetime).fromNow();
                 $('#feedback_requested_datetime').text("Lisätty: " + datetime);
-                var descLen = 135;
+
                 var desc = e.target.feedback.description;
-                if (desc.length > descLen) {
-                    desc = desc.substring(0, descLen)  + "...";
-                }
+                desc = truncate_string(desc, 170);
+
                 $('#feedback_description').text(desc);
                 var feedback_url = "/feedbacks/" + e.target.feedback.id;
                 $('#feedback_details').text("Lisää");
@@ -180,6 +174,14 @@ function getData(params, markersVisible, heatmapVisible, onSuccess) {
             showHeatmap(heatmapVisible);
         }
     });
+}
+
+function truncate_string(string, max_length) {
+    if(string.length > max_length) {
+        return string.substring(0,max_length) + "...";
+    }
+
+    return string;
 }
 
 function getUserLocation(e) {
