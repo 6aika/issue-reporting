@@ -37,12 +37,12 @@ $.getJSON("/api/v1/statistics/services/", function (data) {
     var services = ['x'];
     var total = ['kaikki'];
     var closed = ['suljetut'];
-    var fixing_time_in_hours = ['Korjausaika päivissä ja tunneissa'];
+    var fixing_time = ['Korjausaika päivissä ja tunneissa'];
     $.each(data, function (key, item) {
         services.push(item.service_name);
         total.push(item.total);
         closed.push(item.closed);
-        fixing_time_in_hours.push(item.median_sec / 86400)
+        fixing_time.push(item.median_sec / 86400)
     });
 
     c3.generate({
@@ -81,7 +81,7 @@ $.getJSON("/api/v1/statistics/services/", function (data) {
             x: 'x',
             columns: [
                 services,
-                fixing_time_in_hours
+                fixing_time
             ],
             type: 'bar'
         },
