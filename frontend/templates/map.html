@@ -44,7 +44,7 @@
 			</div>
 		</div>
 
-    <div class="space"></div>
+    	<div class="space"></div>
 
 		<div class="row">
 			<div class="col-xs-12">
@@ -86,37 +86,39 @@
 		<div class="row">
 			<div class="col-xs-12">
 				<label for="datepicker-start">Alku</label>
-					<div class='input-group date' id='datepicker-start'>
-						<input type='text' class="form-control" />
-						<span class="input-group-addon" style="cursor:pointer">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-					</div>
+				<div class='input-group date' id='datepicker-start'>
+					<input type='text' class="form-control" />
+					<span class="input-group-addon" style="cursor:pointer">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
 			</div>
 		</div>
 
 		<div class="row">
 			<div class="col-xs-12">
 				<label for="datepicker-end">Loppu</label>
-					<div class='input-group date' id='datepicker-end'>
-						<input type='text' class="form-control" />
-						<span class="input-group-addon" style="cursor:pointer">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-					</div>
+				<div class='input-group date' id='datepicker-end'>
+					<input type='text' class="form-control" />
+					<span class="input-group-addon" style="cursor:pointer">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
 			</div>
 		</div>
 
 		<div class="space"></div>
 
-    <button
-      id="submitButton"
-      class="btn btn-primary btn-lg btn-block"
-      type="submit" value="apply"
-      onclick="sendRequest()"
-      style="position: relative;">
-      Päivitä
-    </button>
+	    <button
+	      id="submitButton"
+	      class="btn btn-primary btn-lg btn-block"
+	      type="submit" value="apply"
+	      onclick="sendRequest()"
+	      style="position: relative;">
+	      Päivitä
+	    </button>
+
+	    <div class="space"></div>
 
 	</div>
   <div id="toggleButtonContainer" class="toggled">
@@ -139,7 +141,7 @@
 	L.easyButton('<span class="glyphicon glyphicon-map-marker"></span>', function () {
 	    getUserLocation();
 	}, {position: 'topright'}).addTo(map)
-	
+
 	defaultQuery();
 	
 	// Spinner for when loading data
