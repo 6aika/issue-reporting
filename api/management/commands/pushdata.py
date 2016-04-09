@@ -1,11 +1,13 @@
 import json
 import logging
+import imghdr
 
 import requests
 from django.conf import settings
 from django.core.management import BaseCommand
+from django.db.models import Q
 
-from api.models import Feedback
+from api.models import Feedback, MediaFile
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +32,17 @@ def send_feedback_to_open311(f):
             media_url=f.media_url
     )
 
-    r = requests.post(open_311_url, data=data, allow_redirects=True)
+    files = MediaFile.objects.filter(feedback_id=f.pk)
+    multiple_files = []
+
+    # TODO: (for future releases) files uploading should be tested properly
+    for file in files:
+        file_type = 'image/' + imghdr.what(file.file)
+        multiple_files.append(
+                ('media', (file.original_filename, file.file, file_type))
+        )
+
+    r = requests.post(open_311_url, data=data, files=multiple_files, allow_redirects=True)
     content = json.loads(r.content.decode('utf-8'))
 
     if r.status_code == 200:
@@ -45,7 +57,7 @@ class Command(BaseCommand):
     help = 'Push new feedbacks to Open311 and save their service_request_id.'
 
     def handle(self, *args, **options):
-        feedbacks = Feedback.objects.filter(service_request_id='')
+        feedbacks = Feedback.objects.filter(Q(service_request_id__isnull=True) | Q(service_request_id__exact=''))
         logger.info("Number of feedback to send: {}".format(len(feedbacks)))
 
         for feedback in feedbacks:
