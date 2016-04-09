@@ -134,6 +134,11 @@
                 });
                 // Pre-select an option if the user had just selected one
                 $("#service_object_select").val(keep_selected);
+                // If the wanted value is no longer available, select default
+                if(!$("#service_object_select").val()) {
+                    $("#service_object_select").val(null);
+                }
+
             });
         }
     </script>
