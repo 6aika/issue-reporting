@@ -37,7 +37,7 @@ def save_service(s):
 
 
 class Command(BaseCommand):
-    help = 'Synchronize service data with Open311 Server provided in settings.py.'
+    help = 'Read and save service data from Open311 Server provided in settings.py.'
 
     def handle(self, *args, **options):
         open_311_url = settings.OPEN311_SERVICE_URL.format('fi')

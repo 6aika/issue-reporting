@@ -2,7 +2,9 @@
 
 [![Build Status](http://94.237.25.111:8080/job/city-feedback-hub/badge/icon)](http://94.237.25.111:8080/job/city-feedback-hub)
 
-Link to the latest development version: <http://feedback.hel.ninja>
+Link to the latest development version: <http://feedback.hel.ninja>  
+
+[API documentation](https://github.com/hep7agon/city-feedback-hub/wiki) 
 
 ## Description
 
@@ -31,3 +33,35 @@ One of the main criteria was to make the website responsive so that it can be ea
 CFH is a Django application. The application is divided into two apps: frontend, which handles UI and all client side logic, and API, which handles the Feedback and statistic APIs, data synchronization etc. DB layout is defined in `api/models.py`. Client side logic is defined in `frontend/views.py` and the page layout is defined in various templates in `frontend/templates/`. Client URL scheme is in a typical place `frontend/urls.py`. Various Javascript/jQuery scripts are stored in `frontend/static/`.
 
 The default configuration assumes that the software is using the Helsinki Open311 API but it is possible to use CFH as a standalone feedback system with some modifications.
+
+## Custom Django Commands
+List of custom util commands to run with 
+
+    python manage.py command_name --param1 --param2=value
+
+##### calcestimation
+Calculate and fill expected_datetime field for feedbacks which have this field empty
+
+##### purge_mediafiles
+Deleted unneeded temporary media files and MediaFile objects from MEDIA_ROOT
+
+Available variables:
+
+- `force`: Prevent asking for confirmation of deletion.
+
+- `silent`: Don't display info about deletion and files.
+
+- `days`: Script will delete files which are more than DAYS days old. Default is 1.
+
+##### pushdata
+Push new feedbacks to Open311 and save their service_request_id
+
+##### reversegeocoding
+Push new feedbacks to Open311 and save their service_request_id
+
+##### syncdata
+Read and save data from Open311 Server provided in settings.py. To write feedbacks to Open311 see \'pushdata\' command.
+
+##### syncservices
+Read and save service data from Open311 Server provided in settings.py.
+

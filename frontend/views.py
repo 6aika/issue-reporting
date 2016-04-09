@@ -238,14 +238,14 @@ class FeedbackWizard(SessionWizardView):
 
     def done(self, form_list, form_dict, **kwargs):
         data = {
-            "status":       "moderation",
-            "title":        form_dict["basic_info"].cleaned_data["title"],
-            "description":  form_dict["basic_info"].cleaned_data["description"],
+            "status": "moderation",
+            "title": form_dict["basic_info"].cleaned_data["title"],
+            "description": form_dict["basic_info"].cleaned_data["description"],
             "service_code": form_dict["category"].cleaned_data["service_code"],
-            "first_name":   form_dict["contact"].cleaned_data["first_name"],
-            "last_name":    form_dict["contact"].cleaned_data["last_name"],
-            "email":        form_dict["contact"].cleaned_data["email"],
-            "phone":        form_dict["contact"].cleaned_data["phone"]
+            "first_name": form_dict["contact"].cleaned_data["first_name"],
+            "last_name": form_dict["contact"].cleaned_data["last_name"],
+            "email": form_dict["contact"].cleaned_data["email"],
+            "phone": form_dict["contact"].cleaned_data["phone"]
         }
 
         data["service_name"] = Service.objects.get(service_code=data["service_code"]).service_name

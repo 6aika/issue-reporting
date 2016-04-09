@@ -253,7 +253,7 @@
     cursor: pointer;
 }
 
-.icon_disabled, .icon_disabled:hover{
+.icon_disabled, .icon_disabled:hover {
     color: #8ae;
 }
 
@@ -283,6 +283,7 @@
 }
 
 .map-feedback-details {
+    margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     height: 280px;
@@ -303,8 +304,8 @@
 
 .map-legend {
     background: white;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     padding: 5px;
 }
@@ -415,6 +416,10 @@ html {
 }
 
 @media (max-width: 767px) {
+    .short-img {
+        margin: 10px auto;
+    }
+
     .feedback_list_icons {
         margin-left: 0;
         margin-right: 0;
@@ -448,7 +453,7 @@ html {
         border-color: #ddd;
         border-left-style: solid;
         border-left-width: 1px;
-        /*height: 240px;*/
+        height: 240px;
         padding: 10px;
     }
 
@@ -464,6 +469,10 @@ html {
 @media (min-width: 992px) {
     .feedback-details-sidebar {
         padding: 40px;
+    }
+
+    .short-img {
+        margin: 10px auto;
     }
 }
 
@@ -531,4 +540,10 @@ html {
 
 .navbar-active-link {
     background-color: #333;
+}
+
+@media (max-height: 500px) {
+    body {
+        margin: 0 0 250px;
+    }
 }
