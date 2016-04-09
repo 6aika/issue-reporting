@@ -2,11 +2,11 @@ import json
 import logging
 import time
 import urllib.request
-from dateutil.parser import parse
 from datetime import datetime, timedelta
 from urllib.error import URLError
 
 from dateutil import parser as datetime_parser
+from dateutil.parser import parse
 from django.conf import settings
 from django.contrib.gis.geos import GEOSGeometry
 from django.core.management import BaseCommand
@@ -15,6 +15,7 @@ from django.db.models import Max
 
 from api.analysis import calc_fixing_time
 from api.models import Feedback, Task, MediaURL
+from api.services import feedback_status_was_changed, send_email_notification
 
 logger = logging.getLogger(__name__)
 
@@ -99,6 +100,10 @@ def save_feedback(f):
                 )
                 task.save()
 
+    if settings.SEND_STATUS_UPDATE_NOTIFICATIONS \
+            and existing_feedback and feedback_status_was_changed(existing_feedback, updated_feedback):
+        send_email_notification(updated_feedback)
+
 
 def sync_open311_data(start_datetime):
     end_datetime = start_datetime + timedelta(settings.OPEN311_RANGE_LIMIT_DAYS)
@@ -114,10 +119,10 @@ def sync_open311_data(start_datetime):
             content = response.read()
             json_data = json.loads(content.decode("utf8"))
         except ValueError:
-            logger.error('Decoding JSON has failed')
+            logger.exception('Decoding JSON has failed')
             return
         except URLError:
-            logger.error('Invalid URL: {}'.format(open_311_url))
+            logger.exception('Invalid URL: {}'.format(open_311_url))
             return
 
         feedback_count = len(json_data)
@@ -151,10 +156,10 @@ def sync_with_id_file(path_to_ids):
                 content = response.read()
                 json_data = json.loads(content.decode("utf8"))
             except ValueError:
-                logger.error('Decoding JSON has failed')
+                logger.exception('Decoding JSON has failed')
                 return
             except URLError:
-                logger.error('Invalid URL: {}'.format(open_311_url))
+                logger.exception('Invalid URL: {}'.format(open_311_url))
                 return
 
             for feedback_json in json_data:

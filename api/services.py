@@ -1,14 +1,19 @@
+import logging
 import os
 import uuid
+from smtplib import SMTPException
 
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.db.models.sql import DistanceField
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
+from django.core.mail import EmailMessage
 from django.db.models import Case, When
 
 from api.models import Feedback, MediaURL, MediaFile
+
+logger = logging.getLogger(__name__)
 
 
 def get_feedbacks(service_codes=None, service_request_ids=None,
@@ -104,3 +109,26 @@ def save_file_to_db(file, form_id):
     f_object = MediaFile(file=file, form_id=form_id, original_filename=original_filename, size=size)
     f_object.save()
     return file.name
+
+
+def feedback_status_was_changed(feedback_old, feedback_new):
+    return feedback_old.status != feedback_new.status
+
+
+# send email notification about status change with link to feedback details
+def send_email_notification(feedback):
+    if feedback.email is None:
+        logger.info('no email to send status update notification')
+        return
+    else:
+        feedback_details_url = settings.FEEDBACK_DETAILS_URL.format(feedback.pk)
+        email = EmailMessage(settings.EMAIL_SUBJECT, settings.EMAIL_TEXT
+                             .replace('{{ feedback URL }}', feedback_details_url), to=[feedback.email])
+        email.content_subtype = "html"
+        try:
+            email.send(fail_silently=False)
+            logger.info('email about feedback {} status update was sent to {}'
+                        .format(feedback.service_request_id, feedback.email))
+        except SMTPException:
+            logger.exception('cannot send email about feedback {} status update was sent to {} due to error '
+                             .format(feedback.service_request_id, feedback.email))

@@ -152,6 +152,26 @@ OPEN311_API_KEY = 'f1301b1ded935eabc5faa6a2ce975f6'
 # the pictures will be stored in local database
 SYNCHRONIZE_WITH_OPEN_311 = False
 
+# email notifications settings
+SEND_STATUS_UPDATE_NOTIFICATIONS = os.environ.get('SEND_STATUS_UPDATE_NOTIFICATIONS', False)
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', 587)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+FEEDBACK_DETAILS_URL = os.environ.get('FEEDBACK_DETAILS_URL', 'http://localhost:8000/feedbacks/{}')
+
+EMAIL_SUBJECT = 'City Feedback Hub - Request Status Update'
+EMAIL_TEXT = '''Hei! <br><br>
+Helsingin kaupungin City Feedback Hub - palautejärjestelmään antamasi palautteen tila on muuttunut. Voit nähdä palautteen ja tarkastella muutoksia klikkaamalla alla olevaa linkkiä.
+<br><br>
+{{ feedback URL }}
+<br><br>
+Ystävällisin terveisin,
+City Feedback Hub
+<br><br>
+Huom! Älä vastaa tähän viestiin, sillä vastausviestejä ei käsitellä.'''
+
 # geocoding options
 USE_NOMINATIM = False
 REVERSE_GEO_URL = 'http://api.hel.fi/servicemap/v1/address/?lat={}&lon={}&page=1'

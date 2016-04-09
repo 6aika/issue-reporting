@@ -10,6 +10,8 @@ SHOW_ONLY_MODERATED = True
 # see description in base.py
 SYNCHRONIZE_WITH_OPEN_311 = True
 
+FEEDBACK_DETAILS_URL = 'http://feedback.hel.ninja/feedbacks/{}'
+
 OPEN311_API_KEY = os.environ['OPEN311_API_KEY']
 
 LOGGING = {

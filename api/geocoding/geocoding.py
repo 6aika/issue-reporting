@@ -32,10 +32,10 @@ def reverse_geocode_servicemap(lat, lon):
         content = response.read()
         json_data = json.loads(content.decode("utf8"))
     except ValueError:
-        logger.error('Decoding JSON has failed')
+        logger.exception('Decoding JSON has failed')
         return
     except URLError:
-        logger.error('Invalid URL: {}'.format(reverse_geocoding_url))
+        logger.exception('Invalid URL: {}'.format(reverse_geocoding_url))
         return
     pass
 
