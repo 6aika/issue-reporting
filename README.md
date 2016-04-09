@@ -34,10 +34,18 @@ CFH is a Django application. The application is divided into two apps: frontend,
 
 The default configuration assumes that the software is using the Helsinki Open311 API but it is possible to use CFH as a standalone feedback system with some modifications.
 
-## Custom Django Commands
-List of custom util commands to run with 
+## Running tests
 
-    python manage.py command_name --param1 --param2=value
+Both frontend and backend has unit tests available. Unit tests can be found in `api/tests/` and in `frontend/tests.py`. Nose test package is also used to get code coverage statistics. Unit tests can be run the usual way: 
+
+`python manage.py test` 
+
+By default it also checks code coverage.
+
+## Custom Django Commands
+There are also custom commands that can be run with: 
+
+	`python manage.py [command] [--param1] [--param2=value]`
 
 ##### calcestimation
 Calculate and fill expected_datetime field for feedbacks which have this field empty
@@ -45,12 +53,10 @@ Calculate and fill expected_datetime field for feedbacks which have this field e
 ##### purge_mediafiles
 Deleted unneeded temporary media files and MediaFile objects from MEDIA_ROOT
 
-Available variables:
+Available options:
 
 - `force`: Prevent asking for confirmation of deletion.
-
 - `silent`: Don't display info about deletion and files.
-
 - `days`: Script will delete files which are more than DAYS days old. Default is 1.
 
 ##### pushdata
@@ -64,4 +70,5 @@ Read and save data from Open311 Server provided in settings.py. To write feedbac
 
 ##### syncservices
 Read and save service data from Open311 Server provided in settings.py.
+
 
