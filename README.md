@@ -45,7 +45,7 @@ By default it also checks code coverage.
 ## Custom Django Commands
 There are also custom commands that can be run with: 
 
-	`python manage.py [command] [--param1] [--param2=value]`
+	python manage.py [command] [--param1] [--param2=value]
 
 ##### calcestimation
 Calculate and fill expected_datetime field for feedbacks which have this field empty
