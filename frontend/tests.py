@@ -11,7 +11,7 @@ from .forms import *
 class BasicTest(TestCase):
     fixtures = ["test_data.json"]
 
-    # Test getting mainpage returns proper code and uses right template
+    # Test that getting all top level pages returns proper code and uses right template
     def test_get_pages(self):
         response = self.client.get(reverse("mainpage"))
         self.assertTemplateUsed(response, "mainpage.html")
