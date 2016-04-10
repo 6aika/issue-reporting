@@ -29,7 +29,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         delete_date = timezone.now() - timedelta(days=options["days"])
         all_files = MediaFile.objects.all()
-        old_files = MediaFile.objects.filter(date_created__lt=delete_date)
+        old_files = MediaFile.objects.filter(date_created__lt=delete_date, feedback__isnull=True)
         if not options["silent"]:
             message = "Deleting " + str(old_files.count()) + "/" + str(
                 all_files.count()) + " files created before " + delete_date.strftime("%A %d.%m.%y %H:%M")
