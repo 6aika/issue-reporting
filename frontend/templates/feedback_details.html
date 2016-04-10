@@ -52,7 +52,7 @@
                                 {% if feedback|is_open %}
                                     <p>Korjausarvio: {{ feedback|get_expected_datetime }}</p>
                                 {% endif %}
-                                <p>Osoite: {{ item.address_string|default:'Ei osoitetta' }}</p>
+                                <p>Osoite: {{ feedback.address_string|default:'Ei osoitetta' }}</p>
                                 <div class="fb-share-button"
                                      data-href="http://feedback.hel.ninja{% url 'feedback_details' feedback.id %}"
                                      data-layout="button"></div>
@@ -90,8 +90,14 @@
 
         map.setView([lat, lon], 12);
         
-        L.marker([lat, lon], {icon: feedbackIcon}).addTo(map);
-
+        var marker = L.marker([lat, lon]).addTo(map);
+        // Assign colour to marker based on status
+        if ({{feedback.status}} === "open") {
+            marker.setIcon(feedbackIconOpen);
+        }
+        else {
+            marker.setIcon(feedbackIconClosed);
+        }
     </script>
 
     <script type="text/javascript">

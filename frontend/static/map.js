@@ -10,9 +10,9 @@ var markerCoordinates = [];
 var heatLayer = null;
 var userLocation = null;
 
+// Icon style definitions
 var centerIcon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "l"});
 var newFeedbackIcon = L.MakiMarkers.icon({icon: "circle", color: "#FFC61E", size: "l"});
-var feedbackIcon = L.MakiMarkers.icon({icon: "circle", color: "#0072C6", size: "m"});
 var feedbackIconOpen = L.MakiMarkers.icon({icon: "circle", color: "#D4251C", size: "m"});
 var feedbackIconClosed = L.MakiMarkers.icon({icon: "circle", color: "#16A427", size: "m"});
 
