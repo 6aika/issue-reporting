@@ -27,12 +27,12 @@
                     <div class="row">
                         <div class="col-sm-12 col-xs-7">
                             {% if item|is_open %}
-                                <h4 class="text-success">
+                                <h4 class="text-danger">
                                     {{ item|real_status }}<br/>
                                     <small>{{ item.requested_datetime|default_if_none:""|date:"d.m.o " }}</small>
                                 </h4>
                             {% else %}
-                                <h4 class="text-danger">
+                                <h4 class="text-success">
                                     {{ item|real_status }}<br/>
                                     <small>{{ item.updated_datetime|default_if_none:""|date:"d.m.o " }}</small>
                                 </h4>
