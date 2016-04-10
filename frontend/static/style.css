@@ -416,6 +416,12 @@ html {
     }
 }
 
+@media (min-width: 767px) {
+    .feedback_list_details {
+        height: 240px;
+    }
+}
+
 @media (max-width: 767px) {
     .short-img {
         margin: 10px auto;
@@ -440,6 +446,7 @@ html {
         margin-left: auto;
         margin-right: auto;
         width: 86vw;
+        max-width: 300px;
     }
 
     .feedback_list_icons {
@@ -454,7 +461,6 @@ html {
         border-color: #ddd;
         border-left-style: solid;
         border-left-width: 1px;
-        height: 240px;
         padding: 10px;
     }
 
