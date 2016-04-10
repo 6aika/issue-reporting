@@ -46,7 +46,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12 hidden-xs">
-                            <p>Vastuullinen taho: <br/>
+                            <p style="hyphens: auto;word-break: break-all">Vastuullinen taho: <br/>
                                 <small>{{ item.agency_responsible|default:'' }}</small>
                             </p>
                         </div>
@@ -104,7 +104,7 @@
                     </div>
                     <div class=row>
                         <div class="col-sm-12 feedback_list_content_desc">
-                            <p>{{ item.description | truncatechars:300 }}</p>
+                            <p style="hyphens: auto;word-break: break-all">{{ item.description | truncatechars:300 }}</p>
                         </div>
                     </div>
                 </div>
