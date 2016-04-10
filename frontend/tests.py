@@ -1,5 +1,8 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils.encoding import force_text
+import json
 
 from .forms import *
 
@@ -95,6 +98,12 @@ class BasicTest(TestCase):
 
         response = self.client.post(reverse("media_upload"), {"action": "delete_file", "form_id": " ", "server_filename": "123.jpg"})
         self.assertJSONEqual(str(response.content, encoding='utf8'), {"status": "success"})
+
+        file = SimpleUploadedFile("file.jpg", b"file_content", content_type="image/jpeg")
+        response = self.client.post(reverse("media_upload"), {"action": "upload_file", "form_id": " ", "file": file})
+        j = json.loads(str(response.content, encoding='utf8'))
+        self.assertEqual(j["status"], "success")
+        self.assertEqual(len(j["filename"]), 36)
 
     # Testing feedback voting using invalid ID
     def test_vote_feedback_invalid(self):
