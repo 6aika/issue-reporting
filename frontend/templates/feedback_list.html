@@ -20,7 +20,7 @@
                     <div class=row>
                         <div class="col-sm-9 hidden-sm hidden-md hidden-lg">
                             <a class="feedback_list_title" href="{% url 'feedback_details' item.id %}">
-                                <h4>{{ item.title|default:'Ei otsikkoa' }}</h4>
+                                <h4 style="overflow-wrap: break-word;">{{ item.title|default:'Ei otsikkoa' }}</h4>
                             </a>
                         </div>
                     </div>
@@ -73,7 +73,7 @@
                     {% endif %}
                     <div class="row">
                         <div class="col-sm-12">
-                            <p style="hyphens: auto;word-break: break-all">
+                            <p style="hyphens: auto;word-break: normal">
                                 <small>{{ item.address_string|default:'Ei osoitetta' }}</small>
                             </p>
                         </div>
@@ -86,7 +86,7 @@
                             <div class=row>
                                 <div class="col-sm-9 hidden-xs">
                                     <a class="feedback_list_title" href="{% url 'feedback_details' item.id %}">
-                                        <h4>{{ item.title|default:'Ei otsikkoa' }}</h4>
+                                        <h4 style="overflow-wrap: break-word;">{{ item.title|default:'Ei otsikkoa' }}</h4>
                                     </a>
                                 </div>
                             </div>
