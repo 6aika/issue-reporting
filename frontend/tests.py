@@ -9,11 +9,43 @@ class BasicTest(TestCase):
     fixtures = ["test_data.json"]
 
     # Test getting mainpage returns proper code and uses right template
-    def test_get_mainpage(self):
+    def test_get_pages(self):
         response = self.client.get(reverse("mainpage"))
-        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "mainpage.html")
         self.assertContains(response, "Testipalaute", 1, 200)
+
+        response = self.client.get(reverse("feedback_list"))
+        self.assertTemplateUsed(response, "feedback_list.html")
+        self.assertContains(response, "Toinen", 2, 200)
+
+        response = self.client.get(reverse("feedback_details", args=[2]))
+        self.assertTemplateUsed(response, "feedback_details.html")
+        self.assertContains(response, "testipalaute", 2, 200)
+
+        response = self.client.get(reverse("feedback_form"))
+        self.assertTemplateUsed(response, "feedback_form/closest.html")
+        self.assertContains(response, "Sijainti", 1, 200)
+
+        response = self.client.get(reverse("map"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "map.html")
+        self.assertInHTML('<div id="map" class="map-main"></div>', response.content.decode('UTF-8', 'ignore'))
+
+        response = self.client.get(reverse("statistics"))
+        self.assertTemplateUsed(response, "statistics.html")
+        self.assertContains(response, "aihealueiden", 1, 200)
+
+        response = self.client.get(reverse("department"))
+        self.assertTemplateUsed(response, "department.html")
+        self.assertContains(response, "virastojen", 1, 200)
+
+        response = self.client.get(reverse("charts"))
+        self.assertTemplateUsed(response, "charts.html")
+        self.assertContains(response, "Korjausajat", 1, 200)
+
+        response = self.client.get(reverse("about"))
+        self.assertTemplateUsed(response, "about.html")
+        self.assertContains(response, "Tietoja sivustosta", 1, 200)
 
     # Test Feedback list having correct first feedback title
     def test_feedback_list(self):
@@ -60,6 +92,9 @@ class BasicTest(TestCase):
     def test_media_upload(self):
         response = self.client.post(reverse("media_upload"), {"action": "get_files", "form_id": " "})
         self.assertJSONEqual(str(response.content, encoding='utf8'), {"status": "success", "files": []})
+
+        response = self.client.post(reverse("media_upload"), {"action": "delete_file", "form_id": " ", "server_filename": "123.jpg"})
+        self.assertJSONEqual(str(response.content, encoding='utf8'), {"status": "success"})
 
     # Testing feedback voting using invalid ID
     def test_vote_feedback_invalid(self):
