@@ -8,7 +8,7 @@ Link to the latest development version: <http://feedback.hel.ninja>
 
 ## Description
 
-City Feedback Hub (CFH) is a Aalto software development project made for the City of Helsinki. The aim of this project is to create a new inspiring web service for the citizens to send and browse existing feedbacks using the [Open311 API](http://dev.hel.fi/apis/open311/) already in use in Helsinki. This website tries to encourage citizens to participate in improving their neighbourhood. 
+City Feedback Hub (CFH) is an Aalto software development project made for the City of Helsinki. The aim of this project is to create a new inspiring web service for the citizens to send and browse existing feedbacks using the [Open311 API](http://dev.hel.fi/apis/open311/) already in use in Helsinki. This website tries to encourage citizens to participate in improving their neighbourhood. 
 
 CFH provides means to report issues to the city by simple to use feedback form wizard. The user can give the location of the issue, basic info and also attach images to help describe the issue. CFH also provides ways to browse existing feedbacks with various filters. There is also a map ([Leaflet](http://leafletjs.com) view which shows what is happening around. The map shows both individual feedbacks and also provides a *heatmap* to easily identify "hot" areas. There are also pages to show various statistical information and charts.
 
@@ -45,7 +45,7 @@ By default it also checks code coverage.
 ## Custom Django Commands
 There are also custom commands that can be run with: 
 
-	python manage.py [command] [--param1] [--param2=value]
+	python manage.py [command] [--param1] [--param2 value]
 
 ##### calcestimation
 Calculate and fill expected_datetime field for feedbacks which have this field empty
@@ -55,9 +55,9 @@ Deleted unneeded temporary media files and MediaFile objects from MEDIA_ROOT
 
 Available options:
 
-- `force`: Prevent asking for confirmation of deletion.
-- `silent`: Don't display info about deletion and files.
-- `days`: Script will delete files which are more than DAYS days old. Default is 1.
+- `--force`: Prevent asking for confirmation of deletion.
+- `--silent`: Don't display info about deletion and files.
+- `--days [DAYS]`: Script will delete files which are more than DAYS days old. Default is 1.
 
 ##### pushdata
 Push new feedbacks to Open311 and save their service_request_id
