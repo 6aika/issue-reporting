@@ -1,6 +1,7 @@
 # City Feedback Hub
 
 [![Build Status](http://94.237.25.111:8080/job/city-feedback-hub/badge/icon)](http://94.237.25.111:8080/job/city-feedback-hub)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
 Link to the latest development version: <http://feedback.hel.ninja>  
 
