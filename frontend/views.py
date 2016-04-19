@@ -202,11 +202,11 @@ class FeedbackWizard(SessionWizardView):
         context = super().get_context_data(form=form, **kwargs)
         if self.steps.current == 'closest':
             closest = get_feedbacks(
-                    statuses='Open',
-                    lat=60.17067,
-                    lon=24.94152,
-                    radius=3000,
-                    order_by='distance')[:10]
+                statuses='Open',
+                lat=60.17067,
+                lon=24.94152,
+                radius=3000,
+                order_by='distance')[:10]
             form_id = uuid.uuid4().hex
             context.update({'closest': closest, "form_id": form_id})
         elif self.steps.current == 'category':

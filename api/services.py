@@ -44,8 +44,8 @@ def get_feedbacks(service_codes=None, service_request_ids=None,
     # start CitySDK Helsinki specific filtration
     if search:
         queryset = queryset.filter(description__icontains=search) | queryset.filter(
-                title__icontains=search) | queryset.filter(address_string__icontains=search) | queryset.filter(
-                agency_responsible__icontains=search)
+            title__icontains=search) | queryset.filter(address_string__icontains=search) | queryset.filter(
+            agency_responsible__icontains=search)
     if service_object_type:
         queryset = queryset.filter(service_object_type__icontains=service_object_type)
     if service_object_id:
@@ -59,9 +59,9 @@ def get_feedbacks(service_codes=None, service_request_ids=None,
         point = fromstr('SRID=4326;POINT(%s %s)' % (lon, lat))
         empty_point = fromstr('POINT(0 0)', srid=4326)
         queryset = queryset.annotate(distance=Case(
-                When(location__distance_gt=(empty_point, D(m=0.0)), then=Distance('location', point)),
-                default=None,
-                output_field=DistanceField('m')
+            When(location__distance_gt=(empty_point, D(m=0.0)), then=Distance('location', point)),
+            default=None,
+            output_field=DistanceField('m')
         ))
 
         if radius:

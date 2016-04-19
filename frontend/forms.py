@@ -10,14 +10,14 @@ class FeedbackFormClosest(forms.Form):
 
 class FeedbackFormCategory(forms.Form):
     service_code = forms.CharField(widget=forms.HiddenInput(
-            attrs={'class': 'form-control', 'placeholder': "Enter category..."}))
+        attrs={'class': 'form-control', 'placeholder': "Enter category..."}))
 
 
 class FeedbackFormBasicInfo(forms.Form):
     title = forms.CharField(max_length=100,
                             widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Anna otsikko..."}))
     description = forms.CharField(widget=forms.Textarea(
-            attrs={'rows': 8, 'maxlength': 5000, 'class': 'form-control', 'placeholder': "Kirjoita tarkka kuvaus..."}))
+        attrs={'rows': 8, 'maxlength': 5000, 'class': 'form-control', 'placeholder': "Kirjoita tarkka kuvaus..."}))
 
 
 class FeedbackFormContact(forms.Form):
@@ -28,6 +28,6 @@ class FeedbackFormContact(forms.Form):
                                 widget=forms.TextInput(
                                     attrs={'class': 'form-control', 'placeholder': "Anna sukunimesi..."}))
     email = forms.EmailField(max_length=100, required=False, widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': "Anna sähköpostiosoitteesi..."}))
+        attrs={'class': 'form-control', 'placeholder': "Anna sähköpostiosoitteesi..."}))
     phone = forms.CharField(max_length=100, required=False, widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': "Anna puhelinnumerosi..."}))
+        attrs={'class': 'form-control', 'placeholder': "Anna puhelinnumerosi..."}))

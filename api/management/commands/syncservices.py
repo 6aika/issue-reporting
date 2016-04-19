@@ -21,13 +21,13 @@ def get_existing_service(service_code):
 def save_service(s):
     existing_service = get_existing_service(s['service_code'])
     service_data = Service(
-            service_code=s.get('service_code'),
-            service_name=s.get('service_name'),
-            description=s.get('description'),
-            metadata=s.get('metadata'),
-            type=s.get('type'),
-            keywords=s.get('keywords'),
-            group=s.get('group')
+        service_code=s.get('service_code'),
+        service_name=s.get('service_name'),
+        description=s.get('description'),
+        metadata=s.get('metadata'),
+        type=s.get('type'),
+        keywords=s.get('keywords'),
+        group=s.get('group')
     )
 
     if existing_service:

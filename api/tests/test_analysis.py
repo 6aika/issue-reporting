@@ -5,6 +5,7 @@ from api.tests.db_utils import clear_db, insert_feedbacks_for_estimation
 
 
 class EstimationTimeTestCase(TestCase):
+
     @classmethod
     def setUpClass(cls):
         clear_db()

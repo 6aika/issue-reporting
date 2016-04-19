@@ -5,6 +5,7 @@ from django.utils import timezone
 
 
 class Feedback(models.Model):
+
     class Meta:
         db_table = 'feedbacks'
 
@@ -56,6 +57,7 @@ class Feedback(models.Model):
 
 
 class MediaURL(models.Model):
+
     class Meta:
         db_table = 'media_urls'
 
@@ -64,6 +66,7 @@ class MediaURL(models.Model):
 
 
 class Task(models.Model):
+
     class Meta:
         db_table = 'tasks'
 
@@ -76,6 +79,7 @@ class Task(models.Model):
 
 
 class Service(models.Model):
+
     class Meta:
         db_table = 'services'
 

@@ -10,12 +10,14 @@ from .models import Feedback, Service, Task
 
 
 class ServiceSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Service
         fields = ['service_code', 'service_name', 'description', 'metadata', 'type', 'keywords', 'group']
 
 
 class TaskSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Task
         fields = ['task_state', 'task_type', 'owner_name', 'task_modified', 'task_created']
@@ -25,9 +27,9 @@ class FeedbackSerializer(serializers.ModelSerializer):
     distance = serializers.SerializerMethodField()
     extended_attributes = serializers.SerializerMethodField()
     media_urls = serializers.SlugRelatedField(
-            many=True,
-            read_only=True,
-            slug_field='media_url'
+        many=True,
+        read_only=True,
+        slug_field='media_url'
     )
     tasks = TaskSerializer(many=True)
 
@@ -44,12 +46,12 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
         media_urls = self.fields['media_urls']
         media_urls_value = media_urls.to_representation(
-                media_urls.get_attribute(instance)
+            media_urls.get_attribute(instance)
         )
 
         tasks = self.fields['tasks']
         tasks_value = tasks.to_representation(
-                tasks.get_attribute(instance)
+            tasks.get_attribute(instance)
         )
 
         representation = {
@@ -66,7 +68,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         distance = self.fields['distance']
         distance_value = distance.to_representation(
-                distance.get_attribute(instance)
+            distance.get_attribute(instance)
         )
 
         representation = {
@@ -95,7 +97,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
         if extensions and extensions[0].upper() == 'T':
             ext_attribute = self.fields['extended_attributes']
             ext_attribute_value = ext_attribute.to_representation(
-                    ext_attribute.get_attribute(instance)
+                ext_attribute.get_attribute(instance)
             )
             representation['extended_attributes'] = ext_attribute_value
 

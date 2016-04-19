@@ -37,7 +37,6 @@ def reverse_geocode_servicemap(lat, lon):
     except URLError:
         logger.exception('Invalid URL: {}'.format(reverse_geocoding_url))
         return
-    pass
 
     results_json = json_data.get('results', None)
     if results_json:

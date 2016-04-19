@@ -16,20 +16,20 @@ def send_feedback_to_open311(f):
     open_311_url = settings.OPEN311_URL + "/requests.json"
 
     data = dict(
-            api_key=settings.OPEN311_API_KEY,
-            service_code=f.service_code,
-            description=f.description,
-            title=f.title,
-            lat=f.lat,
-            long=f.lon,
-            service_object_type=f.service_object_type,
-            service_object_id=f.service_object_id,
-            address_string=f.address_string,
-            email=f.email,
-            first_name=f.first_name,
-            last_name=f.last_name,
-            phone=f.phone,
-            media_url=f.media_url
+        api_key=settings.OPEN311_API_KEY,
+        service_code=f.service_code,
+        description=f.description,
+        title=f.title,
+        lat=f.lat,
+        long=f.lon,
+        service_object_type=f.service_object_type,
+        service_object_id=f.service_object_id,
+        address_string=f.address_string,
+        email=f.email,
+        first_name=f.first_name,
+        last_name=f.last_name,
+        phone=f.phone,
+        media_url=f.media_url
     )
 
     files = MediaFile.objects.filter(feedback_id=f.pk)
@@ -39,7 +39,7 @@ def send_feedback_to_open311(f):
     for file in files:
         file_type = 'image/' + imghdr.what(file.file)
         multiple_files.append(
-                ('media', (file.original_filename, file.file, file_type))
+            ('media', (file.original_filename, file.file, file_type))
         )
 
     r = requests.post(open_311_url, data=data, files=multiple_files, allow_redirects=True)
