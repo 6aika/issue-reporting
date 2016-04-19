@@ -1,3 +1,4 @@
+import datetime
 import operator
 import os
 import uuid
@@ -9,11 +10,11 @@ from django.http.response import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from formtools.wizard.views import SessionWizardView
 
+from frontend.forms import FeedbackFormBasicInfo, FeedbackFormCategory, FeedbackFormClosest, FeedbackFormContact
 from issues import analysis
 from issues.geocoding import reverse_geocode
-from issues.models import MediaFile, Service
+from issues.models import Feedback, MediaFile, Service
 from issues.services import attach_files_to_feedback, get_feedbacks, get_feedbacks_count, save_file_to_db
-from frontend.forms import FeedbackFormBasicInfo, FeedbackFormCategory, FeedbackFormClosest, FeedbackFormContact
 
 FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackFormBasicInfo),
          ("contact", FeedbackFormContact)]
@@ -28,8 +29,8 @@ def mainpage(request):
     fixed_feedbacks_count = closed_feedbacks.count()
     recent_feedbacks = Feedback.objects.filter(status="open").order_by('-requested_datetime')[:4]
     feedbacks_count = get_feedbacks_count()
-    waiting_time = get_median_duration(closed_feedbacks)
-    emails = get_emails()
+    waiting_time = analysis.get_median_duration(closed_feedbacks)
+    emails = analysis.get_emails()
     context["emails"] = emails
     context["waiting_time"] = waiting_time
     context["feedbacks_count"] = feedbacks_count
@@ -155,11 +156,11 @@ def department(request):
         item = {}
         agency_responsible = agency.agency_responsible
         item["agency_responsible"] = agency_responsible
-        item["total"] = get_total_by_agency(agency_responsible)
-        item["closed"] = get_closed_by_agency(agency_responsible)
-        item["open"] = get_open_by_agency(agency_responsible)
-        item["avg"] = get_avg_duration(get_closed_by_agency_responsible(agency_responsible))
-        item["median"] = get_median_duration(get_closed_by_agency_responsible(agency_responsible))
+        item["total"] = analysis.get_total_by_agency(agency_responsible)
+        item["closed"] = analysis.get_closed_by_agency(agency_responsible)
+        item["open"] = analysis.get_open_by_agency(agency_responsible)
+        item["avg"] = analysis.get_avg_duration(analysis.get_closed_by_agency_responsible(agency_responsible))
+        item["median"] = analysis.get_median_duration(analysis.get_closed_by_agency_responsible(agency_responsible))
         data.append(item)
 
     # Sort the rows by "total" column
@@ -175,11 +176,11 @@ def statistics(request):
         service_code = service.service_code
         item["service_code"] = service_code
         item["service_name"] = service.service_name
-        item["total"] = get_total_by_service(service_code)
-        item["closed"] = get_closed_by_service(service_code)
-        item["open"] = get_open_by_service(service_code)
-        item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
-        item["median"] = get_median_duration(get_closed_by_service_code(service_code))
+        item["total"] = analysis.get_total_by_service(service_code)
+        item["closed"] = analysis.get_closed_by_service(service_code)
+        item["open"] = analysis.get_open_by_service(service_code)
+        item["avg"] = analysis.get_avg_duration(analysis.get_closed_by_service_code(service_code))
+        item["median"] = analysis.get_median_duration(analysis.get_closed_by_service_code(service_code))
         data.append(item)
 
     # Sort the rows by "total" column
@@ -264,7 +265,7 @@ class FeedbackWizard(SessionWizardView):
 
         new_feedback = Feedback(**data)
 
-        fixing_time = calc_fixing_time(data["service_code"])
+        fixing_time = analysis.calc_fixing_time(data["service_code"])
         waiting_time = timedelta(milliseconds=fixing_time)
         if waiting_time.total_seconds() >= 0:
             new_feedback.expected_datetime = new_feedback.requested_datetime + waiting_time
