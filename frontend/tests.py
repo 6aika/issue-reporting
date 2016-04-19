@@ -1,13 +1,12 @@
-from django.core.urlresolvers import reverse
-from django.test import TestCase
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.utils.encoding import force_text
 import json
 
-from .forms import *
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.urlresolvers import reverse
+from django.test import TestCase
+
+from frontend.forms import FeedbackFormBasicInfo
 
 
-# Test some developer functions
 class BasicTest(TestCase):
     fixtures = ["test_data.json"]
 
@@ -91,7 +90,7 @@ class BasicTest(TestCase):
             "description": ["This field is required."]
         })
 
-    # Test getting filelist from media_upload 
+    # Test getting filelist from media_upload
     def test_media_upload(self):
         response = self.client.post(reverse("media_upload"), {"action": "get_files", "form_id": " "})
         self.assertJSONEqual(str(response.content, encoding='utf8'), {"status": "success", "files": []})

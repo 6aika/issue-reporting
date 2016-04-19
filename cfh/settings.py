@@ -1,4 +1,5 @@
 import os
+
 from environ import Env
 
 env = Env()
@@ -166,7 +167,7 @@ if "CFH" in os.environ:
     GEOS_LIBRARY_PATH = "/Applications/Postgres.app/Contents/Versions/latest/lib/libgeos_c.dylib"
 
 log_handlers = {
-    'null': {'level': 'INFO', 'class': 'logging.NullHandler',},
+    'null': {'level': 'INFO', 'class': 'logging.NullHandler', },
     'console': {'level': 'INFO', 'class': 'logging.StreamHandler', 'formatter': 'standard'},
 }
 

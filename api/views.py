@@ -7,10 +7,11 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.analysis import *
-from api.models import Service, MediaFile
-from api.services import get_feedbacks, attach_files_to_feedback, save_file_to_db
-from .serializers import FeedbackSerializer, ServiceSerializer, FeedbackDetailSerializer
+from api import analysis
+from api.models import Feedback, MediaFile, Service
+from api.services import attach_files_to_feedback, get_feedbacks, save_file_to_db
+
+from .serializers import FeedbackDetailSerializer, FeedbackSerializer, ServiceSerializer
 
 
 class RequestBaseAPIView(APIView):
@@ -19,31 +20,32 @@ class RequestBaseAPIView(APIView):
 
 
 class FeedbackList(RequestBaseAPIView):
+
     def get(self, request, format=None):
         service_object_id = request.query_params.get('service_object_id', None)
         service_object_type = request.query_params.get('service_object_type', None)
 
         if service_object_id is not None and service_object_type is None:
             raise ValidationError(
-                    "If service_object_id is included in the request, then service_object_type must be included.")
+                "If service_object_id is included in the request, then service_object_type must be included.")
 
         queryset = get_feedbacks(
-                service_request_ids=request.query_params.get('service_request_id', None),
-                service_codes=request.query_params.get('service_code', None),
-                start_date=request.query_params.get('start_date', None),
-                end_date=request.query_params.get('end_date', None),
-                statuses=request.query_params.get('status', None),
-                service_object_type=service_object_type,
-                service_object_id=service_object_id,
-                lat=request.query_params.get('lat', None),
-                lon=request.query_params.get('long', None),
-                radius=request.query_params.get('radius', None),
-                updated_after=request.query_params.get('updated_after', None),
-                updated_before=request.query_params.get('updated_before', None),
-                search=request.query_params.get('search', None),
-                agency_responsible=request.query_params.get('agency_responsible', None),
-                order_by=request.query_params.get('order_by', None),
-                use_limit=True
+            service_request_ids=request.query_params.get('service_request_id', None),
+            service_codes=request.query_params.get('service_code', None),
+            start_date=request.query_params.get('start_date', None),
+            end_date=request.query_params.get('end_date', None),
+            statuses=request.query_params.get('status', None),
+            service_object_type=service_object_type,
+            service_object_id=service_object_id,
+            lat=request.query_params.get('lat', None),
+            lon=request.query_params.get('long', None),
+            radius=request.query_params.get('radius', None),
+            updated_after=request.query_params.get('updated_after', None),
+            updated_before=request.query_params.get('updated_before', None),
+            search=request.query_params.get('search', None),
+            agency_responsible=request.query_params.get('agency_responsible', None),
+            order_by=request.query_params.get('order_by', None),
+            use_limit=True
         )
 
         serializer = FeedbackSerializer(queryset, many=True,
@@ -73,20 +75,21 @@ class FeedbackList(RequestBaseAPIView):
 
 
 class FeedbackDetail(RequestBaseAPIView):
+
     def get(self, request, service_request_id, format=None):
         queryset = get_feedbacks(
-                service_request_ids=service_request_id,
-                service_codes=request.query_params.get('service_code', None),
-                start_date=request.query_params.get('start_date', None),
-                end_date=request.query_params.get('end_date', None),
-                statuses=request.query_params.get('status', None),
-                lat=request.query_params.get('lat', None),
-                lon=request.query_params.get('long', None),
-                radius=request.query_params.get('radius', None),
-                updated_after=request.query_params.get('updated_after', None),
-                updated_before=request.query_params.get('updated_before', None),
-                search=request.query_params.get('search', None),
-                order_by=request.query_params.get('order_by', None)
+            service_request_ids=service_request_id,
+            service_codes=request.query_params.get('service_code', None),
+            start_date=request.query_params.get('start_date', None),
+            end_date=request.query_params.get('end_date', None),
+            statuses=request.query_params.get('status', None),
+            lat=request.query_params.get('lat', None),
+            lon=request.query_params.get('long', None),
+            radius=request.query_params.get('radius', None),
+            updated_after=request.query_params.get('updated_after', None),
+            updated_before=request.query_params.get('updated_before', None),
+            search=request.query_params.get('search', None),
+            order_by=request.query_params.get('order_by', None)
         )
 
         serializer = FeedbackSerializer(queryset, many=True,
@@ -97,6 +100,7 @@ class FeedbackDetail(RequestBaseAPIView):
 class ServiceList(APIView):
     item_tag_name = 'service'
     root_tag_name = 'services'
+
     def get(self, request, format=None):
         queryset = Service.objects.all()
         serializer = ServiceSerializer(queryset, many=True)
@@ -131,13 +135,13 @@ def get_service_item_statistics(service):
     item = {}
     service_code = service.service_code
 
-    avg = get_avg_duration(get_closed_by_service_code(service_code))
-    median = get_median_duration(get_closed_by_service_code(service_code))
+    avg = analysis.get_avg_duration(analysis.get_closed_by_service_code(service_code))
+    median = analysis.get_median_duration(analysis.get_closed_by_service_code(service_code))
 
     item["service_code"] = service.service_code
     item["service_name"] = service.service_name
-    item["total"] = get_total_by_service(service_code)
-    item["closed"] = get_closed_by_service(service_code)
+    item["total"] = analysis.get_total_by_service(service_code)
+    item["closed"] = analysis.get_closed_by_service(service_code)
     item["avg_sec"] = int(avg.total_seconds())
     item["median_sec"] = int(median.total_seconds())
 
@@ -147,12 +151,12 @@ def get_service_item_statistics(service):
 def get_agency_item_statistics(agency_responsible):
     item = {}
 
-    avg = get_avg_duration(get_closed_by_agency_responsible(agency_responsible))
-    median = get_median_duration(get_closed_by_agency_responsible(agency_responsible))
+    avg = analysis.get_avg_duration(analysis.get_closed_by_agency_responsible(agency_responsible))
+    median = analysis.get_median_duration(analysis.get_closed_by_agency_responsible(agency_responsible))
 
     item["agency_responsible"] = agency_responsible
-    item["total"] = get_total_by_agency(agency_responsible)
-    item["closed"] = get_closed_by_agency(agency_responsible)
+    item["total"] = analysis.get_total_by_agency(agency_responsible)
+    item["closed"] = analysis.get_closed_by_agency(agency_responsible)
     item["avg_sec"] = int(avg.total_seconds())
     item["median_sec"] = int(median.total_seconds())
 

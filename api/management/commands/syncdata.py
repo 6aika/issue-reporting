@@ -14,7 +14,7 @@ from django.db import transaction
 from django.db.models import Max
 
 from api.analysis import calc_fixing_time
-from api.models import Feedback, Task, MediaURL
+from api.models import Feedback, MediaURL, Task
 from api.services import feedback_status_was_changed, send_email_notification
 
 logger = logging.getLogger(__name__)
@@ -40,32 +40,32 @@ def save_feedback(f):
             expected_datetime = requested_datetime + median
 
     updated_feedback = Feedback(
-            service_request_id=f['service_request_id'],
-            status_notes=f.get('status_notes', ''),
-            status=f['status'],
-            service_code=f.get('service_code', ''),
-            service_name=f.get('service_name', ''),
-            description=f.get('description', ''),
-            agency_responsible=f.get('agency_responsible', ''),
-            service_notice=f.get('service_notice', ''),
-            requested_datetime=f.get('requested_datetime', ''),
-            updated_datetime=f.get('updated_datetime', ''),
-            expected_datetime=expected_datetime,
-            address_string=f.get('address', ''),
-            media_url=f.get('media_url', ''),
+        service_request_id=f['service_request_id'],
+        status_notes=f.get('status_notes', ''),
+        status=f['status'],
+        service_code=f.get('service_code', ''),
+        service_name=f.get('service_name', ''),
+        description=f.get('description', ''),
+        agency_responsible=f.get('agency_responsible', ''),
+        service_notice=f.get('service_notice', ''),
+        requested_datetime=f.get('requested_datetime', ''),
+        updated_datetime=f.get('updated_datetime', ''),
+        expected_datetime=expected_datetime,
+        address_string=f.get('address', ''),
+        media_url=f.get('media_url', ''),
 
-            email=f.get('email', ''),
-            first_name=f.get('first_name', ''),
-            last_name=f.get('last_name', ''),
-            phone=f.get('phone', ''),
+        email=f.get('email', ''),
+        first_name=f.get('first_name', ''),
+        last_name=f.get('last_name', ''),
+        phone=f.get('phone', ''),
 
-            # Extension information
-            service_object_id=f.get('service_object_id', ''),
-            service_object_type=f.get('service_object_type', ''),
+        # Extension information
+        service_object_id=f.get('service_object_id', ''),
+        service_object_type=f.get('service_object_type', ''),
 
-            location=GEOSGeometry('SRID=4326;POINT(' + str(f.get('long', 0)) + ' ' + str(f.get('lat', 0)) + ')'),
+        location=GEOSGeometry('SRID=4326;POINT(' + str(f.get('long', 0)) + ' ' + str(f.get('lat', 0)) + ')'),
 
-            synchronized=True
+        synchronized=True
     )
 
     if existing_feedback:
@@ -91,12 +91,12 @@ def save_feedback(f):
         if tasks_json:
             for task_json in tasks_json:
                 task = Task(
-                        feedback_id=updated_feedback.id,
-                        task_state=task_json.get('task_state', ''),
-                        task_type=task_json.get('task_type', ''),
-                        owner_name=task_json.get('owner_name', ''),
-                        task_modified=task_json.get('task_modified', ''),
-                        task_created=task_json.get('task_created', '')
+                    feedback_id=updated_feedback.id,
+                    task_state=task_json.get('task_state', ''),
+                    task_type=task_json.get('task_type', ''),
+                    owner_name=task_json.get('owner_name', ''),
+                    task_modified=task_json.get('task_modified', ''),
+                    task_created=task_json.get('task_created', '')
                 )
                 task.save()
 
@@ -111,7 +111,7 @@ def sync_open311_data(start_datetime):
 
     while start_datetime < datetime.now():
         open_311_url = settings.OPEN311_URL + "/requests.json?extensions=true&updated_after=" \
-                       + start_datetime.isoformat() + "Z&updated_before=" + end_datetime.isoformat()
+            + start_datetime.isoformat() + "Z&updated_before=" + end_datetime.isoformat()
         logger.info('url to send: {}'.format(open_311_url))
 
         try:
@@ -148,7 +148,7 @@ def sync_with_id_file(path_to_ids):
     with open(path_to_ids) as f:
         for service_request_id in f:
             open_311_url = settings.OPEN311_URL + "/requests/{}.json?extensions=true".format(
-                    service_request_id.rstrip())
+                service_request_id.rstrip())
             logger.info('url to send: {}'.format(open_311_url))
 
             try:
