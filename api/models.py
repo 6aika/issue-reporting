@@ -11,7 +11,7 @@ class Feedback(models.Model):
     service_request_id = models.CharField(max_length=254, db_index=True, null=True)
     status_notes = models.TextField(null=True)
     status = models.TextField(null=True)
-    service_code = models.TextField(null=True)
+    service_code = models.CharField(null=True, max_length=120)
     service_name = models.TextField(null=True)
     description = models.TextField(null=True)
     agency_responsible = models.TextField(null=True)
@@ -79,7 +79,7 @@ class Service(models.Model):
     class Meta:
         db_table = 'services'
 
-    service_code = models.IntegerField(null=False)
+    service_code = models.CharField(unique=True, null=False, max_length=120)
     service_name = models.TextField(null=False)
     description = models.TextField(null=False)
     metadata = models.BooleanField(null=False)
