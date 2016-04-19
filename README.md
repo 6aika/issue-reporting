@@ -37,11 +37,9 @@ The default configuration assumes that the software is using the Helsinki Open31
 
 ## Running tests
 
-Both frontend and backend has unit tests available. Unit tests can be found in `api/tests/` and in `frontend/tests.py`. Nose test package is also used to get code coverage statistics. Unit tests can be run the usual way: 
+Both frontend and backend has unit tests available. Unit tests can be found in `api/tests/` and in `frontend/tests.py`.
 
-`python manage.py test` 
-
-By default it also checks code coverage.
+Py.test is used as the test runner. Just run `py.test` (with `--cov` for coverage)
 
 ## Custom Django Commands
 There are also custom commands that can be run with: 
