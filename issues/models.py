@@ -5,10 +5,6 @@ from django.utils import timezone
 
 
 class Feedback(models.Model):
-
-    class Meta:
-        db_table = 'feedbacks'
-
     service_request_id = models.CharField(max_length=254, db_index=True, null=True)
     status_notes = models.TextField(null=True)
     status = models.TextField(null=True)
@@ -57,19 +53,11 @@ class Feedback(models.Model):
 
 
 class MediaURL(models.Model):
-
-    class Meta:
-        db_table = 'media_urls'
-
     feedback = models.ForeignKey('Feedback', on_delete=models.CASCADE, related_name='media_urls', null=True)
     media_url = models.TextField(null=True)
 
 
 class Task(models.Model):
-
-    class Meta:
-        db_table = 'tasks'
-
     feedback = models.ForeignKey('Feedback', on_delete=models.CASCADE, related_name='tasks', null=True)
     task_state = models.TextField(null=True)
     task_type = models.TextField(null=True)
@@ -79,10 +67,6 @@ class Task(models.Model):
 
 
 class Service(models.Model):
-
-    class Meta:
-        db_table = 'services'
-
     service_code = models.CharField(unique=True, null=False, max_length=120)
     service_name = models.TextField(null=False)
     description = models.TextField(null=False)
