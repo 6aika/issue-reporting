@@ -10,7 +10,7 @@ from django.shortcuts import redirect, render
 from formtools.wizard.views import SessionWizardView
 
 from issues import analysis
-from issues.geocoding.geocoding import reverse_geocode
+from issues.geocoding import reverse_geocode
 from issues.models import MediaFile, Service
 from issues.services import attach_files_to_feedback, get_feedbacks, get_feedbacks_count, save_file_to_db
 from frontend.forms import FeedbackFormBasicInfo, FeedbackFormCategory, FeedbackFormClosest, FeedbackFormContact

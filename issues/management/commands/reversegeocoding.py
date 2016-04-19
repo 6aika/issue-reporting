@@ -3,7 +3,7 @@ import logging
 from django.core.management import BaseCommand
 from django.db.models import Q
 
-from issues.geocoding.geocoding import reverse_geocode
+from issues.geocoding import reverse_geocode
 from issues.models import Feedback
 
 logger = logging.getLogger(__name__)

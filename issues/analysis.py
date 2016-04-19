@@ -2,9 +2,8 @@ import datetime
 
 from django.db.models import ExpressionWrapper, F, fields
 
+from issues.models import Feedback
 from issues.services import get_feedbacks
-
-from ..models import Feedback
 
 
 def calc_fixing_time(service_code):
