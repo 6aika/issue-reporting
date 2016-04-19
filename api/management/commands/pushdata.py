@@ -1,6 +1,6 @@
+import imghdr
 import json
 import logging
-import imghdr
 
 import requests
 from django.conf import settings

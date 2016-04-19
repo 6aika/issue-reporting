@@ -14,4 +14,3 @@ class SmartXMLRenderer(XMLRenderer):
         if data is False:
             return xml.characters('false')
         return super()._to_xml(xml, data)
-

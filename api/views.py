@@ -8,9 +8,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.analysis import *
-from api.models import Service, MediaFile
-from api.services import get_feedbacks, attach_files_to_feedback, save_file_to_db
-from .serializers import FeedbackSerializer, ServiceSerializer, FeedbackDetailSerializer
+from api.models import MediaFile, Service
+from api.services import attach_files_to_feedback, get_feedbacks, save_file_to_db
+
+from .serializers import FeedbackDetailSerializer, FeedbackSerializer, ServiceSerializer
 
 
 class RequestBaseAPIView(APIView):

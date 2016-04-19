@@ -11,7 +11,7 @@ from django.contrib.gis.measure import D
 from django.core.mail import EmailMessage
 from django.db.models import Case, When
 
-from api.models import Feedback, MediaURL, MediaFile
+from api.models import Feedback, MediaFile, MediaURL
 
 logger = logging.getLogger(__name__)
 

@@ -4,16 +4,16 @@ import uuid
 from datetime import timedelta
 
 from django.contrib.gis.geos import GEOSGeometry
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http.response import JsonResponse, HttpResponseBadRequest
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.http.response import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from formtools.wizard.views import SessionWizardView
 
 from api.analysis import *
 from api.geocoding.geocoding import reverse_geocode
-from api.models import Service, MediaFile
-from api.services import get_feedbacks, get_feedbacks_count, attach_files_to_feedback, save_file_to_db
-from frontend.forms import FeedbackFormClosest, FeedbackFormCategory, FeedbackFormBasicInfo, FeedbackFormContact
+from api.models import MediaFile, Service
+from api.services import attach_files_to_feedback, get_feedbacks, get_feedbacks_count, save_file_to_db
+from frontend.forms import FeedbackFormBasicInfo, FeedbackFormCategory, FeedbackFormClosest, FeedbackFormContact
 
 FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackFormBasicInfo),
          ("contact", FeedbackFormContact)]

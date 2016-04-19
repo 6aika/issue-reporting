@@ -1,11 +1,12 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import serializers
 
 from api.analysis import calc_fixing_time
-from .models import Feedback, Task, Service
+
+from .models import Feedback, Service, Task
 
 
 class ServiceSerializer(serializers.ModelSerializer):

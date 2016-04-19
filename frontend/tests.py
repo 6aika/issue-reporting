@@ -1,8 +1,9 @@
+import json
+
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils.encoding import force_text
-import json
 
 from .forms import *
 

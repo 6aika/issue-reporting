@@ -14,7 +14,7 @@ from django.db import transaction
 from django.db.models import Max
 
 from api.analysis import calc_fixing_time
-from api.models import Feedback, Task, MediaURL
+from api.models import Feedback, MediaURL, Task
 from api.services import feedback_status_was_changed, send_email_notification
 
 logger = logging.getLogger(__name__)
