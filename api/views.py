@@ -13,7 +13,12 @@ from api.services import get_feedbacks, attach_files_to_feedback, save_file_to_d
 from .serializers import FeedbackSerializer, ServiceSerializer, FeedbackDetailSerializer
 
 
-class FeedbackList(APIView):
+class RequestBaseAPIView(APIView):
+    item_tag_name = 'request'
+    root_tag_name = 'requests'
+
+
+class FeedbackList(RequestBaseAPIView):
     def get(self, request, format=None):
         service_object_id = request.query_params.get('service_object_id', None)
         service_object_type = request.query_params.get('service_object_type', None)
@@ -67,7 +72,7 @@ class FeedbackList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FeedbackDetail(APIView):
+class FeedbackDetail(RequestBaseAPIView):
     def get(self, request, service_request_id, format=None):
         queryset = get_feedbacks(
                 service_request_ids=service_request_id,
@@ -90,6 +95,8 @@ class FeedbackDetail(APIView):
 
 
 class ServiceList(APIView):
+    item_tag_name = 'service'
+    root_tag_name = 'services'
     def get(self, request, format=None):
         queryset = Service.objects.all()
         serializer = ServiceSerializer(queryset, many=True)
