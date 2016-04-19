@@ -9,10 +9,10 @@ from django.http.response import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from formtools.wizard.views import SessionWizardView
 
-from api import analysis
-from api.geocoding.geocoding import reverse_geocode
-from api.models import MediaFile, Service
-from api.services import attach_files_to_feedback, get_feedbacks, get_feedbacks_count, save_file_to_db
+from issues import analysis
+from issues.geocoding.geocoding import reverse_geocode
+from issues.models import MediaFile, Service
+from issues.services import attach_files_to_feedback, get_feedbacks, get_feedbacks_count, save_file_to_db
 from frontend.forms import FeedbackFormBasicInfo, FeedbackFormCategory, FeedbackFormClosest, FeedbackFormContact
 
 FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackFormBasicInfo),

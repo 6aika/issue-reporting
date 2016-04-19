@@ -18,7 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'formtools',
     'rest_framework',
-    'api',
+    'issues',
     'frontend',
 ]
 
@@ -61,9 +61,9 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-        'api.renderers.SmartXMLRenderer',
+        'issues.renderers.SmartXMLRenderer',
     ),
-    'EXCEPTION_HANDLER': 'api.api_utils.api_exception_handler'
+    'EXCEPTION_HANDLER': 'issues.api_utils.api_exception_handler'
 }
 
 WSGI_APPLICATION = 'cfh.wsgi.application'
@@ -197,7 +197,7 @@ LOGGING = {
             'propagate': True,
             'level': 'WARN',
         },
-        'api': {
+        'issues': {
             'handlers': log_handlers.keys(),
             'level': 'DEBUG',
         },
