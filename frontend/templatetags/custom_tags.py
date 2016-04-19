@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 
-from api.analysis import *
+from api.analysis import calc_fixing_time
 from api.models import Service
 
 register = template.Library()

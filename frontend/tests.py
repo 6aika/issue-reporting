@@ -4,10 +4,9 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from .forms import *
+from frontend.forms import FeedbackFormBasicInfo
 
 
-# Test some developer functions
 class BasicTest(TestCase):
     fixtures = ["test_data.json"]
 

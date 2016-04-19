@@ -7,8 +7,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.analysis import *
-from api.models import MediaFile, Service
+from api import analysis
+from api.models import Feedback, MediaFile, Service
 from api.services import attach_files_to_feedback, get_feedbacks, save_file_to_db
 
 from .serializers import FeedbackDetailSerializer, FeedbackSerializer, ServiceSerializer
@@ -135,13 +135,13 @@ def get_service_item_statistics(service):
     item = {}
     service_code = service.service_code
 
-    avg = get_avg_duration(get_closed_by_service_code(service_code))
-    median = get_median_duration(get_closed_by_service_code(service_code))
+    avg = analysis.get_avg_duration(analysis.get_closed_by_service_code(service_code))
+    median = analysis.get_median_duration(analysis.get_closed_by_service_code(service_code))
 
     item["service_code"] = service.service_code
     item["service_name"] = service.service_name
-    item["total"] = get_total_by_service(service_code)
-    item["closed"] = get_closed_by_service(service_code)
+    item["total"] = analysis.get_total_by_service(service_code)
+    item["closed"] = analysis.get_closed_by_service(service_code)
     item["avg_sec"] = int(avg.total_seconds())
     item["median_sec"] = int(median.total_seconds())
 
@@ -151,12 +151,12 @@ def get_service_item_statistics(service):
 def get_agency_item_statistics(agency_responsible):
     item = {}
 
-    avg = get_avg_duration(get_closed_by_agency_responsible(agency_responsible))
-    median = get_median_duration(get_closed_by_agency_responsible(agency_responsible))
+    avg = analysis.get_avg_duration(analysis.get_closed_by_agency_responsible(agency_responsible))
+    median = analysis.get_median_duration(analysis.get_closed_by_agency_responsible(agency_responsible))
 
     item["agency_responsible"] = agency_responsible
-    item["total"] = get_total_by_agency(agency_responsible)
-    item["closed"] = get_closed_by_agency(agency_responsible)
+    item["total"] = analysis.get_total_by_agency(agency_responsible)
+    item["closed"] = analysis.get_closed_by_agency(agency_responsible)
     item["avg_sec"] = int(avg.total_seconds())
     item["median_sec"] = int(median.total_seconds())
 
