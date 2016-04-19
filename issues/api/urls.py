@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from issues import views
+from . import views
 
 urlpatterns = [
     url(r'^requests/$', views.FeedbackList.as_view(), name='feedback-list'),

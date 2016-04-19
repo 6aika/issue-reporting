@@ -61,9 +61,9 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-        'issues.renderers.SmartXMLRenderer',
+        'issues.api.renderers.SmartXMLRenderer',
     ),
-    'EXCEPTION_HANDLER': 'issues.api_utils.api_exception_handler'
+    'EXCEPTION_HANDLER': 'issues.api.utils.api_exception_handler'
 }
 
 WSGI_APPLICATION = 'cfh.wsgi.application'

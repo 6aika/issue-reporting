@@ -5,8 +5,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import serializers
 
 from issues.analysis import calc_fixing_time
-
-from .models import Feedback, Service, Task
+from issues.models import Feedback, Service, Task
 
 
 class ServiceSerializer(serializers.ModelSerializer):
