@@ -7,12 +7,12 @@ from django.conf import settings
 from django.core.management import BaseCommand
 from django.db.models import Q
 
-from issues.models import Feedback, MediaFile
+from issues.models import Issue, MediaFile
 
 logger = logging.getLogger(__name__)
 
 
-def send_feedback_to_open311(f):
+def send_issue_to_open311(f):
     open_311_url = settings.OPEN311_URL + "/requests.json"
 
     data = dict(
@@ -32,7 +32,7 @@ def send_feedback_to_open311(f):
         media_url=f.media_url
     )
 
-    files = MediaFile.objects.filter(feedback_id=f.pk)
+    files = MediaFile.objects.filter(issue_id=f.pk)
     multiple_files = []
 
     # TODO: (for future releases) files uploading should be tested properly
@@ -54,13 +54,13 @@ def send_feedback_to_open311(f):
 
 
 class Command(BaseCommand):
-    help = 'Push new feedbacks to Open311 and save their service_request_id.'
+    help = 'Push new issues to Open311 and save their service_request_id.'
 
     def handle(self, *args, **options):
-        feedbacks = Feedback.objects.filter(Q(service_request_id__isnull=True) | Q(service_request_id__exact=''))
-        logger.info("Number of feedback to send: {}".format(len(feedbacks)))
+        issues = Issue.objects.filter(Q(service_request_id__isnull=True) | Q(service_request_id__exact=''))
+        logger.info("Number of issue to send: {}".format(len(issues)))
 
-        for feedback in feedbacks:
-            send_feedback_to_open311(feedback)
+        for issue in issues:
+            send_issue_to_open311(issue)
 
-        logger.info('Feedbacks are sent to remote system')
+        logger.info('Issues are sent to remote system')

@@ -1,28 +1,30 @@
 import os
 
-from django.db import connection
+from django.core import serializers
+from django.db import connections
 
-from issues.models import Feedback
+from issues.models import Issue
 
-QUERY_ROOT_DIR = os.path.join(os.path.dirname(__file__), 'sql')
+FIXTURE_DIR = os.path.dirname(__file__)
 
 
 def clear_db():
-    Feedback.objects.all().delete()
+    Issue.objects.all().delete()
 
 
-def read_query(query_name):
-    with open(os.path.join(QUERY_ROOT_DIR, query_name + '.sql')) as sql:
-        return sql.read()
+def execute_fixture(name):
+    filename = os.path.join(FIXTURE_DIR, name + '.json')
+    connection = connections["default"]
+    with connection.constraint_checks_disabled():
+        with open(filename, "r") as stream:
+            objects = serializers.deserialize("json", stream)
+            for obj in objects:
+                obj.save()
 
 
-def insert_feedbacks():
-    query = read_query('insert_requests')
-    cursor = connection.cursor()
-    cursor.execute(query)
+def insert_issues():
+    execute_fixture('insert_requests')
 
 
-def insert_feedbacks_for_estimation():
-    query = read_query('insert_requests_for_estimation')
-    cursor = connection.cursor()
-    cursor.execute(query)
+def insert_issues_for_estimation():
+    execute_fixture('insert_requests_for_estimation')

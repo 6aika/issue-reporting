@@ -14,22 +14,22 @@ from django.db import transaction
 from django.db.models import Max
 
 from issues.analysis import calc_fixing_time
-from issues.models import Feedback, MediaURL, Task
-from issues.services import feedback_status_was_changed, send_email_notification
+from issues.models import Issue, MediaURL, Task
+from issues.services import issue_status_was_changed, send_email_notification
 
 logger = logging.getLogger(__name__)
 
 
-def get_existing_feedback(service_request_id):
+def get_existing_issue(service_request_id):
     try:
-        return Feedback.objects.get(service_request_id=service_request_id)
-    except Feedback.DoesNotExist:
+        return Issue.objects.get(service_request_id=service_request_id)
+    except Issue.DoesNotExist:
         return None
 
 
 @transaction.atomic
-def save_feedback(f):
-    existing_feedback = get_existing_feedback(f['service_request_id'])
+def save_issue(f):
+    existing_issue = get_existing_issue(f['service_request_id'])
 
     expected_datetime = f.get('expected_datetime', None)
     requested_datetime = f.get('requested_datetime', None)
@@ -39,7 +39,7 @@ def save_feedback(f):
         if median.total_seconds() > 0:
             expected_datetime = requested_datetime + median
 
-    updated_feedback = Feedback(
+    updated_issue = Issue(
         service_request_id=f['service_request_id'],
         status_notes=f.get('status_notes', ''),
         status=f['status'],
@@ -68,30 +68,30 @@ def save_feedback(f):
         synchronized=True
     )
 
-    if existing_feedback:
-        updated_feedback.id = existing_feedback.id
-        Task.objects.filter(feedback_id=existing_feedback.id).delete()
-        MediaURL.objects.filter(feedback_id=existing_feedback.id).delete()
+    if existing_issue:
+        updated_issue.id = existing_issue.id
+        Task.objects.filter(issue_id=existing_issue.id).delete()
+        MediaURL.objects.filter(issue_id=existing_issue.id).delete()
 
     extended_attributes = f.get('extended_attributes', None)
     if extended_attributes:
-        updated_feedback.title = extended_attributes.get('title', '')
-        updated_feedback.detailed_status = extended_attributes.get('detailed_status', '')
+        updated_issue.title = extended_attributes.get('title', '')
+        updated_issue.detailed_status = extended_attributes.get('detailed_status', '')
 
-    updated_feedback.save()
+    updated_issue.save()
 
     if extended_attributes:
         media_urls_json = extended_attributes.get('media_urls', None)
         if media_urls_json:
             for media_url_json in media_urls_json:
-                media_url = MediaURL(feedback_id=updated_feedback.id, media_url=media_url_json)
+                media_url = MediaURL(issue_id=updated_issue.id, media_url=media_url_json)
                 media_url.save()
 
         tasks_json = extended_attributes.get('tasks', None)
         if tasks_json:
             for task_json in tasks_json:
                 task = Task(
-                    feedback_id=updated_feedback.id,
+                    issue_id=updated_issue.id,
                     task_state=task_json.get('task_state', ''),
                     task_type=task_json.get('task_type', ''),
                     owner_name=task_json.get('owner_name', ''),
@@ -101,8 +101,8 @@ def save_feedback(f):
                 task.save()
 
     if settings.SEND_STATUS_UPDATE_NOTIFICATIONS \
-            and existing_feedback and feedback_status_was_changed(existing_feedback, updated_feedback):
-        send_email_notification(updated_feedback)
+            and existing_issue and issue_status_was_changed(existing_issue, updated_issue):
+        send_email_notification(updated_issue)
 
 
 def sync_open311_data(start_datetime):
@@ -125,20 +125,20 @@ def sync_open311_data(start_datetime):
             logger.exception('Invalid URL: {}'.format(open_311_url))
             return
 
-        feedback_count = len(json_data)
+        issue_count = len(json_data)
 
-        logger.info("Number of feedbacks to synchronize: {}".format(len(json_data)))
+        logger.info("Number of issues to synchronize: {}".format(len(json_data)))
 
-        if feedback_count >= settings.OPEN311_FEEDBACKS_PER_RESPONSE_LIMIT:
-            logger.info("Number of feedbacks is more than API limit! Should send additional requests.")
+        if issue_count >= settings.OPEN311_ISSUES_PER_RESPONSE_LIMIT:
+            logger.info("Number of issues is more than API limit! Should send additional requests.")
             time_interval_days /= 2
             end_datetime = start_datetime + timedelta(days=int(time_interval_days))
             continue
         else:
             time_interval_days = settings.OPEN311_RANGE_LIMIT_DAYS
 
-        for feedback_json in json_data:
-            save_feedback(feedback_json)
+        for issue_json in json_data:
+            save_issue(issue_json)
 
         start_datetime = end_datetime
         end_datetime = start_datetime + timedelta(days=settings.OPEN311_RANGE_LIMIT_DAYS)
@@ -162,8 +162,8 @@ def sync_with_id_file(path_to_ids):
                 logger.exception('Invalid URL: {}'.format(open_311_url))
                 return
 
-            for feedback_json in json_data:
-                save_feedback(feedback_json)
+            for issue_json in json_data:
+                save_issue(issue_json)
 
             time.sleep(1)
 
@@ -174,14 +174,14 @@ def sync_all_data():
 
 
 def sync_new_data():
-    start_datetime = Feedback.objects.all().aggregate(Max('updated_datetime'))['updated_datetime__max'] \
+    start_datetime = Issue.objects.all().aggregate(Max('updated_datetime'))['updated_datetime__max'] \
         .replace(tzinfo=None)
     sync_open311_data(start_datetime)
 
 
 class Command(BaseCommand):
     help = 'Read and save data from Open311 Server provided in settings.py. ' \
-           'To write feedbacks to Open311 see \'pushdata\' command.'
+           'To write issues to Open311 see \'pushdata\' command.'
 
     def add_arguments(self, parser):
         parser.add_argument('--path_to_ids', nargs='+', type=str)
@@ -192,7 +192,7 @@ class Command(BaseCommand):
             sync_with_id_file(path_to_ids[0])
             return
 
-        request_count = Feedback.objects.filter(synchronized=True).count()
+        request_count = Issue.objects.filter(synchronized=True).count()
         if request_count == 0:
             sync_all_data()
         else:

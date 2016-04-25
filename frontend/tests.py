@@ -4,7 +4,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from frontend.forms import FeedbackFormBasicInfo
+from frontend.forms import IssueFormBasicInfo
 
 
 class BasicTest(TestCase):
@@ -16,16 +16,16 @@ class BasicTest(TestCase):
         self.assertTemplateUsed(response, "mainpage.html")
         self.assertContains(response, "Testipalaute", 1, 200)
 
-        response = self.client.get(reverse("feedback_list"))
-        self.assertTemplateUsed(response, "feedback_list.html")
+        response = self.client.get(reverse("issue_list"))
+        self.assertTemplateUsed(response, "issue_list.html")
         self.assertContains(response, "Toinen", 2, 200)
 
-        response = self.client.get(reverse("feedback_details", args=[2]))
-        self.assertTemplateUsed(response, "feedback_details.html")
+        response = self.client.get(reverse("issue_details", args=[2]))
+        self.assertTemplateUsed(response, "issue_details.html")
         self.assertContains(response, "testipalaute", 2, 200)
 
-        response = self.client.get(reverse("feedback_form"))
-        self.assertTemplateUsed(response, "feedback_form/closest.html")
+        response = self.client.get(reverse("issue_form"))
+        self.assertTemplateUsed(response, "issue_form/closest.html")
         self.assertContains(response, "Sijainti", 1, 200)
 
         response = self.client.get(reverse("map"))
@@ -49,34 +49,34 @@ class BasicTest(TestCase):
         self.assertTemplateUsed(response, "about.html")
         self.assertContains(response, "Tietoja sivustosta", 1, 200)
 
-    # Test Feedback list having correct first feedback title
-    def test_feedback_list(self):
-        response = self.client.get(reverse("feedback_list"))
-        self.assertTemplateUsed(response, "feedback_list.html")
-        self.assertEqual(response.context["feedbacks"][0].title, "Testipalaute")
-        self.assertEqual(response.context["feedbacks"][1].title, "Toinen testipalaute")
-        self.assertEqual(len(response.context["feedbacks"]), 2)
+    # Test Issue list having correct first issue title
+    def test_issue_list(self):
+        response = self.client.get(reverse("issue_list"))
+        self.assertTemplateUsed(response, "issue_list.html")
+        self.assertEqual(response.context["issues"][0].title, "Testipalaute")
+        self.assertEqual(response.context["issues"][1].title, "Toinen testipalaute")
+        self.assertEqual(len(response.context["issues"]), 2)
         self.assertContains(response, "Lorem ipsum", None, 200)
         self.assertContains(response, "08.04.2016", 1)
 
-    # Test Feedback list returning empty set
-    def test_feedback_list_empty(self):
-        response = self.client.get(reverse("feedback_list"), {"service_code": "0000"})
-        self.assertTemplateUsed(response, "feedback_list.html")
+    # Test Issue list returning empty set
+    def test_issue_list_empty(self):
+        response = self.client.get(reverse("issue_list"), {"service_code": "0000"})
+        self.assertTemplateUsed(response, "issue_list.html")
         self.assertContains(response, "Ei palautteita!", 1, 200)
-        self.assertEqual(len(response.context["feedbacks"]), 0)
+        self.assertEqual(len(response.context["issues"]), 0)
 
-    # Test having valid info in FeedbackFormBasicInfo
+    # Test having valid info in IssueFormBasicInfo
     def test_basic_info_form_valid(self):
         form_data = {
             "title": "Simple title",
             "description": "Some description"
         }
 
-        form = FeedbackFormBasicInfo(form_data)
+        form = IssueFormBasicInfo(form_data)
         self.assertTrue(form.is_valid())
 
-    # Test having invalid info in FeedbackFormBasicInfo.
+    # Test having invalid info in IssueFormBasicInfo.
     # Also check that error messages match
     def test_basic_info_form_invalid(self):
         form_data = {
@@ -84,7 +84,7 @@ class BasicTest(TestCase):
             "description": ""
         }
 
-        form = FeedbackFormBasicInfo(form_data)
+        form = IssueFormBasicInfo(form_data)
         self.assertEqual(form.errors, {
             "title": ["This field is required."],
             "description": ["This field is required."]
@@ -104,17 +104,17 @@ class BasicTest(TestCase):
         self.assertEqual(j["status"], "success")
         self.assertEqual(len(j["filename"]), 36)
 
-    # Testing feedback voting using invalid ID
-    def test_vote_feedback_invalid(self):
-        response = self.client.post(reverse("vote_feedback"), {"id": "-1"})
+    # Testing issue voting using invalid ID
+    def test_vote_issue_invalid(self):
+        response = self.client.post(reverse("vote_issue"), {"id": "-1"})
 
         self.assertJSONEqual(str(response.content, encoding='utf8'),
                              {"status": "error",
                               "message": "Ääntä ei voitu tallentaa. Palautetta ei löydetty!"})
 
-    # Testing feedback voting using valid ID
-    def test_vote_feedback_valid(self):
-        response = self.client.post(reverse("vote_feedback"), {"id": "1"})
+    # Testing issue voting using valid ID
+    def test_vote_issue_valid(self):
+        response = self.client.post(reverse("vote_issue"), {"id": "1"})
 
         self.assertJSONEqual(str(response.content, encoding='utf8'),
                              {"status": "success",

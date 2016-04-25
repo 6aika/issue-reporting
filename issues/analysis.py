@@ -2,33 +2,33 @@ import datetime
 
 from django.db.models import ExpressionWrapper, F, fields
 
-from issues.models import Feedback
-from issues.services import get_feedbacks
+from issues.models import Issue
+from issues.services import get_issues
 
 
 def calc_fixing_time(service_code):
     return timedelta_milliseconds(get_median_duration(get_closed_by_service_code(service_code)))
 
 
-# Return total number of feedbacks with either "open" or "closed" status-
+# Return total number of issues with either "open" or "closed" status-
 def get_total_by_service(service_code):
-    return Feedback.objects.filter(service_code=service_code, status__in=["open", "closed"]).count()
+    return Issue.objects.filter(service_code=service_code, status__in=["open", "closed"]).count()
 
 
-# return total number of feedbacks with "closed" status
+# return total number of issues with "closed" status
 def get_closed_by_service(service_code):
-    return Feedback.objects.filter(service_code=service_code, status="closed").count()
+    return Issue.objects.filter(service_code=service_code, status="closed").count()
 
 
 def get_open_by_service(service_code):
-    return Feedback.objects.filter(service_code=service_code, status="open").count()
+    return Issue.objects.filter(service_code=service_code, status="open").count()
 
 
 def get_closed_by_service_code(service_code):
-    return get_feedbacks(service_codes=service_code, statuses="closed")
+    return get_issues(service_codes=service_code, statuses="closed")
 
 
-# Returns average duration of closed feedbacks (updated_datetime - requested_datetime)
+# Returns average duration of closed issues (updated_datetime - requested_datetime)
 # from given category. Returns a tuple (days, hours)
 def get_avg_duration(query_set):
     duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
@@ -38,7 +38,7 @@ def get_avg_duration(query_set):
     return sum(duration_list, datetime.timedelta(0)) / len(duration_list)
 
 
-# Returns median duration of closed feedbacks (updated_datetime - requested_datetime)
+# Returns median duration of closed issues (updated_datetime - requested_datetime)
 # from given category. Returns a tuple (days, hours)
 def get_median_duration(query_set):
     duration = ExpressionWrapper(F('updated_datetime') - F('requested_datetime'), output_field=fields.DurationField())
@@ -54,22 +54,22 @@ def timedelta_milliseconds(td):
 
 
 def get_total_by_agency(agency_responsible):
-    return Feedback.objects.filter(agency_responsible=agency_responsible, status__in=["open", "closed"]).count()
+    return Issue.objects.filter(agency_responsible=agency_responsible, status__in=["open", "closed"]).count()
 
 
-# return total number of feedbacks with "closed" status
+# return total number of issues with "closed" status
 def get_closed_by_agency(agency_responsible):
-    return Feedback.objects.filter(agency_responsible=agency_responsible, status="closed").count()
+    return Issue.objects.filter(agency_responsible=agency_responsible, status="closed").count()
 
 
 def get_open_by_agency(agency_responsible):
-    return Feedback.objects.filter(agency_responsible=agency_responsible, status="open").count()
+    return Issue.objects.filter(agency_responsible=agency_responsible, status="open").count()
 
 
 def get_closed_by_agency_responsible(agency_responsible):
-    return Feedback.objects.filter(agency_responsible=agency_responsible, status="closed")
+    return Issue.objects.filter(agency_responsible=agency_responsible, status="closed")
 
 
 # return total number of different emails
 def get_emails():
-    return Feedback.objects.values('email').distinct().exclude(email=None).count()
+    return Issue.objects.values('email').distinct().exclude(email=None).count()

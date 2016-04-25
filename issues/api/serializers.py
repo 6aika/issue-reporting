@@ -5,7 +5,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import serializers
 
 from issues.analysis import calc_fixing_time
-from issues.models import Feedback, Service, Task
+from issues.models import Issue, Service, Task
 
 
 class ServiceSerializer(serializers.ModelSerializer):
@@ -22,7 +22,7 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = ['task_state', 'task_type', 'owner_name', 'task_modified', 'task_created']
 
 
-class FeedbackSerializer(serializers.ModelSerializer):
+class IssueSerializer(serializers.ModelSerializer):
     distance = serializers.SerializerMethodField()
     extended_attributes = serializers.SerializerMethodField()
     media_urls = serializers.SlugRelatedField(
@@ -33,7 +33,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
     tasks = TaskSerializer(many=True)
 
     class Meta:
-        model = Feedback
+        model = Issue
 
     def get_distance(self, obj):
         if hasattr(obj, 'distance'):
@@ -103,7 +103,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
         return representation
 
 
-class FeedbackDetailSerializer(serializers.ModelSerializer):
+class IssueDetailSerializer(serializers.ModelSerializer):
     api_key = serializers.CharField(required=True)
     service_code = serializers.IntegerField(required=True)
     description = serializers.CharField(required=True, min_length=10, max_length=5000)
@@ -143,14 +143,14 @@ class FeedbackDetailSerializer(serializers.ModelSerializer):
             validated_data['expected_datetime'] = datetime.now() + waiting_time
 
         if settings.SYNCHRONIZE_WITH_OPEN_311 is False:
-            validated_data['service_request_id'] = Feedback.generate_service_request_id()
+            validated_data['service_request_id'] = Issue.generate_service_request_id()
             validated_data['status'] = 'moderation'
 
         validated_data.pop('lat', None)
         validated_data.pop('long', None)
-        feedback = Feedback.objects.create(**validated_data)
-        feedback = Feedback.objects.get(pk=feedback.pk)
-        return feedback
+        issue = Issue.objects.create(**validated_data)
+        issue = Issue.objects.get(pk=issue.pk)
+        return issue
 
     class Meta:
-        model = Feedback
+        model = Issue

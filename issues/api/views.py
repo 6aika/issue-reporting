@@ -8,10 +8,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from issues import analysis
-from issues.models import Feedback, MediaFile, Service
-from issues.services import attach_files_to_feedback, get_feedbacks, save_file_to_db
+from issues.models import Issue, MediaFile, Service
+from issues.services import attach_files_to_issue, get_issues, save_file_to_db
 
-from .serializers import FeedbackDetailSerializer, FeedbackSerializer, ServiceSerializer
+from .serializers import IssueDetailSerializer, IssueSerializer, ServiceSerializer
 
 
 class RequestBaseAPIView(APIView):
@@ -19,7 +19,7 @@ class RequestBaseAPIView(APIView):
     root_tag_name = 'requests'
 
 
-class FeedbackList(RequestBaseAPIView):
+class IssueList(RequestBaseAPIView):
 
     def get(self, request, format=None):
         service_object_id = request.query_params.get('service_object_id', None)
@@ -29,7 +29,7 @@ class FeedbackList(RequestBaseAPIView):
             raise ValidationError(
                 "If service_object_id is included in the request, then service_object_type must be included.")
 
-        queryset = get_feedbacks(
+        queryset = get_issues(
             service_request_ids=request.query_params.get('service_request_id', None),
             service_codes=request.query_params.get('service_code', None),
             start_date=request.query_params.get('start_date', None),
@@ -48,36 +48,36 @@ class FeedbackList(RequestBaseAPIView):
             use_limit=True
         )
 
-        serializer = FeedbackSerializer(queryset, many=True,
+        serializer = IssueSerializer(queryset, many=True,
                                         context={'extensions': request.query_params.get('extensions', 'false')})
         return Response(serializer.data)
 
     def post(self, request, format=None):
         # TODO: (for future releases) add API key rules
-        serializer = FeedbackDetailSerializer(data=request.data)
+        serializer = IssueDetailSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            new_feedback = serializer.save()
+            new_issue = serializer.save()
 
-            # save files in the same manner as it's done in feedback form
+            # save files in the same manner as it's done in issue form
             if request.FILES:
                 for filename, file in request.FILES.items():
-                    save_file_to_db(file, new_feedback.service_request_id)
-                files = MediaFile.objects.filter(form_id=new_feedback.service_request_id)
+                    save_file_to_db(file, new_issue.service_request_id)
+                files = MediaFile.objects.filter(form_id=new_issue.service_request_id)
                 if files:
-                    attach_files_to_feedback(request, new_feedback, files)
+                    attach_files_to_issue(request, new_issue, files)
 
             response_data = {
-                'service_request_id': new_feedback.service_request_id,
+                'service_request_id': new_issue.service_request_id,
                 'service_notice': ''
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FeedbackDetail(RequestBaseAPIView):
+class IssueDetail(RequestBaseAPIView):
 
     def get(self, request, service_request_id, format=None):
-        queryset = get_feedbacks(
+        queryset = get_issues(
             service_request_ids=service_request_id,
             service_codes=request.query_params.get('service_code', None),
             start_date=request.query_params.get('start_date', None),
@@ -92,7 +92,7 @@ class FeedbackDetail(RequestBaseAPIView):
             order_by=request.query_params.get('order_by', None)
         )
 
-        serializer = FeedbackSerializer(queryset, many=True,
+        serializer = IssueSerializer(queryset, many=True,
                                         context={'extensions': request.query_params.get('extensions', 'false')})
         return Response(serializer.data)
 
@@ -164,9 +164,9 @@ def get_agency_item_statistics(agency_responsible):
 
 
 def get_agency_statistics(request, agency):
-    feedbacks_with_agency = Feedback.objects.filter(agency_responsible__iexact=agency).count()
+    issues_with_agency = Issue.objects.filter(agency_responsible__iexact=agency).count()
 
-    if feedbacks_with_agency == 0:
+    if issues_with_agency == 0:
         return JsonResponse({'status': 'error', 'message': 'unknown agency name'},
                             status=status.HTTP_404_NOT_FOUND)
 
@@ -176,7 +176,7 @@ def get_agency_statistics(request, agency):
 
 def get_agencies_statistics(request):
     agency_statistics = []
-    agencies = Feedback.objects.all().distinct("agency_responsible")
+    agencies = Issue.objects.all().distinct("agency_responsible")
     for agency in agencies:
         item = get_agency_item_statistics(agency.agency_responsible)
         agency_statistics.append(item)
@@ -188,6 +188,6 @@ def get_agencies_statistics(request):
 
 
 def get_agency_responsible_list(request):
-    feedbacks = Feedback.objects.all().distinct("agency_responsible").order_by('agency_responsible')
-    agencies = [f.agency_responsible for f in feedbacks]
+    issues = Issue.objects.all().distinct("agency_responsible").order_by('agency_responsible')
+    agencies = [f.agency_responsible for f in issues]
     return JsonResponse(agencies, safe=False)

@@ -4,7 +4,7 @@ from django.contrib.gis.db import models
 from django.utils import timezone
 
 
-class Feedback(models.Model):
+class Issue(models.Model):
     service_request_id = models.CharField(max_length=254, db_index=True, null=True)
     status_notes = models.TextField(null=True)
     status = models.TextField(null=True)
@@ -33,7 +33,7 @@ class Feedback(models.Model):
 
     location = models.PointField(srid=4326, null=True)
 
-    # Keeps track of votes users have given to the feedback
+    # Keeps track of votes users have given to the issue
     vote_counter = models.IntegerField(default=0)
 
     # synchronized with external Open311 service
@@ -53,12 +53,12 @@ class Feedback(models.Model):
 
 
 class MediaURL(models.Model):
-    feedback = models.ForeignKey('Feedback', on_delete=models.CASCADE, related_name='media_urls', null=True)
+    issue = models.ForeignKey('Issue', on_delete=models.CASCADE, related_name='media_urls', null=True)
     media_url = models.TextField(null=True)
 
 
 class Task(models.Model):
-    feedback = models.ForeignKey('Feedback', on_delete=models.CASCADE, related_name='tasks', null=True)
+    issue = models.ForeignKey('Issue', on_delete=models.CASCADE, related_name='tasks', null=True)
     task_state = models.TextField(null=True)
     task_type = models.TextField(null=True)
     owner_name = models.TextField(null=True)
@@ -79,10 +79,10 @@ class Service(models.Model):
 # Uploaded temporary media files binded to form instance
 # Delete MediaFile objects+files when they are old
 # Delete MediaFile objects and leave files when files
-# are binded to Feedback
+# are binded to Issue
 # Default directory is MEDIA_ROOT
 class MediaFile(models.Model):
-    feedback = models.ForeignKey('Feedback', on_delete=models.CASCADE, related_name="media_files", null=True)
+    issue = models.ForeignKey('Issue', on_delete=models.CASCADE, related_name="media_files", null=True)
     file = models.FileField()
     original_filename = models.CharField(max_length=255, blank=True)
     form_id = models.CharField(max_length=50)

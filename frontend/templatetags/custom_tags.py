@@ -71,29 +71,29 @@ def get_service_name(service_code):
     return service.service_name
 
 
-# Check if the feedback really is open or not. Return true if:
+# Check if the issue really is open or not. Return true if:
 # 	- status == open/moderation
 #	- detailed_status contains specified substrings
 # If ALLOW_HELSINKI_SPECIFIC_FEATURES == False just return basic status
 @register.filter
-def is_open(feedback):
+def is_open(issue):
     if settings.ALLOW_HELSINKI_SPECIFIC_FEATURES:
         open_strings = ["PUBLIC_WORKS_NEW", "PUBLIC_WORKS_COMPLETED_SCHEDULED_LATER"]
-        if feedback.status in ["open", "moderation"]:
+        if issue.status in ["open", "moderation"]:
             return True
         else:
             for string in open_strings:
-                if string in feedback.detailed_status:
+                if string in issue.detailed_status:
                     return True
             return False
     else:
-        return (feedback.status in ["open", "moderation"])
+        return (issue.status in ["open", "moderation"])
 
 
-# Returns the real status string of the feedback
+# Returns the real status string of the issue
 @register.filter
-def real_status(feedback):
-    if is_open(feedback):
+def real_status(issue):
+    if is_open(issue):
         return "Avoin"
     else:
         return "Suljettu"
@@ -101,14 +101,14 @@ def real_status(feedback):
 
 # If the expected_datetime is empty, return median estimation
 @register.filter
-def get_expected_datetime(feedback):
-    if feedback.expected_datetime:
-        return feedback.expected_datetime
+def get_expected_datetime(issue):
+    if issue.expected_datetime:
+        return issue.expected_datetime
     else:
-        time = calc_fixing_time(feedback.service_code)
+        time = calc_fixing_time(issue.service_code)
         if time > 0:
             median = timedelta(milliseconds=time)
-            return (feedback.requested_datetime + median)
+            return (issue.requested_datetime + median)
         else:
             return "Ei tiedossa"
 
@@ -121,9 +121,9 @@ def navbar_link_class(request, urls):
     return ""
 
 
-# Checks if the user has already voted this feedback and returns a proper class. Uses session data.
+# Checks if the user has already voted this issue and returns a proper class. Uses session data.
 @register.simple_tag
-def feedback_vote_icon_status(request, item):
+def issue_vote_icon_status(request, item):
     if "vote_id_list" in request.session:
         if str(item.id) in request.session["vote_id_list"]:
             return "icon_disabled"

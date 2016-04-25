@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from issues.analysis import calc_fixing_time
-from issues.tests.db_utils import clear_db, insert_feedbacks_for_estimation
+from issues.tests.db_utils import clear_db, insert_issues_for_estimation
 
 
 class EstimationTimeTestCase(TestCase):
@@ -9,7 +9,7 @@ class EstimationTimeTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         clear_db()
-        insert_feedbacks_for_estimation()
+        insert_issues_for_estimation()
 
     @classmethod
     def tearDownClass(cls):
