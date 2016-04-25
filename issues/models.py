@@ -6,30 +6,30 @@ from django.utils import timezone
 
 class Issue(models.Model):
     service_request_id = models.CharField(max_length=254, db_index=True, null=True)
-    status_notes = models.TextField(null=True)
-    status = models.TextField(null=True)
+    status_notes = models.TextField(blank=True, default="")
+    status = models.TextField(blank=True, default="")
     service_code = models.CharField(null=True, max_length=120)
-    service_name = models.TextField(null=True)
-    description = models.TextField(null=True)
-    agency_responsible = models.TextField(null=True)
-    service_notice = models.TextField(null=True)
+    service_name = models.TextField(blank=True, default="")
+    description = models.TextField(blank=True, default="")
+    agency_responsible = models.TextField(blank=True, default="")
+    service_notice = models.TextField(blank=True, default="")
     requested_datetime = models.DateTimeField(null=True, default=timezone.now)
     updated_datetime = models.DateTimeField(null=True)
     expected_datetime = models.DateTimeField(null=True)
-    address_string = models.TextField(null=True)
-    media_url = models.TextField(null=True)
+    address_string = models.TextField(blank=True, default="")
+    media_url = models.TextField(blank=True, default="")
 
-    api_key = models.TextField(null=True)
-    email = models.TextField(null=True)
-    first_name = models.TextField(null=True)
-    last_name = models.TextField(null=True)
-    phone = models.TextField(null=True)
+    api_key = models.TextField(blank=True, default="")
+    email = models.TextField(blank=True, default="")
+    first_name = models.TextField(blank=True, default="")
+    last_name = models.TextField(blank=True, default="")
+    phone = models.TextField(blank=True, default="")
 
     # extended attributes
-    service_object_id = models.TextField(null=True)
-    title = models.TextField(null=True)
-    service_object_type = models.TextField(null=True)
-    detailed_status = models.TextField(null=True)
+    service_object_id = models.TextField(blank=True, default="")
+    title = models.TextField(blank=True, default="")
+    service_object_type = models.TextField(blank=True, default="")
+    detailed_status = models.TextField(blank=True, default="")
 
     location = models.PointField(srid=4326, null=True)
 
@@ -54,14 +54,14 @@ class Issue(models.Model):
 
 class MediaURL(models.Model):
     issue = models.ForeignKey('Issue', on_delete=models.CASCADE, related_name='media_urls', null=True)
-    media_url = models.TextField(null=True)
+    media_url = models.TextField(blank=True, default="")
 
 
 class Task(models.Model):
     issue = models.ForeignKey('Issue', on_delete=models.CASCADE, related_name='tasks', null=True)
-    task_state = models.TextField(null=True)
-    task_type = models.TextField(null=True)
-    owner_name = models.TextField(null=True)
+    task_state = models.TextField(blank=True, default="")
+    task_type = models.TextField(blank=True, default="")
+    owner_name = models.TextField(blank=True, default="")
     task_modified = models.DateTimeField(null=True)
     task_created = models.DateTimeField(null=True)
 
