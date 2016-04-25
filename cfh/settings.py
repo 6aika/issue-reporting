@@ -18,7 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'formtools',
     'rest_framework',
-    'api',
+    'issues',
     'frontend',
 ]
 
@@ -61,9 +61,9 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-        'api.renderers.SmartXMLRenderer',
+        'issues.api.renderers.SmartXMLRenderer',
     ),
-    'EXCEPTION_HANDLER': 'api.api_utils.api_exception_handler'
+    'EXCEPTION_HANDLER': 'issues.api.utils.api_exception_handler'
 }
 
 WSGI_APPLICATION = 'cfh.wsgi.application'
@@ -120,7 +120,7 @@ DATE_FORMAT = "j.n.Y"
 ALLOW_HELSINKI_SPECIFIC_FEATURES = True
 
 # limit amount of feedback list items if date filters are not provided
-FEEDBACK_LIST_LIMIT = 200
+ISSUE_LIST_LIMIT = 200
 
 # OPEN311 synchronization options
 OPEN311_URL = "https://asiointi.hel.fi/palautews/rest/v1"
@@ -144,14 +144,14 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
 FEEDBACK_DETAILS_URL = os.environ.get('FEEDBACK_DETAILS_URL', 'http://localhost:8000/feedbacks/{}')
 
-EMAIL_SUBJECT = 'City Feedback Hub - Request Status Update'
+EMAIL_SUBJECT = 'City Issue Hub - Request Status Update'
 EMAIL_TEXT = '''Hei! <br><br>
-Helsingin kaupungin City Feedback Hub - palautejärjestelmään antamasi palautteen tila on muuttunut. Voit nähdä palautteen ja tarkastella muutoksia klikkaamalla alla olevaa linkkiä.
+Helsingin kaupungin City Issue Hub - palautejärjestelmään antamasi palautteen tila on muuttunut. Voit nähdä palautteen ja tarkastella muutoksia klikkaamalla alla olevaa linkkiä.
 <br><br>
 {{ feedback URL }}
 <br><br>
 Ystävällisin terveisin,
-City Feedback Hub
+City Issue Hub
 <br><br>
 Huom! Älä vastaa tähän viestiin, sillä vastausviestejä ei käsitellä.'''
 
@@ -197,7 +197,7 @@ LOGGING = {
             'propagate': True,
             'level': 'WARN',
         },
-        'api': {
+        'issues': {
             'handlers': log_handlers.keys(),
             'level': 'DEBUG',
         },

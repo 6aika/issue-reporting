@@ -1,3 +1,4 @@
+import datetime
 import operator
 import os
 import uuid
@@ -9,37 +10,37 @@ from django.http.response import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from formtools.wizard.views import SessionWizardView
 
-from api import analysis
-from api.geocoding.geocoding import reverse_geocode
-from api.models import MediaFile, Service
-from api.services import attach_files_to_feedback, get_feedbacks, get_feedbacks_count, save_file_to_db
-from frontend.forms import FeedbackFormBasicInfo, FeedbackFormCategory, FeedbackFormClosest, FeedbackFormContact
+from frontend.forms import IssueFormBasicInfo, IssueFormCategory, IssueFormClosest, IssueFormContact
+from issues import analysis
+from issues.geocoding import reverse_geocode
+from issues.models import Issue, MediaFile, Service
+from issues.services import attach_files_to_issue, get_issues, get_issues_count, save_file_to_db
 
-FORMS = [("closest", FeedbackFormClosest), ("category", FeedbackFormCategory), ("basic_info", FeedbackFormBasicInfo),
-         ("contact", FeedbackFormContact)]
-TEMPLATES = {"closest": "feedback_form/closest.html", "category": "feedback_form/category.html",
-             "basic_info": "feedback_form/basic_info.html", "contact": "feedback_form/contact.html"}
+FORMS = [("closest", IssueFormClosest), ("category", IssueFormCategory), ("basic_info", IssueFormBasicInfo),
+         ("contact", IssueFormContact)]
+TEMPLATES = {"closest": "issue_form/closest.html", "category": "issue_form/category.html",
+             "basic_info": "issue_form/basic_info.html", "contact": "issue_form/contact.html"}
 
 
 def mainpage(request):
     context = {}
-    closed_feedbacks = Feedback.objects.filter(status="closed")
-    fixed_feedbacks = Feedback.objects.filter(status="closed").order_by('-requested_datetime')[:4]
-    fixed_feedbacks_count = closed_feedbacks.count()
-    recent_feedbacks = Feedback.objects.filter(status="open").order_by('-requested_datetime')[:4]
-    feedbacks_count = get_feedbacks_count()
-    waiting_time = get_median_duration(closed_feedbacks)
-    emails = get_emails()
+    closed_issues = Issue.objects.filter(status="closed")
+    fixed_issues = Issue.objects.filter(status="closed").order_by('-requested_datetime')[:4]
+    fixed_issues_count = closed_issues.count()
+    recent_issues = Issue.objects.filter(status="open").order_by('-requested_datetime')[:4]
+    issues_count = get_issues_count()
+    waiting_time = analysis.get_median_duration(closed_issues)
+    emails = analysis.get_emails()
     context["emails"] = emails
     context["waiting_time"] = waiting_time
-    context["feedbacks_count"] = feedbacks_count
-    context["fixed_feedbacks"] = fixed_feedbacks
-    context["fixed_feedbacks_count"] = fixed_feedbacks_count
-    context["recent_feedbacks"] = recent_feedbacks
+    context["issues_count"] = issues_count
+    context["fixed_issues"] = fixed_issues
+    context["fixed_issues_count"] = fixed_issues_count
+    context["recent_issues"] = recent_issues
     return render(request, "mainpage.html", context)
 
 
-def feedback_list(request):
+def issue_list(request):
     queries_without_page = request.GET.copy()
     if 'page' in queries_without_page:
         del queries_without_page['page']
@@ -70,43 +71,43 @@ def feedback_list(request):
         'agency_responsible': request.GET.get('agency_responsible')
     }
 
-    feedbacks = get_feedbacks(**filter_params)
+    issues = get_issues(**filter_params)
 
     page = request.GET.get("page")
 
     context = {
-        'feedbacks': paginate_query_set(feedbacks, 20, page),
+        'issues': paginate_query_set(issues, 20, page),
         'services': Service.objects.all(),
         'queries': queries_without_page
     }
 
-    return render(request, "feedback_list.html", context)
+    return render(request, "issue_list.html", context)
 
 
-def feedback_details(request, feedback_id):
+def issue_details(request, issue_id):
     try:
-        feedback = Feedback.objects.get(pk=feedback_id)
-    except Feedback.DoesNotExist:
-        return render(request, "simple_message.html", {"title": "No such feedback!"})
-    context = {'feedback': feedback, 'tasks': feedback.tasks.all(), 'media_urls': feedback.media_urls.all()}
+        issue = Issue.objects.get(pk=issue_id)
+    except Issue.DoesNotExist:
+        return render(request, "simple_message.html", {"title": "No such issue!"})
+    context = {'issue': issue, 'tasks': issue.tasks.all(), 'media_urls': issue.media_urls.all()}
 
-    return render(request, 'feedback_details.html', context)
+    return render(request, 'issue_details.html', context)
 
 
-def vote_feedback(request):
-    """Process vote requests. Increases vote count of a feedback if the session data
-    does not contain the id for that feedback. Ie. let the user vote only once.
+def vote_issue(request):
+    """Process vote requests. Increases vote count of a issue if the session data
+    does not contain the id for that issue. Ie. let the user vote only once.
     """
     if request.method == "POST":
         try:
             id = request.POST["id"]
             if id:
-                feedback = Feedback.objects.get(pk=id)
+                issue = Issue.objects.get(pk=id)
             else:
                 return JsonResponse({"status": "error", "message": "Ääntä ei voitu tallentaa. Palautetta ei löydetty!"})
         except KeyError:
             return JsonResponse({"status": "error", "message": "Ääntä ei voitu tallentaa. Väärä parametri!"})
-        except Feedback.DoesNotExist:
+        except Issue.DoesNotExist:
             return JsonResponse({"status": "error", "message": "Ääntä ei voitu tallentaa. Palautetta ei löydetty!"})
         else:
             if "vote_id_list" in request.session:
@@ -114,14 +115,14 @@ def vote_feedback(request):
                     return JsonResponse({"status": "error", "message": "Voit äänestää palautetta vain kerran!"})
             else:
                 request.session["vote_id_list"] = []
-            feedback.vote_counter += 1
-            feedback.save()
+            issue.vote_counter += 1
+            issue.save()
             list = request.session["vote_id_list"]
             list.append(id)
             request.session["vote_id_list"] = list
             return JsonResponse({"status": "success", "message": "Kiitos, äänesi on rekisteröity!"})
     else:
-        return redirect("feedback_list")
+        return redirect("issue_list")
 
 
 # Helper function. Paginates given queryset. Used for game list views.
@@ -137,10 +138,10 @@ def paginate_query_set(query_set, items_per_page, page):
 
 
 def map(request):
-    feedbacks = Feedback.objects.all().distinct("agency_responsible").order_by('agency_responsible')
-    agencies = [f.agency_responsible for f in feedbacks]
+    issues = Issue.objects.all().distinct("agency_responsible").order_by('agency_responsible')
+    agencies = [f.agency_responsible for f in issues]
     context = {
-        'feedbacks': Feedback.objects.all(),
+        'issues': Issue.objects.all(),
         'services': Service.objects.all(),
         'agencies': agencies,
     }
@@ -150,16 +151,16 @@ def map(request):
 # different departments
 def department(request):
     data = []
-    agencies = Feedback.objects.filter(status__in=["open", "closed"]).distinct("agency_responsible")
+    agencies = Issue.objects.filter(status__in=["open", "closed"]).distinct("agency_responsible")
     for agency in agencies:
         item = {}
         agency_responsible = agency.agency_responsible
         item["agency_responsible"] = agency_responsible
-        item["total"] = get_total_by_agency(agency_responsible)
-        item["closed"] = get_closed_by_agency(agency_responsible)
-        item["open"] = get_open_by_agency(agency_responsible)
-        item["avg"] = get_avg_duration(get_closed_by_agency_responsible(agency_responsible))
-        item["median"] = get_median_duration(get_closed_by_agency_responsible(agency_responsible))
+        item["total"] = analysis.get_total_by_agency(agency_responsible)
+        item["closed"] = analysis.get_closed_by_agency(agency_responsible)
+        item["open"] = analysis.get_open_by_agency(agency_responsible)
+        item["avg"] = analysis.get_avg_duration(analysis.get_closed_by_agency_responsible(agency_responsible))
+        item["median"] = analysis.get_median_duration(analysis.get_closed_by_agency_responsible(agency_responsible))
         data.append(item)
 
     # Sort the rows by "total" column
@@ -175,11 +176,11 @@ def statistics(request):
         service_code = service.service_code
         item["service_code"] = service_code
         item["service_name"] = service.service_name
-        item["total"] = get_total_by_service(service_code)
-        item["closed"] = get_closed_by_service(service_code)
-        item["open"] = get_open_by_service(service_code)
-        item["avg"] = get_avg_duration(get_closed_by_service_code(service_code))
-        item["median"] = get_median_duration(get_closed_by_service_code(service_code))
+        item["total"] = analysis.get_total_by_service(service_code)
+        item["closed"] = analysis.get_closed_by_service(service_code)
+        item["open"] = analysis.get_open_by_service(service_code)
+        item["avg"] = analysis.get_avg_duration(analysis.get_closed_by_service_code(service_code))
+        item["median"] = analysis.get_median_duration(analysis.get_closed_by_service_code(service_code))
         data.append(item)
 
     # Sort the rows by "total" column
@@ -191,7 +192,7 @@ def charts(request):
     return render(request, "charts.html")
 
 
-class FeedbackWizard(SessionWizardView):
+class IssueWizard(SessionWizardView):
     # Set the default category
     initial_dict = {"category": {"service_code": "180"}}
 
@@ -201,7 +202,7 @@ class FeedbackWizard(SessionWizardView):
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)
         if self.steps.current == 'closest':
-            closest = get_feedbacks(
+            closest = get_issues(
                 statuses='Open',
                 lat=60.17067,
                 lon=24.94152,
@@ -262,25 +263,25 @@ class FeedbackWizard(SessionWizardView):
 
         form_id = form_dict["closest"].cleaned_data["form_id"]
 
-        new_feedback = Feedback(**data)
+        new_issue = Issue(**data)
 
-        fixing_time = calc_fixing_time(data["service_code"])
+        fixing_time = analysis.calc_fixing_time(data["service_code"])
         waiting_time = timedelta(milliseconds=fixing_time)
         if waiting_time.total_seconds() >= 0:
-            new_feedback.expected_datetime = new_feedback.requested_datetime + waiting_time
+            new_issue.expected_datetime = new_issue.requested_datetime + waiting_time
 
-        new_feedback.save()
+        new_issue.save()
 
-        # Attach media urls to the feedback
+        # Attach media urls to the issue
         files = MediaFile.objects.filter(form_id=form_id)
         if files:
-            attach_files_to_feedback(self.request, new_feedback, files)
+            attach_files_to_issue(self.request, new_issue, files)
 
-        return render(self.request, 'feedback_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
+        return render(self.request, 'issue_form/done.html', {'form_data': [form.cleaned_data for form in form_list],
                                                                 'waiting_time': waiting_time})
 
 
-# This view handles media uploads from user during submitting a new feedback
+# This view handles media uploads from user during submitting a new issue
 # It receives files with a form_id, saves the file and saves the info to DB so
 # the files can be processed when the form wizard is actually complete in done()
 def media_upload(request):

@@ -12,7 +12,7 @@
     <script type="text/javascript" src="{% static 'utils/proj4leaflet.js' %}"></script>
     <!-- Register to FB and add FB app_id value for proper usage!! -->
     <meta property="og:type" content="og:article"/>
-    <meta property="og:site_name" content="City Feedback Hub"/>
+    <meta property="og:site_name" content="City Issue Hub"/>
     <meta property="og:url" content="http://feedback.hel.ninja{% url 'feedback_details' feedback.id %}"/>
     <meta property="og:title" content="{{ feedback.title }}"/>
     <meta property="og:image" content="{{ feedback.media_url }}"/>
@@ -72,7 +72,7 @@
                     <div>
                         <img id="feedback_image" class="img-thumbnail img-responsive center-cropped-details-page"
                              src="{% include 'feedback_image_url.html' with service_code=feedback.service_code media_url=feedback.media_url %}"
-                             alt="Feedback image"/>
+                             alt="Issue image"/>
                     </div>
                     <div id="map" class="map-feedback-details"></div>
                 </div>
