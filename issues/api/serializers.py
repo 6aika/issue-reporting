@@ -93,7 +93,7 @@ class IssueSerializer(serializers.ModelSerializer):
         }
 
         extensions = self.context.get('extensions')
-        if extensions and extensions[0].upper() == 'T':
+        if extensions:
             ext_attribute = self.fields['extended_attributes']
             ext_attribute_value = ext_attribute.to_representation(
                 ext_attribute.get_attribute(instance)
