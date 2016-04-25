@@ -18,7 +18,7 @@ class Issue(models.Model):
     updated_datetime = models.DateTimeField(null=True)
     expected_datetime = models.DateTimeField(null=True)
     address_string = models.TextField(blank=True, default="")
-    media_url = models.TextField(blank=True, default="")
+    media_url = models.URLField(blank=True, default="")
 
     api_key = models.TextField(blank=True, default="")
     email = models.TextField(blank=True, default="")
@@ -69,7 +69,7 @@ class Issue(models.Model):
 
 class MediaURL(models.Model):
     issue = models.ForeignKey('Issue', on_delete=models.CASCADE, related_name='media_urls', null=True)
-    media_url = models.TextField(blank=True, default="")
+    media_url = models.URLField()
 
 
 class Task(models.Model):
@@ -88,7 +88,7 @@ class Service(models.Model):
     metadata = models.BooleanField(default=False)
     type = models.TextField(max_length=140, default="other")
     keywords = models.TextField(blank=True, default="")
-    group = models.CharField(max_length=140, blank=True, default="")
+    group = models.CharField(max_length=140, blank=True, default="")  # The choices are "realtime", "batch" and "blackbox" according to the GeoReport spec
 
 
 # Uploaded temporary media files binded to form instance
