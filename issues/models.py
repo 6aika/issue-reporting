@@ -24,7 +24,6 @@ class Issue(models.Model):
     address_string = models.TextField(blank=True, default="")
     media_url = models.URLField(blank=True, default="")
 
-    api_key = models.TextField(blank=True, default="")
     email = models.TextField(blank=True, default="")
     first_name = models.TextField(blank=True, default="")
     last_name = models.TextField(blank=True, default="")

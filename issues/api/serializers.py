@@ -104,7 +104,6 @@ class IssueSerializer(serializers.ModelSerializer):
 
 
 class IssueDetailSerializer(serializers.ModelSerializer):
-    api_key = serializers.CharField(required=True)
     service_code = serializers.IntegerField(required=True)
     description = serializers.CharField(required=True, min_length=10, max_length=5000)
     title = serializers.CharField(required=False)
