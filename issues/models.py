@@ -1,12 +1,16 @@
-import uuid
+import string
 
 from django.contrib.gis.db import models
 from django.utils import timezone
+from django.utils.crypto import get_random_string
+
+
+ID_KEYSPACE = string.ascii_lowercase + string.digits
 
 
 class Issue(models.Model):
     service = models.ForeignKey("issues.Service")
-    service_request_id = models.CharField(max_length=254, db_index=True, null=True)
+    service_request_id = models.CharField(max_length=64, unique=True)
     status_notes = models.TextField(blank=True, default="")
     status = models.TextField(blank=True, default="")
     service_code = models.CharField(null=True, max_length=120)
@@ -48,13 +52,20 @@ class Issue(models.Model):
     def lat(self):
         return self.location[1]
 
-    @staticmethod
-    def generate_service_request_id():
-        return str(uuid.uuid4())
-
     def save(self, **kwargs):
+        if not self.service_request_id:
+            self.service_request_id = self._generate_service_request_id()
         self._cache_service_data()
         super(Issue, self).save(**kwargs)
+
+    def _generate_service_request_id(self):
+        for length in range(8, 65, 4):
+            for attempt in range(10):
+                id = get_random_string(length, allowed_chars=ID_KEYSPACE)
+                if not Issue.objects.filter(service_request_id=id).exists():
+                    # There's a minuscule chance of a race condition here, but the worst case
+                    # is that the transaction fails and the client needs to try again.
+                    return id
 
     def _cache_service_data(self):
         if not self.service_id:

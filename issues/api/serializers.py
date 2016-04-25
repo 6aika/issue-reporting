@@ -132,9 +132,12 @@ class IssueDetailSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        location = GEOSGeometry(
-            'SRID=4326;POINT(' + str(validated_data.get('long', 0)) + ' ' + str(validated_data.get('lat', 0)) + ')')
-        validated_data['location'] = location
+        validated_data['location'] = GEOSGeometry(
+            'SRID=4326;POINT(%s %s)' % (
+                validated_data.pop('long', 0),
+                validated_data.pop('lat', 0)
+            )
+        )
 
         fixing_time = calc_fixing_time(validated_data["service_code"])
         waiting_time = timedelta(milliseconds=fixing_time)
@@ -143,11 +146,8 @@ class IssueDetailSerializer(serializers.ModelSerializer):
             validated_data['expected_datetime'] = datetime.now() + waiting_time
 
         if settings.SYNCHRONIZE_WITH_OPEN_311 is False:
-            validated_data['service_request_id'] = Issue.generate_service_request_id()
             validated_data['status'] = 'moderation'
 
-        validated_data.pop('lat', None)
-        validated_data.pop('long', None)
         issue = Issue.objects.create(**validated_data)
         issue = Issue.objects.get(pk=issue.pk)
         return issue
