@@ -4,13 +4,28 @@ from django.contrib.gis.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 
-
 ID_KEYSPACE = string.ascii_lowercase + string.digits
+
+
+class MultipleJurisdictionsError(ValueError):
+    pass
 
 
 class Jurisdiction(models.Model):
     identifier = models.CharField(max_length=64, unique=True)
     name = models.CharField(max_length=64)
+
+    @staticmethod
+    def autodetermine():
+        jurisdiction_count = Jurisdiction.objects.count()
+        if jurisdiction_count == 0:
+            return Jurisdiction.objects.create(
+                identifier="default",
+                name="Default"
+            )
+        elif jurisdiction_count == 1:
+            return Jurisdiction.objects.first()
+        raise MultipleJurisdictionsError("Jurisdiction must be chosen (there are %d)" % jurisdiction_count)
 
 
 class Issue(models.Model):
@@ -58,9 +73,7 @@ class Issue(models.Model):
         return self.location[1]
 
     def save(self, **kwargs):
-        if not self.service_request_id:
-            self.service_request_id = self._generate_service_request_id()
-        self._cache_service_data()
+        self._cache_data()
         super(Issue, self).save(**kwargs)
 
     def _generate_service_request_id(self):
@@ -72,7 +85,11 @@ class Issue(models.Model):
                     # is that the transaction fails and the client needs to try again.
                     return id
 
-    def _cache_service_data(self):
+    def _cache_data(self):
+        if not self.jurisdiction_id:
+            self.jurisdiction = Jurisdiction.autodetermine()
+        if not self.service_request_id:
+            self.service_request_id = self._generate_service_request_id()
         if not self.service_id:
             self.service, created = Service.objects.get_or_create(service_code=self.service_code, defaults={
                 "service_name": self.service_code

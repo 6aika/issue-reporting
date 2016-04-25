@@ -19,6 +19,6 @@ def execute_fixture(name):
         with open(filename, "r") as stream:
             objects = serializers.deserialize("json", stream)
             for obj in objects:
-                if hasattr(obj.object, "_cache_service_data"):
-                    obj.object._cache_service_data()
+                if hasattr(obj.object, "_cache_data"):
+                    obj.object._cache_data()
                 obj.save()
