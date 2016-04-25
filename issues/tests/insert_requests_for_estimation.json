@@ -1,8 +1,17 @@
 [
 {
+  "model": "issues.jurisdiction",
+  "pk": 1,
+  "fields": {
+    "identifier": "hel",
+    "name": "City of Helsinki"
+  }
+},
+{
   "model": "issues.issue",
   "pk": 1,
   "fields": {
+    "jurisdiction_id": 1,
     "service_request_id": "1982hglaqe8pdnpophff",
     "status_notes": "Kiitos",
     "status": "closed",
@@ -33,6 +42,7 @@
   "model": "issues.issue",
   "pk": 2,
   "fields": {
+    "jurisdiction_id": 1,
     "service_request_id": "2981hglaqe8pdnpoiuyt",
     "status_notes": "Kiitos",
     "status": "closed",
@@ -63,6 +73,7 @@
   "model": "issues.issue",
   "pk": 3,
   "fields": {
+    "jurisdiction_id": 1,
     "service_request_id": "o231kdfksdfhsdfkjlf",
     "status_notes": "Kiitos",
     "status": "open",
@@ -93,6 +104,7 @@
   "model": "issues.issue",
   "pk": 4,
   "fields": {
+    "jurisdiction_id": 1,
     "service_request_id": "9374kdfksdfhsdfpfor",
     "status_notes": "Kiitos",
     "status": "closed",
@@ -123,6 +135,7 @@
   "model": "issues.issue",
   "pk": 5,
   "fields": {
+    "jurisdiction_id": 1,
     "service_request_id": "0091kdfksdfhsdfasdf",
     "status_notes": "Kiitos",
     "status": "open",
@@ -153,6 +166,7 @@
   "model": "issues.issue",
   "pk": 6,
   "fields": {
+    "jurisdiction_id": 1,
     "service_request_id": "9066kdfksdfhsdfasdf",
     "status_notes": "Kiitos",
     "status": "closed",
@@ -183,6 +197,7 @@
   "model": "issues.issue",
   "pk": 7,
   "fields": {
+    "jurisdiction_id": 1,
     "service_request_id": "lk43kdfksdfhsdfasdf",
     "status_notes": "Kiitos",
     "status": "closed",
@@ -213,6 +228,7 @@
   "model": "issues.issue",
   "pk": 8,
   "fields": {
+    "jurisdiction_id": 1,
     "service_request_id": "mlnjkdfksdfhsdfasdf",
     "status_notes": "Kiitos",
     "status": "open",
@@ -243,6 +259,7 @@
   "model": "issues.issue",
   "pk": 9,
   "fields": {
+    "jurisdiction_id": 1,
     "service_request_id": "1222kdfksdfhsdfasdf",
     "status_notes": "Kiitos",
     "status": "closed",
@@ -273,6 +290,7 @@
   "model": "issues.issue",
   "pk": 10,
   "fields": {
+    "jurisdiction_id": 1,
     "service_request_id": "mkhukdfksdfhsdfasdf",
     "status_notes": "Kiitos",
     "status": "closed",

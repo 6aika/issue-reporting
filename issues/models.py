@@ -8,7 +8,13 @@ from django.utils.crypto import get_random_string
 ID_KEYSPACE = string.ascii_lowercase + string.digits
 
 
+class Jurisdiction(models.Model):
+    identifier = models.CharField(max_length=64, unique=True)
+    name = models.CharField(max_length=64)
+
+
 class Issue(models.Model):
+    jurisdiction = models.ForeignKey("issues.Jurisdiction", on_delete=models.PROTECT)
     service = models.ForeignKey("issues.Service")
     service_request_id = models.CharField(max_length=64, unique=True)
     status_notes = models.TextField(blank=True, default="")
@@ -99,6 +105,7 @@ class Service(models.Model):
     type = models.TextField(max_length=140, default="other")
     keywords = models.TextField(blank=True, default="")
     group = models.CharField(max_length=140, blank=True, default="")  # The choices are "realtime", "batch" and "blackbox" according to the GeoReport spec
+    jurisdictions = models.ManyToManyField("Jurisdiction", related_name="services")
 
 
 # Uploaded temporary media files binded to form instance
