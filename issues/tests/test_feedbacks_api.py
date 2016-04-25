@@ -1,11 +1,18 @@
+import jsonschema
 import pytest
 from django.core.urlresolvers import reverse_lazy
 
 from issues.models import Issue
 from issues.tests.db_utils import execute_fixture
+from issues.tests.schemata import ISSUE_SCHEMA
 from issues.tests.utils import get_data_from_response
 
 ISSUE_LIST_ENDPOINT = reverse_lazy('api/v1:issue-list')
+
+
+def assert_all_valid_issues(issue_list):
+    for obj in issue_list:
+        jsonschema.validate(obj, ISSUE_SCHEMA)
 
 
 @pytest.fixture()
@@ -16,6 +23,7 @@ def testing_issues(db):
 def test_get_requests(testing_issues, api_client):
     content = get_data_from_response(api_client.get(ISSUE_LIST_ENDPOINT))
     assert len(content) == Issue.objects.count()
+    assert_all_valid_issues(content)
 
 
 def test_get_by_service_request_id(testing_issues, api_client):
@@ -24,6 +32,7 @@ def test_get_by_service_request_id(testing_issues, api_client):
     )
     assert len(content) == 1
     assert content[0]['service_request_id'] == '1982hglaqe8pdnpophff'
+    assert_all_valid_issues(content)
 
 
 def test_get_by_service_request_ids(testing_issues, api_client):
@@ -36,6 +45,7 @@ def test_get_by_service_request_ids(testing_issues, api_client):
     assert len(content) == 2
     assert content[0]['service_request_id'] == '1982hglaqe8pdnpophff'
     assert content[1]['service_request_id'] == '2981hglaqe8pdnpoiuyt'
+    assert_all_valid_issues(content)
 
 
 def test_get_by_unexisting_request_id(testing_issues, api_client):
@@ -53,6 +63,7 @@ def test_get_by_service_code(testing_issues, api_client):
 
     for issue in content:
         assert issue['service_code'] == service_code
+    assert_all_valid_issues(content)
 
 
 def test_get_by_start_date(testing_issues, api_client):
@@ -63,6 +74,7 @@ def test_get_by_start_date(testing_issues, api_client):
         api_client.get(ISSUE_LIST_ENDPOINT, {'start_date': start_date})
     )
 
+    assert_all_valid_issues(content)
     assert len(content) == expected_number_of_requests
     for issue in content:
         assert issue['requested_datetime'] > start_date
@@ -74,6 +86,7 @@ def test_get_by_end_data(testing_issues, api_client):
 
     content = get_data_from_response(api_client.get(ISSUE_LIST_ENDPOINT, {'end_date': end_date}))
 
+    assert_all_valid_issues(content)
     assert len(content) == expected_number_of_requests
     for request in content:
         assert request['requested_datetime'] < end_date
@@ -85,6 +98,7 @@ def test_get_by_status(testing_issues, api_client):
 
     content = get_data_from_response(api_client.get(ISSUE_LIST_ENDPOINT, {'status': issue_status}))
 
+    assert_all_valid_issues(content)
     assert len(content) == expected_number_of_requests
     for issue in content:
         assert issue['status'] == issue_status
@@ -94,6 +108,7 @@ def test_by_description(testing_issues, api_client):
     search = 'some'
 
     content = get_data_from_response(api_client.get(ISSUE_LIST_ENDPOINT, {'search': search}))
+    assert_all_valid_issues(content)
     assert search.lower() in content[0]['description'].lower()
 
 
@@ -103,6 +118,7 @@ def test_get_with_extensions(testing_issues, api_client):
         {'service_request_id': '1982hglaqe8pdnpophff', 'extensions': 'true'}
     ))
 
+    assert_all_valid_issues(content)
     assert 'extended_attributes' in content[0]
 
 
@@ -111,6 +127,7 @@ def test_get_without_extensions(testing_issues, api_client):
         api_client.get(ISSUE_LIST_ENDPOINT, {'service_request_id': '1982hglaqe8pdnpophff'})
     )
 
+    assert_all_valid_issues(content)
     assert 'extended_attributes' not in content[0]
 
 
@@ -120,6 +137,7 @@ def test_get_by_updated_after(testing_issues, api_client):
 
     content = get_data_from_response(api_client.get(ISSUE_LIST_ENDPOINT, {'updated_after': updated_after}))
 
+    assert_all_valid_issues(content)
     assert len(content) == expected_number_of_requests
     for issue in content:
         assert issue['updated_datetime'] > updated_after
@@ -131,6 +149,7 @@ def test_get_by_updated_before(testing_issues, api_client):
 
     content = get_data_from_response(api_client.get(ISSUE_LIST_ENDPOINT, {'updated_before': updated_before}))
 
+    assert_all_valid_issues(content)
     assert len(content) == expected_number_of_requests
     for issue in content:
         assert issue['updated_datetime'] < updated_before
@@ -149,6 +168,7 @@ def test_get_by_service_object(testing_issues, api_client):
         }
     ))
 
+    assert_all_valid_issues(content)
     for issue in content:
         assert issue['extended_attributes']['service_object_id'] == service_object_id
         assert issue['extended_attributes']['service_object_type'] == service_object_type
@@ -157,7 +177,7 @@ def test_get_by_service_object(testing_issues, api_client):
 def test_get_by_service_object_id_without_type(testing_issues, api_client):
     service_object_id = '10844'
 
-    content = get_data_from_response(
+    get_data_from_response(
         api_client.get(ISSUE_LIST_ENDPOINT, {'service_object_id': service_object_id}),
         status_code=400
     )
@@ -172,7 +192,7 @@ def test_get_within_radius(testing_issues, api_client):
     content = get_data_from_response(
         api_client.get(ISSUE_LIST_ENDPOINT, {'lat': lat, 'long': long, 'radius': radius})
     )
-
+    assert_all_valid_issues(content)
     assert len(content) == expected_number_of_requests
 
     for issue in content:
