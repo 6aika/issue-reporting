@@ -1,11 +1,16 @@
-import uuid
+import string
 
 from django.contrib.gis.db import models
 from django.utils import timezone
+from django.utils.crypto import get_random_string
+
+
+ID_KEYSPACE = string.ascii_lowercase + string.digits
 
 
 class Issue(models.Model):
-    service_request_id = models.CharField(max_length=254, db_index=True, null=True)
+    service = models.ForeignKey("issues.Service")
+    service_request_id = models.CharField(max_length=64, unique=True)
     status_notes = models.TextField(blank=True, default="")
     status = models.TextField(blank=True, default="")
     service_code = models.CharField(null=True, max_length=120)
@@ -17,9 +22,8 @@ class Issue(models.Model):
     updated_datetime = models.DateTimeField(null=True)
     expected_datetime = models.DateTimeField(null=True)
     address_string = models.TextField(blank=True, default="")
-    media_url = models.TextField(blank=True, default="")
+    media_url = models.URLField(blank=True, default="")
 
-    api_key = models.TextField(blank=True, default="")
     email = models.TextField(blank=True, default="")
     first_name = models.TextField(blank=True, default="")
     last_name = models.TextField(blank=True, default="")
@@ -47,14 +51,35 @@ class Issue(models.Model):
     def lat(self):
         return self.location[1]
 
-    @staticmethod
-    def generate_service_request_id():
-        return str(uuid.uuid4())
+    def save(self, **kwargs):
+        if not self.service_request_id:
+            self.service_request_id = self._generate_service_request_id()
+        self._cache_service_data()
+        super(Issue, self).save(**kwargs)
+
+    def _generate_service_request_id(self):
+        for length in range(8, 65, 4):
+            for attempt in range(10):
+                id = get_random_string(length, allowed_chars=ID_KEYSPACE)
+                if not Issue.objects.filter(service_request_id=id).exists():
+                    # There's a minuscule chance of a race condition here, but the worst case
+                    # is that the transaction fails and the client needs to try again.
+                    return id
+
+    def _cache_service_data(self):
+        if not self.service_id:
+            self.service, created = Service.objects.get_or_create(service_code=self.service_code, defaults={
+                "service_name": self.service_code
+            })
+        if not self.service_name:
+            self.service_name = self.service.service_name
+        if not self.service_code:
+            self.service_code = self.service.service_code
 
 
 class MediaURL(models.Model):
     issue = models.ForeignKey('Issue', on_delete=models.CASCADE, related_name='media_urls', null=True)
-    media_url = models.TextField(blank=True, default="")
+    media_url = models.URLField()
 
 
 class Task(models.Model):
@@ -68,12 +93,12 @@ class Task(models.Model):
 
 class Service(models.Model):
     service_code = models.CharField(unique=True, null=False, max_length=120)
-    service_name = models.TextField(null=False)
-    description = models.TextField(null=False)
-    metadata = models.BooleanField(null=False)
-    type = models.TextField(null=False)
-    keywords = models.TextField(null=False)
-    group = models.TextField(null=False)
+    service_name = models.TextField(blank=False)
+    description = models.TextField(blank=True, default="")
+    metadata = models.BooleanField(default=False)
+    type = models.TextField(max_length=140, default="other")
+    keywords = models.TextField(blank=True, default="")
+    group = models.CharField(max_length=140, blank=True, default="")  # The choices are "realtime", "batch" and "blackbox" according to the GeoReport spec
 
 
 # Uploaded temporary media files binded to form instance
