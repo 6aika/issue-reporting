@@ -1,7 +1,7 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, GenericAPIView
 
-from issues.api.serializers import IssueDetailSerializer, IssueSerializer
+from issues.api.serializers import IssueSerializer
 from issues.models import MediaFile, Issue
 from issues.services import attach_files_to_issue, get_issues, save_file_to_db
 
@@ -17,6 +17,8 @@ class IssueViewBase(GenericAPIView):
 
 
 class IssueList(IssueViewBase, ListCreateAPIView):
+    serializer_class = IssueSerializer
+
     def get_queryset(self):
         request = self.request
         service_object_id = request.query_params.get('service_object_id', None)
@@ -27,6 +29,7 @@ class IssueList(IssueViewBase, ListCreateAPIView):
                 "If service_object_id is included in the request, then service_object_type must be included.")
 
         return get_issues(
+            jurisdiction_id=request.query_params.get('jurisdiction_id', None),
             service_request_ids=request.query_params.get('service_request_id', None),
             service_codes=request.query_params.get('service_code', None),
             start_date=request.query_params.get('start_date', None),
@@ -44,14 +47,6 @@ class IssueList(IssueViewBase, ListCreateAPIView):
             order_by=request.query_params.get('order_by', None),
             use_limit=True
         )
-
-    def get_serializer(self, *args, **kwargs):
-        if kwargs.get("data"):
-            serializer_class = IssueDetailSerializer
-        else:
-            serializer_class = IssueSerializer
-        kwargs['context'] = self.get_serializer_context()
-        return serializer_class(*args, **kwargs)
 
     def perform_create(self, serializer):
         request = self.request
@@ -72,7 +67,7 @@ class IssueList(IssueViewBase, ListCreateAPIView):
 
 class IssueDetail(RetrieveAPIView):
     lookup_url_kwarg = "service_request_id"
-    serializer_class = IssueDetailSerializer
+    serializer_class = IssueSerializer
 
     def get_queryset(self):
         return Issue.objects.all()

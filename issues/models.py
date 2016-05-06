@@ -1,5 +1,6 @@
 import string
 
+import datetime
 from django.contrib.gis.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -66,11 +67,13 @@ class Issue(models.Model):
 
     @property
     def lon(self):
-        return self.location[0]
+        if self.location:
+            return self.location[0]
 
     @property
     def lat(self):
-        return self.location[1]
+        if self.location:
+            return self.location[1]
 
     def save(self, **kwargs):
         self._cache_data()
@@ -98,6 +101,11 @@ class Issue(models.Model):
             self.service_name = self.service.service_name
         if not self.service_code:
             self.service_code = self.service.service_code
+        if not self.expected_datetime:
+            from issues.analysis import calc_fixing_time
+            fixing_time = calc_fixing_time(self.service_code)
+            waiting_time = datetime.timedelta(milliseconds=fixing_time)
+            self.expected_datetime = datetime.datetime.now() + waiting_time
 
 
 class MediaURL(models.Model):

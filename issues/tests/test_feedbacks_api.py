@@ -2,7 +2,7 @@ import jsonschema
 import pytest
 from django.core.urlresolvers import reverse_lazy
 
-from issues.models import Issue
+from issues.models import Issue, Jurisdiction
 from issues.tests.db_utils import execute_fixture
 from issues.tests.schemata import ISSUE_SCHEMA
 from issues.tests.utils import get_data_from_response
@@ -197,3 +197,70 @@ def test_get_within_radius(testing_issues, api_client):
 
     for issue in content:
         assert issue['distance'] < 1000
+
+
+@pytest.mark.django_db
+def test_post_issue_no_jurisdiction(api_client, random_service):
+    assert not Jurisdiction.objects.exists()
+    for attempt in [1, 2]:
+        issue = get_data_from_response(
+            api_client.post(ISSUE_LIST_ENDPOINT, {
+                "service_code": random_service.service_code,
+                "lat": 30,
+                "long": 30,
+            }),
+            201
+        )
+        assert_all_valid_issues([issue])
+        assert Jurisdiction.objects.filter(identifier="default").exists()  # default Jurisdiction was created
+        assert Jurisdiction.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_post_issue_multi_jurisdiction(api_client, random_service):
+    assert not Jurisdiction.objects.exists()  # Precondition check
+    Jurisdiction.objects.create(identifier="j1", name="j1")
+    Jurisdiction.objects.create(identifier="j2", name="j2")
+    # Can't post without a Jurisdiction when there are multiple
+    get_data_from_response(
+        api_client.post(ISSUE_LIST_ENDPOINT, {
+            "service_code": random_service.service_code,
+            "lat": 30,
+            "long": 30,
+        }),
+        400
+    )
+    for j in Jurisdiction.objects.all():
+        # Can't post without a Jurisdiction when there are multiple
+        issue = get_data_from_response(
+            api_client.post(ISSUE_LIST_ENDPOINT, {
+                "jurisdiction_id": j.identifier,
+                "service_code": random_service.service_code,
+                "lat": 30,
+                "long": 30,
+            }),
+            201
+        )
+        assert_all_valid_issues([issue])
+        assert Issue.objects.get(service_request_id=issue["service_request_id"]).jurisdiction == j
+
+
+@pytest.mark.django_db
+def test_get_issue_multi_jurisdiction_filters_correctly(api_client, random_service):
+    assert not Jurisdiction.objects.exists()  # Precondition check
+    jurisdictions = [
+        Jurisdiction.objects.create(identifier="j%s" % x, name="j%s" % x)
+        for x in range(4)
+    ]
+    for j in jurisdictions:
+        for x in range(5):
+            Issue.objects.create(
+                jurisdiction=j,
+                service=random_service
+            )
+    for j in jurisdictions:
+        issues = get_data_from_response(
+            api_client.get(ISSUE_LIST_ENDPOINT, {'jurisdiction_id': j.identifier}),
+        )
+        assert_all_valid_issues(issues)
+        assert len(issues) == Issue.objects.filter(jurisdiction=j).count()  # Only getting the Issues for the requested Jurisdiction

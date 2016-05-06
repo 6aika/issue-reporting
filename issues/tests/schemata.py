@@ -1,4 +1,5 @@
 STRING_OR_NULL = {"anyOf": [{"type": "string"}, {"type": "null"}]}
+
 ISSUE_SCHEMA = {
     "type": "object",
     "properties": {
