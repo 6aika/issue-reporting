@@ -21,12 +21,6 @@ class TaskSerializer(serializers.ModelSerializer):
 class IssueSerializer(serializers.ModelSerializer):
     distance = serializers.SerializerMethodField()
     extended_attributes = serializers.SerializerMethodField()
-    media_urls = serializers.SlugRelatedField(
-        many=True,
-        read_only=True,
-        slug_field='media_url',
-    )
-    tasks = TaskSerializer(many=True, read_only=True)
     jurisdiction_id = serializers.SlugRelatedField(
         queryset=Jurisdiction.objects.all(),
         source='jurisdiction',
@@ -36,37 +30,61 @@ class IssueSerializer(serializers.ModelSerializer):
     )
     lat = serializers.FloatField(required=False)
     long = serializers.FloatField(required=False)
+    address = serializers.CharField(required=False, source="address_string", read_only=True)
 
     class Meta:
         model = Issue
-        exclude = [
-            'jurisdiction',  # Manually defined as `jurisdiction_id`
-            'service',  # Determined via `service_code`
+        fields = [
+            'address',
+            'agency_responsible',
+            'description',
+            'expected_datetime',
+            'extended_attributes',
+            'distance',
+            'jurisdiction_id',
+            'lat',
+            'long',
+            'media_url',
+            'requested_datetime',
+            'service_code',
+            'service_name',
+            'service_notice',
+            'service_request_id',
+            'status',
+            'status_notes',
+            'updated_datetime',
         ]
         read_only_fields = [
             'service_request_id',
             'service_name',
         ]
+        write_only_fields = [  # This is not directly supported by DRF; see below for the patch
+            'address_string',
+            'first_name',
+            'last_name',
+            'email',
+            'phone',
+        ]
         extra_kwargs = {
             'service_code': {'required': True}
         }
+        for f in write_only_fields:
+            extra_kwargs.setdefault(f, {})["write_only"] = True
 
     def get_distance(self, obj):
         if hasattr(obj, 'distance'):
             return float(obj.distance.m)
         else:
-            return ''
+            return None
 
     def get_extended_attributes(self, instance):
         if not self.context.get('extensions'):
             return None
 
-        media_urls = self.fields['media_urls']
-        media_urls_value = media_urls.to_representation(
-            media_urls.get_attribute(instance)
-        )
+        media_urls_value = sorted(instance.media_urls.values_list('media_url'))
 
-        tasks = self.fields['tasks']
+        tasks = TaskSerializer(many=True, read_only=True)
+        tasks.source_attrs = ["tasks"]
         tasks_value = tasks.to_representation(
             tasks.get_attribute(instance)
         )
@@ -94,9 +112,11 @@ class IssueSerializer(serializers.ModelSerializer):
             representation.pop("lat", None)
             representation.pop("long", None)
 
-        # TODO: title, vote_counter
         if representation.get('extended_attributes') is None:
             representation.pop('extended_attributes', None)
+
+        if representation.get('distance') is None:
+            representation.pop('distance')
 
         return representation
 

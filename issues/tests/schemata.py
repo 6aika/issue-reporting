@@ -20,8 +20,10 @@ ISSUE_SCHEMA = {
         "lat": {"type": "number"},
         "long": {"type": "number"},
         "media_url": {"type": "string"},
-        "extended_attributes": {"type": "object"}
+        "extended_attributes": {"type": "object"},
+        "distance": {"type": "number"},  # Not in the actual schema
     },
+    "additionalProperties": False,
     "required": [
         "service_request_id",
         "status",
