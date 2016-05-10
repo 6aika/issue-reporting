@@ -1,5 +1,8 @@
 import pytest
+from django.utils.crypto import get_random_string
 from rest_framework.test import APIClient
+
+from issues.models import Service
 
 
 def pytest_configure():
@@ -27,3 +30,11 @@ def admin_api_client(admin_user):
 @pytest.fixture()
 def api_client():
     return APIClient()
+
+
+@pytest.fixture()
+def random_service(db):
+    return Service.objects.create(
+        service_code=get_random_string(),
+        service_name="Test"
+    )

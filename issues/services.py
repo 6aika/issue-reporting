@@ -16,14 +16,20 @@ from issues.models import Issue, MediaFile, MediaURL
 logger = logging.getLogger(__name__)
 
 
-def get_issues(service_codes=None, service_request_ids=None,
-                  start_date=None, end_date=None,
-                  statuses=None, search=None,
-                  service_object_type=None, service_object_id=None,
-                  updated_after=None, updated_before=None,
-                  lat=None, lon=None, radius=None,
-                  order_by=None, agency_responsible=None, use_limit=False):
+def get_issues(
+    jurisdiction_id=None,
+    service_codes=None, service_request_ids=None,
+    start_date=None, end_date=None,
+    statuses=None, search=None,
+    service_object_type=None, service_object_id=None,
+    updated_after=None, updated_before=None,
+    lat=None, lon=None, radius=None,
+    order_by=None, agency_responsible=None, use_limit=False
+):
     queryset = Issue.objects.all()
+
+    if jurisdiction_id:
+        queryset = queryset.filter(jurisdiction__identifier=jurisdiction_id)
 
     if service_request_ids:
         queryset = queryset.filter(service_request_id__in=service_request_ids.split(','))
@@ -73,7 +79,7 @@ def get_issues(service_codes=None, service_request_ids=None,
         queryset = queryset.order_by(order_by)
 
     if use_limit is True \
-            and start_date is None and end_date is None and updated_before is None and updated_after is None:
+        and start_date is None and end_date is None and updated_before is None and updated_after is None:
         queryset = queryset[:settings.ISSUE_LIST_LIMIT]
 
     return queryset
