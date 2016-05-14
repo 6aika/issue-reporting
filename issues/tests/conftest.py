@@ -32,6 +32,27 @@ def api_client():
     return APIClient()
 
 
+class FormatEnforcingAPIClient(APIClient):
+    format = None  # Set by the fixture
+
+    def get(self, path, data=None, follow=False, **extra):
+        if not data:
+            data = {}
+        data["format"] = self.format
+        resp = super().get(path, data, follow, **extra)
+        if resp.status_code < 400:
+            assert self.format in resp["Content-Type"]
+        return resp
+
+
+@pytest.fixture(params=['xml', 'json'])
+def mf_api_client(request):
+    # mf_api_client is short for multiformat_api_client, fwiw. :)
+    feac = FormatEnforcingAPIClient()
+    feac.format = request.param
+    return feac
+
+
 @pytest.fixture()
 def random_service(db):
     return Service.objects.create(
