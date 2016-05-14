@@ -1,6 +1,7 @@
 from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import serializers
 
+from issues.api.utils import XMLDict
 from issues.models import Issue, Service, Task, Jurisdiction, MultipleJurisdictionsError
 
 
@@ -105,7 +106,7 @@ class IssueSerializer(serializers.ModelSerializer):
         """
 
         :type instance: issues.models.Issue
-        :return:
+        :rtype: dict
         """
         representation = super(IssueSerializer, self).to_representation(instance)
         if representation.get("lat") is None:  # No location? Don't emit it.
@@ -118,7 +119,7 @@ class IssueSerializer(serializers.ModelSerializer):
         if representation.get('distance') is None:
             representation.pop('distance')
 
-        return representation
+        return XMLDict(representation, "request")
 
     def validate(self, data):
         service_code = data.pop('service_code')

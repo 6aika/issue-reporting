@@ -1,4 +1,8 @@
 STRING_OR_NULL = {"anyOf": [{"type": "string"}, {"type": "null"}]}
+NUMERIC_STRING = {
+    "type": "string",
+    "pattern": "^-?[0-9]*(\.[0-9]+)?$"
+}
 
 ISSUE_SCHEMA = {
     "type": "object",
@@ -10,18 +14,18 @@ ISSUE_SCHEMA = {
         "service_code": {"type": "string"},
         "description": {"type": "string"},
         "agency_responsible": {"type": "string"},
-        "service_notice": {"type": "string"},
+        "service_notice": STRING_OR_NULL,
         "requested_datetime": {"type": "string"},
         "updated_datetime": STRING_OR_NULL,
         "expected_datetime": STRING_OR_NULL,
         "address": {"type": "string"},
         "address_id": {"type": "string"},
         "zipcode": {"type": "string"},
-        "lat": {"type": "number"},
-        "long": {"type": "number"},
-        "media_url": {"type": "string"},
+        "lat": NUMERIC_STRING,
+        "long": NUMERIC_STRING,
+        "media_url": STRING_OR_NULL,
         "extended_attributes": {"type": "object"},
-        "distance": {"type": "number"},  # Not in the actual schema
+        "distance": NUMERIC_STRING,  # Not in the actual schema
     },
     "additionalProperties": False,
     "required": [
@@ -30,8 +34,6 @@ ISSUE_SCHEMA = {
         "service_name",
         "service_code",
         "description",
-        "agency_responsible",
-        "service_notice",
         "requested_datetime",
         "updated_datetime",
         "expected_datetime",

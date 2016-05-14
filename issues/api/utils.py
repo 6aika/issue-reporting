@@ -16,3 +16,9 @@ def api_exception_handler(exc, context):
             response.data['detail'] = exc.detail
 
     return response
+
+
+class XMLDict(dict):
+    def __init__(self, dict, xml_tag=None):
+        super(XMLDict, self).__init__(dict)
+        self.xml_tag = xml_tag

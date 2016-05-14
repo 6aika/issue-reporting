@@ -1,6 +1,7 @@
 import jsonschema
 import pytest
 from django.core.urlresolvers import reverse_lazy
+from django.utils.crypto import get_random_string
 
 from issues.models import Issue, Jurisdiction
 from issues.tests.db_utils import execute_fixture
@@ -52,7 +53,7 @@ def test_get_by_unexisting_request_id(testing_issues, api_client):
     content = get_data_from_response(
         api_client.get(ISSUE_LIST_ENDPOINT, {'service_request_id': 'unexisting_req_id'})
     )
-    assert content == []
+    assert not content
 
 
 def test_get_by_service_code(testing_issues, api_client):
@@ -112,23 +113,23 @@ def test_by_description(testing_issues, api_client):
     assert search.lower() in content[0]['description'].lower()
 
 
-def test_get_with_extensions(testing_issues, api_client):
+@pytest.mark.parametrize("format", ("xml", "json"))
+@pytest.mark.parametrize("extensions", (False, True))
+def test_get(testing_issues, api_client, format, extensions):
     content = get_data_from_response(api_client.get(
         ISSUE_LIST_ENDPOINT,
-        {'service_request_id': '1982hglaqe8pdnpophff', 'extensions': 'true'}
+        {
+            'format': format,
+            'service_request_id': '1982hglaqe8pdnpophff',
+            'extensions': ('true' if extensions else 'false'),
+        }
     ))
 
     assert_all_valid_issues(content)
-    assert 'extended_attributes' in content[0]
-
-
-def test_get_without_extensions(testing_issues, api_client):
-    content = get_data_from_response(
-        api_client.get(ISSUE_LIST_ENDPOINT, {'service_request_id': '1982hglaqe8pdnpophff'})
-    )
-
-    assert_all_valid_issues(content)
-    assert 'extended_attributes' not in content[0]
+    if extensions:
+        assert 'extended_attributes' in content[0]
+    else:
+        assert 'extended_attributes' not in content[0]
 
 
 def test_get_by_updated_after(testing_issues, api_client):
@@ -196,7 +197,7 @@ def test_get_within_radius(testing_issues, api_client):
     assert len(content) == expected_number_of_requests
 
     for issue in content:
-        assert issue['distance'] < 1000
+        assert float(issue['distance']) < 1000
 
 
 @pytest.mark.django_db
@@ -208,6 +209,7 @@ def test_post_issue_no_jurisdiction(api_client, random_service):
                 "service_code": random_service.service_code,
                 "lat": 30,
                 "long": 30,
+                "description": get_random_string(),
             }),
             201
         )
@@ -227,6 +229,7 @@ def test_post_issue_multi_jurisdiction(api_client, random_service):
             "service_code": random_service.service_code,
             "lat": 30,
             "long": 30,
+            "description": get_random_string(),
         }),
         400
     )
@@ -238,6 +241,7 @@ def test_post_issue_multi_jurisdiction(api_client, random_service):
                 "service_code": random_service.service_code,
                 "lat": 30,
                 "long": 30,
+                "description": get_random_string(),
             }),
             201
         )
@@ -256,11 +260,13 @@ def test_get_issue_multi_jurisdiction_filters_correctly(api_client, random_servi
         for x in range(5):
             Issue.objects.create(
                 jurisdiction=j,
-                service=random_service
+                service=random_service,
+                description=get_random_string(),
             )
     for j in jurisdictions:
         issues = get_data_from_response(
             api_client.get(ISSUE_LIST_ENDPOINT, {'jurisdiction_id': j.identifier}),
         )
         assert_all_valid_issues(issues)
-        assert len(issues) == Issue.objects.filter(jurisdiction=j).count()  # Only getting the Issues for the requested Jurisdiction
+        # Only getting the Issues for the requested Jurisdiction:
+        assert len(issues) == Issue.objects.filter(jurisdiction=j).count()
