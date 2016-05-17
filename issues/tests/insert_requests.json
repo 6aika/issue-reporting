@@ -12,30 +12,23 @@
   "pk": 1,
   "fields": {
     "jurisdiction_id": 1,
-    "service_request_id": "1982hglaqe8pdnpophff",
+    "identifier": "1982hglaqe8pdnpophff",
     "status_notes": "Kiitos",
     "status": "closed",
     "service_code": "171",
-    "service_name": "Potholes",
     "description": "111adsfasdf",
     "agency_responsible": "1234",
     "service_notice": "",
     "requested_datetime": "2015-06-23T15:50:11Z",
     "updated_datetime": "2015-07-24T12:00:44Z",
     "expected_datetime": null,
-    "address_string": "Helsinki",
+    "address": "Helsinki",
     "media_url": "",
-    "email": "",
-    "first_name": "",
-    "last_name": "",
-    "phone": "",
-    "service_object_id": "10844",
-    "title": "Helsingiss\u00e4 monesti py\u00f6r\u00e4ti...",
-    "service_object_type": "http://www.hel.fi/servicemap/v2",
-    "detailed_status": "IN_PROCESS",
-    "location": "SRID=4326;POINT (24.9364543000000012 60.1852955000000023)",
-    "vote_counter": 0,
-    "synchronized": true
+    "submitter_email": "",
+    "submitter_first_name": "",
+    "submitter_last_name": "",
+    "submitter_phone": "",
+    "location": "SRID=4326;POINT (24.9364543000000012 60.1852955000000023)"
   }
 },
 {
@@ -43,30 +36,23 @@
   "pk": 2,
   "fields": {
     "jurisdiction_id": 1,
-    "service_request_id": "2981hglaqe8pdnpoiuyt",
+    "identifier": "2981hglaqe8pdnpoiuyt",
     "status_notes": "Kiitos",
     "status": "closed",
     "service_code": "171",
-    "service_name": "Potholes",
     "description": "111adsfasdf",
     "agency_responsible": "1234",
     "service_notice": "",
     "requested_datetime": "2015-06-23T15:52:11Z",
     "updated_datetime": "2015-07-24T12:02:44Z",
     "expected_datetime": null,
-    "address_string": "Helsinki",
+    "address": "Helsinki",
     "media_url": "",
-    "email": "",
-    "first_name": "",
-    "last_name": "",
-    "phone": "",
-    "service_object_id": "",
-    "title": "Helsingiss\u00e4 monesti py\u00f6r\u00e4ti...",
-    "service_object_type": "",
-    "detailed_status": "IN_PROCESS",
-    "location": "SRID=4326;POINT (24.9492350000000016 60.1865850000000009)",
-    "vote_counter": 0,
-    "synchronized": true
+    "submitter_email": "",
+    "submitter_first_name": "",
+    "submitter_last_name": "",
+    "submitter_phone": "",
+    "location": "SRID=4326;POINT (24.9492350000000016 60.1865850000000009)"
   }
 },
 {
@@ -74,30 +60,23 @@
   "pk": 3,
   "fields": {
     "jurisdiction_id": 1,
-    "service_request_id": "o231kdfksdfhsdfkjlf",
+    "identifier": "o231kdfksdfhsdfkjlf",
     "status_notes": "Kiitos",
     "status": "open",
     "service_code": "171",
-    "service_name": "Potholes",
     "description": "some testing text",
     "agency_responsible": "1234",
     "service_notice": "",
     "requested_datetime": "2015-06-24T15:50:11Z",
     "updated_datetime": "2015-07-25T12:00:44Z",
     "expected_datetime": null,
-    "address_string": "SPb",
+    "address": "SPb",
     "media_url": "",
-    "email": "",
-    "first_name": "",
-    "last_name": "",
-    "phone": "",
-    "service_object_id": "",
-    "title": "Helsingiss\u00e4 monesti py\u00f6r\u00e4ti...",
-    "service_object_type": "",
-    "detailed_status": "IN_PROCESS",
-    "location": "SRID=4326;POINT (24.9407120000000013 60.1833010000000002)",
-    "vote_counter": 0,
-    "synchronized": true
+    "submitter_email": "",
+    "submitter_first_name": "",
+    "submitter_last_name": "",
+    "submitter_phone": "",
+    "location": "SRID=4326;POINT (24.9407120000000013 60.1833010000000002)"
   }
 },
 {
@@ -105,86 +84,23 @@
   "pk": 4,
   "fields": {
     "jurisdiction_id": 1,
-    "service_request_id": "9374kdfksdfhsdfasdf",
+    "identifier": "9374kdfksdfhsdfasdf",
     "status_notes": "Kiitos",
     "status": "open",
     "service_code": "173",
-    "service_name": "Potholes",
     "description": "111adsfasdf",
     "agency_responsible": "1234",
     "service_notice": "",
     "requested_datetime": "2015-06-25T15:50:11Z",
     "updated_datetime": "2015-07-25T12:00:44Z",
     "expected_datetime": null,
-    "address_string": "SPb",
+    "address": "SPb",
     "media_url": "",
-    "email": "",
-    "first_name": "",
-    "last_name": "",
-    "phone": "",
-    "service_object_id": "",
-    "title": "Helsingiss\u00e4 monesti py\u00f6r\u00e4ti...",
-    "service_object_type": "",
-    "detailed_status": "IN_PROCESS",
-    "location": "SRID=4326;POINT (24.7696250000000013 60.1920050000000018)",
-    "vote_counter": 0,
-    "synchronized": true
-  }
-},
-{
-  "model": "issues.mediaurl",
-  "pk": 1,
-  "fields": {
-    "issue": 1,
-    "media_url": "https://asiointi.hel.fi/palautews/rest/v1/attachment/13timm1nle0m4cvi6ocf.jpg"
-  }
-},
-{
-  "model": "issues.task",
-  "pk": 1,
-  "fields": {
-    "issue": 1,
-    "task_state": "re_assigned",
-    "task_type": "assigned",
-    "owner_name": "Rakennusvirasto",
-    "task_modified": "2015-06-18T09:31:41Z",
-    "task_created": "2015-06-17T16:55:09Z"
-  }
-},
-{
-  "model": "issues.task",
-  "pk": 2,
-  "fields": {
-    "issue": 1,
-    "task_state": "completed",
-    "task_type": "wait_for_answer",
-    "owner_name": "Rakennusvirasto",
-    "task_modified": "2015-06-18T09:32:19Z",
-    "task_created": "2015-06-18T09:31:41Z"
-  }
-},
-{
-  "model": "issues.task",
-  "pk": 3,
-  "fields": {
-    "issue": 1,
-    "task_state": "open",
-    "task_type": "wait_for_answer",
-    "owner_name": "Kaupunkisuunnitteluvirasto",
-    "task_modified": "2015-06-18T11:12:48Z",
-    "task_created": "2015-06-18T11:12:48Z"
-  }
-},
-{
-  "model": "issues.task",
-  "pk": 4,
-  "fields": {
-    "issue": 1,
-    "task_state": "completed",
-    "task_type": "informed",
-    "owner_name": "Kaupunkisuunnitteluvirasto",
-    "task_modified": "2015-06-18T11:59:42Z",
-    "task_created": "2015-06-18T11:13:02Z"
+    "submitter_email": "",
+    "submitter_first_name": "",
+    "submitter_last_name": "",
+    "submitter_phone": "",
+    "location": "SRID=4326;POINT (24.7696250000000013 60.1920050000000018)"
   }
 }
 ]

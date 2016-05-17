@@ -1,24 +1,19 @@
 import jsonschema
 import pytest
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.utils.crypto import get_random_string
 
-from issues.models import Issue, Jurisdiction
-from issues.tests.db_utils import execute_fixture
+from issues.models import Issue
+from issues.models.jurisdictions import Jurisdiction
 from issues.tests.schemata import ISSUE_SCHEMA
 from issues.tests.utils import get_data_from_response
 
-ISSUE_LIST_ENDPOINT = reverse_lazy('api/v1:issue-list')
+ISSUE_LIST_ENDPOINT = reverse_lazy('georeport/v2:issue-list')
 
 
 def assert_all_valid_issues(issue_list):
     for obj in issue_list:
         jsonschema.validate(obj, ISSUE_SCHEMA)
-
-
-@pytest.fixture()
-def testing_issues(db):
-    execute_fixture('insert_requests')
 
 
 def test_get_requests(testing_issues, mf_api_client):
@@ -43,10 +38,11 @@ def test_get_by_service_request_ids(testing_issues, mf_api_client):
             {'service_request_id': '1982hglaqe8pdnpophff,2981hglaqe8pdnpoiuyt'}
         )
     )
-    assert len(content) == 2
-    assert content[0]['service_request_id'] == '1982hglaqe8pdnpophff'
-    assert content[1]['service_request_id'] == '2981hglaqe8pdnpoiuyt'
     assert_all_valid_issues(content)
+    assert set(c['service_request_id'] for c in content) == {
+        '1982hglaqe8pdnpophff',
+        '2981hglaqe8pdnpoiuyt'
+    }
 
 
 def test_get_by_unexisting_request_id(testing_issues, mf_api_client):
@@ -105,14 +101,6 @@ def test_get_by_status(testing_issues, mf_api_client):
         assert issue['status'] == issue_status
 
 
-def test_by_description(testing_issues, mf_api_client):
-    search = 'some'
-
-    content = get_data_from_response(mf_api_client.get(ISSUE_LIST_ENDPOINT, {'search': search}))
-    assert_all_valid_issues(content)
-    assert search.lower() in content[0]['description'].lower()
-
-
 @pytest.mark.parametrize("extensions", (False, True))
 def test_get(testing_issues, mf_api_client, extensions):
     content = get_data_from_response(mf_api_client.get(
@@ -125,7 +113,7 @@ def test_get(testing_issues, mf_api_client, extensions):
     ))
 
     assert_all_valid_issues(content)
-    if extensions:
+    if extensions and mf_api_client.format == 'json':  # Can only test this in native JSON mode
         assert 'extended_attributes' in content[0]
     else:
         assert 'extended_attributes' not in content[0]
@@ -153,34 +141,6 @@ def test_get_by_updated_before(testing_issues, mf_api_client):
     assert len(content) == expected_number_of_requests
     for issue in content:
         assert issue['updated_datetime'] < updated_before
-
-
-def test_get_by_service_object(testing_issues, mf_api_client):
-    service_object_id = '10844'
-    service_object_type = 'http://www.hel.fi/servicemap/v2'
-
-    content = get_data_from_response(mf_api_client.get(
-        ISSUE_LIST_ENDPOINT,
-        {
-            'extensions': 'true',
-            'service_object_id': 'service_object_id',
-            'service_object_type': 'service_object_type'
-        }
-    ))
-
-    assert_all_valid_issues(content)
-    for issue in content:
-        assert issue['extended_attributes']['service_object_id'] == service_object_id
-        assert issue['extended_attributes']['service_object_type'] == service_object_type
-
-
-def test_get_by_service_object_id_without_type(testing_issues, mf_api_client):
-    service_object_id = '10844'
-
-    get_data_from_response(
-        mf_api_client.get(ISSUE_LIST_ENDPOINT, {'service_object_id': service_object_id}),
-        status_code=400
-    )
 
 
 def test_get_within_radius(testing_issues, mf_api_client):
@@ -213,8 +173,14 @@ def test_post_issue_no_jurisdiction(mf_api_client, random_service):
             201
         )
         assert_all_valid_issues([issue])
+        assert Issue.objects.filter(identifier=issue['service_request_id']).exists()
         assert Jurisdiction.objects.filter(identifier="default").exists()  # default Jurisdiction was created
         assert Jurisdiction.objects.count() == 1
+
+        issue = get_data_from_response(mf_api_client.get(
+            reverse('georeport/v2:issue-detail', kwargs={'identifier': issue['service_request_id']}),
+        ))
+        assert_all_valid_issues([issue])
 
 
 @pytest.mark.django_db
@@ -245,7 +211,7 @@ def test_post_issue_multi_jurisdiction(mf_api_client, random_service):
             201
         )
         assert_all_valid_issues([issue])
-        assert Issue.objects.get(service_request_id=issue["service_request_id"]).jurisdiction == j
+        assert Issue.objects.get(identifier=issue["service_request_id"]).jurisdiction == j
 
 
 @pytest.mark.django_db

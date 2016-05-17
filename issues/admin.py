@@ -1,2 +1,4 @@
+from django.contrib.admin import site
+from .models import Issue, Jurisdiction, Service
 
-# Register your models here.
+site.register((Issue, Jurisdiction, Service))

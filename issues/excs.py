@@ -1,0 +1,2 @@
+class MultipleJurisdictionsError(ValueError):
+    pass
