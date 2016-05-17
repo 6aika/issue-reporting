@@ -4,6 +4,13 @@ NUMERIC_STRING = {
     "pattern": "^-?[0-9]*(\.[0-9]+)?$"
 }
 
+NUMBER_OR_NUMERIC_STRING = {
+    "anyOf": [
+        {"type": "number"},
+        NUMERIC_STRING
+    ]
+}
+
 ISSUE_SCHEMA = {
     "type": "object",
     "properties": {
@@ -21,11 +28,11 @@ ISSUE_SCHEMA = {
         "address": {"type": "string"},
         "address_id": {"type": "string"},
         "zipcode": {"type": "string"},
-        "lat": NUMERIC_STRING,
-        "long": NUMERIC_STRING,
+        "lat": NUMBER_OR_NUMERIC_STRING,
+        "long": NUMBER_OR_NUMERIC_STRING,
         "media_url": STRING_OR_NULL,
         "extended_attributes": {"type": "object"},
-        "distance": NUMERIC_STRING,  # Not in the actual schema
+        "distance": NUMBER_OR_NUMERIC_STRING,  # Not in the actual schema
     },
     "additionalProperties": False,
     "required": [

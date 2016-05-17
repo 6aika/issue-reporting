@@ -85,6 +85,7 @@ class XMLRenderer(BaseRenderer):
 
 
 class SparkJSONRenderer(JSONRenderer):
+    format = 'sjson'  # Short for sparkjson
     ensure_ascii = False
     charset = 'utf-8'
 

@@ -41,11 +41,14 @@ class FormatEnforcingAPIClient(APIClient):
         data["format"] = self.format
         resp = super().get(path, data, follow, **extra)
         if resp.status_code < 400:
-            assert self.format in resp["Content-Type"]
+            if self.format == "sjson":
+                assert "json" in resp["Content-Type"]
+            else:
+                assert self.format in resp["Content-Type"]
         return resp
 
 
-@pytest.fixture(params=['xml', 'json'])
+@pytest.fixture(params=['xml', 'json', 'sjson'])
 def mf_api_client(request):
     # mf_api_client is short for multiformat_api_client, fwiw. :)
     feac = FormatEnforcingAPIClient()
