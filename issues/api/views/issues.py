@@ -98,7 +98,7 @@ class IssueFilter(BaseFilterBackend):
 
 class IssueList(IssueViewBase, ListCreateAPIView):
     serializer_class = IssueSerializer
-    queryset = Issue.objects.all()
+    queryset = Issue.objects.filter(moderation='public')
     filter_backends = (
         IssueFilter,
     )
