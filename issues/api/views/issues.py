@@ -1,9 +1,16 @@
-from rest_framework.exceptions import ValidationError
+from rest_framework.filters import BaseFilterBackend
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, GenericAPIView
 
 from issues.api.serializers import IssueSerializer
+from issues.extensions import get_extensions_from_request, IssueExtension
 from issues.models import Issue
-from issues.services import attach_files_to_issue, get_issues, save_file_to_db
+from issues.services import attach_files_to_issue, save_file_to_db
+
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.db.models.sql import DistanceField
+from django.contrib.gis.geos import fromstr
+from django.contrib.gis.measure import D
+from django.db.models import Case, When
 
 
 class IssueViewBase(GenericAPIView):
@@ -12,57 +19,96 @@ class IssueViewBase(GenericAPIView):
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
-        ctx['extensions'] = bool(self.request.query_params.get('extensions') == 'true')
+        ctx['extensions'] = get_extensions_from_request(self.request)
         return ctx
+
+
+class IssueFilter(BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        extensions = get_extensions_from_request(request)
+
+        agency_responsible = request.query_params.get('agency_responsible')
+        end_date = request.query_params.get('end_date')
+        identifiers = request.query_params.get('service_request_id')
+        jurisdiction_id = request.query_params.get('jurisdiction_id')
+        service_codes = request.query_params.get('service_code')
+        start_date = request.query_params.get('start_date')
+        statuses = request.query_params.get('status')
+
+        if jurisdiction_id:
+            queryset = queryset.filter(jurisdiction__identifier=jurisdiction_id)
+
+        if identifiers:
+            queryset = queryset.filter(identifier__in=identifiers.split(','))
+        if service_codes:
+            queryset = queryset.filter(service_code__in=str(service_codes).split(','))
+        if start_date:
+            queryset = queryset.filter(requested_datetime__gte=start_date)
+        if end_date:
+            queryset = queryset.filter(requested_datetime__lte=end_date)
+        if statuses:
+            queryset = queryset.filter(status__in=statuses.split(','))
+        if agency_responsible:
+            queryset = queryset.filter(agency_responsible__iexact=agency_responsible)
+
+        queryset = self._apply_citysdk_filter(request, queryset)
+
+        for ex in extensions:
+            assert isinstance(ex, IssueExtension)
+            if ex.related_name:
+                queryset = queryset.select_related(ex.related_name)
+            queryset = ex.filter_issue_queryset(request, queryset, view)
+
+        order_by = request.query_params.get('order_by')
+
+        if order_by:
+            queryset = queryset.order_by(order_by)
+
+        # TODO: Implement pagination
+
+        return queryset
+
+    def _apply_citysdk_filter(self, request, queryset):
+        # Strictly speaking these are not queries that should be possible with a GeoReport v2
+        # core implementation, but as they do not require extra data in the models, it's worth it
+        # to have them available "for free".
+
+        lat = request.query_params.get('lat')
+        lon = request.query_params.get('long')
+        radius = request.query_params.get('radius')
+        updated_after = request.query_params.get('updated_after')
+        updated_before = request.query_params.get('updated_before')
+        if updated_after:
+            queryset = queryset.filter(updated_datetime__gt=updated_after)
+        if updated_before:
+            queryset = queryset.filter(updated_datetime__lt=updated_before)
+        if lat and lon:
+            point = fromstr('SRID=4326;POINT(%s %s)' % (lon, lat))
+            empty_point = fromstr('POINT(0 0)', srid=4326)
+            queryset = queryset.annotate(distance=Case(
+                When(location__distance_gt=(empty_point, D(m=0.0)), then=Distance('location', point)),
+                default=None,
+                output_field=DistanceField('m')
+            ))
+
+            if radius:
+                queryset = queryset.filter(location__distance_lte=(point, D(m=radius)))
+        return queryset
 
 
 class IssueList(IssueViewBase, ListCreateAPIView):
     serializer_class = IssueSerializer
-
-    def get_queryset(self):
-        request = self.request
-        service_object_id = request.query_params.get('service_object_id', None)
-        service_object_type = request.query_params.get('service_object_type', None)
-
-        if service_object_id is not None and service_object_type is None:
-            raise ValidationError(
-                "If service_object_id is included in the request, then service_object_type must be included.")
-
-        return get_issues(
-            jurisdiction_id=request.query_params.get('jurisdiction_id', None),
-            identifiers=request.query_params.get('service_request_id', None),
-            service_codes=request.query_params.get('service_code', None),
-            start_date=request.query_params.get('start_date', None),
-            end_date=request.query_params.get('end_date', None),
-            statuses=request.query_params.get('status', None),
-            # service_object_type=service_object_type,
-            # service_object_id=service_object_id,
-            lat=request.query_params.get('lat', None),
-            lon=request.query_params.get('long', None),
-            radius=request.query_params.get('radius', None),
-            updated_after=request.query_params.get('updated_after', None),
-            updated_before=request.query_params.get('updated_before', None),
-            search=request.query_params.get('search', None),
-            agency_responsible=request.query_params.get('agency_responsible', None),
-            order_by=request.query_params.get('order_by', None),
-            use_limit=True
-        )
+    queryset = Issue.objects.all()
+    filter_backends = (
+        IssueFilter,
+    )
 
     def perform_create(self, serializer):
         request = self.request
         new_issue = serializer.save()
-        # save files in the same manner as it's done in issue form
-        if request.FILES:
-            for filename, file in request.FILES.items():
-                save_file_to_db(file, new_issue.identifier)
-            files = MediaFile.objects.filter(form_id=new_issue.identifier)
-            if files:
-                attach_files_to_issue(request, new_issue, files)
-                # response_data = {
-                #    'identifier': new_issue.identifier,
-                #    'service_notice': ''
-                # }
-                # return Response(response_data, status=status.HTTP_201_CREATED)
+        extensions = get_extensions_from_request(request)
+        for ex in extensions:
+            ex.post_create_issue(request=request, issue=new_issue)
 
 
 class IssueDetail(IssueViewBase, RetrieveAPIView):
