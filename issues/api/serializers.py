@@ -2,21 +2,14 @@ from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import serializers
 
 from issues.api.utils import XMLDict
-from issues.models import Issue, Service, Task, Jurisdiction, MultipleJurisdictionsError
+from issues.excs import MultipleJurisdictionsError
+from issues.models import Issue, Service, Jurisdiction
 
 
 class ServiceSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Service
         fields = ['service_code', 'service_name', 'description', 'metadata', 'type', 'keywords', 'group']
-
-
-class TaskSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Task
-        fields = ['task_state', 'task_type', 'owner_name', 'task_modified', 'task_created']
 
 
 class IssueSerializer(serializers.ModelSerializer):
@@ -31,7 +24,8 @@ class IssueSerializer(serializers.ModelSerializer):
     )
     lat = serializers.FloatField(required=False)
     long = serializers.FloatField(required=False)
-    address = serializers.CharField(required=False, source="address_string", read_only=True)
+    service_name = serializers.SerializerMethodField(read_only=True)
+    service_request_id = serializers.CharField(read_only=True, source='identifier')
 
     class Meta:
         model = Issue
@@ -55,10 +49,6 @@ class IssueSerializer(serializers.ModelSerializer):
             'status_notes',
             'updated_datetime',
         ]
-        read_only_fields = [
-            'service_request_id',
-            'service_name',
-        ]
         write_only_fields = [  # This is not directly supported by DRF; see below for the patch
             'address_string',
             'first_name',
@@ -67,7 +57,7 @@ class IssueSerializer(serializers.ModelSerializer):
             'phone',
         ]
         extra_kwargs = {
-            'service_code': {'required': True}
+            'service_code': {'required': True},
         }
         for f in write_only_fields:
             extra_kwargs.setdefault(f, {})["write_only"] = True
@@ -78,29 +68,11 @@ class IssueSerializer(serializers.ModelSerializer):
         else:
             return None
 
+    def get_service_name(self, obj):
+        return obj.service.service_name
+
     def get_extended_attributes(self, instance):
-        if not self.context.get('extensions'):
-            return None
-
-        media_urls_value = sorted(instance.media_urls.values_list('media_url'))
-
-        tasks = TaskSerializer(many=True, read_only=True)
-        tasks.source_attrs = ["tasks"]
-        tasks_value = tasks.to_representation(
-            tasks.get_attribute(instance)
-        )
-
-        representation = {
-            'service_object_type': instance.service_object_type,
-            'service_object_id': instance.service_object_id,
-            'detailed_status': instance.detailed_status,
-            'title': instance.title,
-            'vote_counter': instance.vote_counter,
-            'media_urls': media_urls_value,
-            'tasks': tasks_value
-        }
-
-        return representation
+        return None  # TODO: Implement me
 
     def to_representation(self, instance):
         """
