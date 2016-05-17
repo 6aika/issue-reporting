@@ -56,12 +56,12 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
-        'rest_framework_xml.parsers.XMLParser',
     ),
     'DEFAULT_RENDERER_CLASSES': (
+        'issues.api.renderers.XMLRenderer',
+        'issues.api.renderers.SparkJSONRenderer',
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-        'issues.api.renderers.SmartXMLRenderer',
     ),
     'EXCEPTION_HANDLER': 'issues.api.utils.api_exception_handler'
 }
