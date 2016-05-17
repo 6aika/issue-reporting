@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 
 
-class ApiConfig(AppConfig):
+class IssuesAppConfig(AppConfig):
     name = 'issues'
+    verbose_name = 'Issues'

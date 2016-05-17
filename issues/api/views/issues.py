@@ -2,7 +2,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, GenericAPIView
 
 from issues.api.serializers import IssueSerializer
-from issues.models import MediaFile, Issue
+from issues.models import Issue
 from issues.services import attach_files_to_issue, get_issues, save_file_to_db
 
 
@@ -30,13 +30,13 @@ class IssueList(IssueViewBase, ListCreateAPIView):
 
         return get_issues(
             jurisdiction_id=request.query_params.get('jurisdiction_id', None),
-            service_request_ids=request.query_params.get('service_request_id', None),
+            identifiers=request.query_params.get('service_request_id', None),
             service_codes=request.query_params.get('service_code', None),
             start_date=request.query_params.get('start_date', None),
             end_date=request.query_params.get('end_date', None),
             statuses=request.query_params.get('status', None),
-            service_object_type=service_object_type,
-            service_object_id=service_object_id,
+            # service_object_type=service_object_type,
+            # service_object_id=service_object_id,
             lat=request.query_params.get('lat', None),
             lon=request.query_params.get('long', None),
             radius=request.query_params.get('radius', None),
@@ -54,19 +54,20 @@ class IssueList(IssueViewBase, ListCreateAPIView):
         # save files in the same manner as it's done in issue form
         if request.FILES:
             for filename, file in request.FILES.items():
-                save_file_to_db(file, new_issue.service_request_id)
-            files = MediaFile.objects.filter(form_id=new_issue.service_request_id)
+                save_file_to_db(file, new_issue.identifier)
+            files = MediaFile.objects.filter(form_id=new_issue.identifier)
             if files:
                 attach_files_to_issue(request, new_issue, files)
                 # response_data = {
-                #    'service_request_id': new_issue.service_request_id,
+                #    'identifier': new_issue.identifier,
                 #    'service_notice': ''
                 # }
                 # return Response(response_data, status=status.HTTP_201_CREATED)
 
 
-class IssueDetail(RetrieveAPIView):
-    lookup_url_kwarg = "service_request_id"
+class IssueDetail(IssueViewBase, RetrieveAPIView):
+    lookup_url_kwarg = "identifier"
+    lookup_field = "identifier"
     serializer_class = IssueSerializer
 
     def get_queryset(self):

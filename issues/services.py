@@ -1,27 +1,25 @@
 import logging
 import os
 import uuid
-from smtplib import SMTPException
 
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.db.models.sql import DistanceField
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
-from django.core.mail import EmailMessage
 from django.db.models import Case, When
 
-from issues.models import Issue, MediaFile, MediaURL
+from issues.models import Issue
 
 logger = logging.getLogger(__name__)
 
 
 def get_issues(
     jurisdiction_id=None,
-    service_codes=None, service_request_ids=None,
+    service_codes=None, identifiers=None,
     start_date=None, end_date=None,
     statuses=None, search=None,
-    service_object_type=None, service_object_id=None,
+    #service_object_type=None, service_object_id=None,
     updated_after=None, updated_before=None,
     lat=None, lon=None, radius=None,
     order_by=None, agency_responsible=None, use_limit=False
@@ -31,8 +29,8 @@ def get_issues(
     if jurisdiction_id:
         queryset = queryset.filter(jurisdiction__identifier=jurisdiction_id)
 
-    if service_request_ids:
-        queryset = queryset.filter(service_request_id__in=service_request_ids.split(','))
+    if identifiers:
+        queryset = queryset.filter(identifier__in=identifiers.split(','))
     if service_codes:
         queryset = queryset.filter(service_code__in=str(service_codes).split(','))
     if start_date:
@@ -44,18 +42,18 @@ def get_issues(
     if agency_responsible:
         queryset = queryset.filter(agency_responsible__iexact=agency_responsible)
 
-    if settings.SHOW_ONLY_MODERATED:
-        queryset = queryset.exclude(status__iexact='MODERATION')
-
     # start CitySDK Helsinki specific filtration
     if search:
-        queryset = queryset.filter(description__icontains=search) | queryset.filter(
-            title__icontains=search) | queryset.filter(address_string__icontains=search) | queryset.filter(
-            agency_responsible__icontains=search)
-    if service_object_type:
-        queryset = queryset.filter(service_object_type__icontains=service_object_type)
-    if service_object_id:
-        queryset = queryset.filter(service_object_id=service_object_id)
+        queryset = (
+            queryset.filter(description__icontains=search) |
+            #queryset.filter(title__icontains=search) |
+            queryset.filter(address__icontains=search) |
+            queryset.filter(agency_responsible__icontains=search)
+        )
+    # if service_object_type:
+    #     queryset = queryset.filter(service_object_type__icontains=service_object_type)
+    # if service_object_id:
+    #     queryset = queryset.filter(service_object_id=service_object_id)
     if updated_after:
         queryset = queryset.filter(updated_datetime__gt=updated_after)
     if updated_before:
@@ -78,9 +76,7 @@ def get_issues(
     if order_by:
         queryset = queryset.order_by(order_by)
 
-    if use_limit is True \
-        and start_date is None and end_date is None and updated_before is None and updated_after is None:
-        queryset = queryset[:settings.ISSUE_LIST_LIMIT]
+    # TODO: Implement pagination
 
     return queryset
 
@@ -115,26 +111,3 @@ def save_file_to_db(file, form_id):
     f_object = MediaFile(file=file, form_id=form_id, original_filename=original_filename, size=size)
     f_object.save()
     return file.name
-
-
-def issue_status_was_changed(issue_old, issue_new):
-    return issue_old.status != issue_new.status
-
-
-# send email notification about status change with link to issue details
-def send_email_notification(issue):
-    if issue.email is None:
-        logger.info('no email to send status update notification')
-        return
-    else:
-        issue_details_url = settings.ISSUE_DETAILS_URL.format(issue.pk)
-        email = EmailMessage(settings.EMAIL_SUBJECT, settings.EMAIL_TEXT
-                             .replace('{{ issue URL }}', issue_details_url), to=[issue.email])
-        email.content_subtype = "html"
-        try:
-            email.send(fail_silently=False)
-            logger.info('email about issue {} status update was sent to {}'
-                        .format(issue.service_request_id, issue.email))
-        except SMTPException:
-            logger.exception('cannot send email about issue {} status update was sent to {} due to error '
-                             .format(issue.service_request_id, issue.email))
