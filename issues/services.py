@@ -44,9 +44,6 @@ def get_issues(
     if agency_responsible:
         queryset = queryset.filter(agency_responsible__iexact=agency_responsible)
 
-    if settings.SHOW_ONLY_MODERATED:
-        queryset = queryset.exclude(status__iexact='MODERATION')
-
     # start CitySDK Helsinki specific filtration
     if search:
         queryset = queryset.filter(description__icontains=search) | queryset.filter(
@@ -78,17 +75,11 @@ def get_issues(
     if order_by:
         queryset = queryset.order_by(order_by)
 
-    if use_limit is True \
-        and start_date is None and end_date is None and updated_before is None and updated_after is None:
-        queryset = queryset[:settings.ISSUE_LIST_LIMIT]
-
     return queryset
 
 
 def get_issues_count():
     queryset = Issue.objects
-    if settings.SHOW_ONLY_MODERATED:
-        queryset = queryset.exclude(status__iexact='MODERATION')
     return queryset.count()
 
 
