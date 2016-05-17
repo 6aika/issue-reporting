@@ -5,7 +5,6 @@ from django.utils.crypto import get_random_string
 
 from issues.models import Issue
 from issues.models.jurisdictions import Jurisdiction
-from issues.tests.db_utils import execute_fixture
 from issues.tests.schemata import ISSUE_SCHEMA
 from issues.tests.utils import get_data_from_response
 
@@ -15,11 +14,6 @@ ISSUE_LIST_ENDPOINT = reverse_lazy('georeport/v2:issue-list')
 def assert_all_valid_issues(issue_list):
     for obj in issue_list:
         jsonschema.validate(obj, ISSUE_SCHEMA)
-
-
-@pytest.fixture()
-def testing_issues(db):
-    execute_fixture('insert_requests')
 
 
 def test_get_requests(testing_issues, mf_api_client):
@@ -44,10 +38,11 @@ def test_get_by_service_request_ids(testing_issues, mf_api_client):
             {'service_request_id': '1982hglaqe8pdnpophff,2981hglaqe8pdnpoiuyt'}
         )
     )
-    assert len(content) == 2
-    assert content[0]['service_request_id'] == '1982hglaqe8pdnpophff'
-    assert content[1]['service_request_id'] == '2981hglaqe8pdnpoiuyt'
     assert_all_valid_issues(content)
+    assert set(c['service_request_id'] for c in content) == {
+        '1982hglaqe8pdnpophff',
+        '2981hglaqe8pdnpoiuyt'
+    }
 
 
 def test_get_by_unexisting_request_id(testing_issues, mf_api_client):
@@ -108,8 +103,6 @@ def test_get_by_status(testing_issues, mf_api_client):
 
 @pytest.mark.parametrize("extensions", (False, True))
 def test_get(testing_issues, mf_api_client, extensions):
-    if extensions:
-        pytest.xfail("extensions not implemented rn")  # TODO: Fix me
     content = get_data_from_response(mf_api_client.get(
         ISSUE_LIST_ENDPOINT,
         {

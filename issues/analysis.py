@@ -3,7 +3,6 @@ import datetime
 from django.db.models import ExpressionWrapper, F, fields
 
 from issues.models import Issue
-from issues.services import get_issues
 
 
 def calc_fixing_time(service_code):
@@ -25,7 +24,7 @@ def get_open_by_service(service_code):
 
 
 def get_closed_by_service_code(service_code):
-    return get_issues(service_codes=service_code, statuses="closed")
+    return Issue.objects.filter(service_code=service_code, status="closed")
 
 
 # Returns average duration of closed issues (updated_datetime - requested_datetime)

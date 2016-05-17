@@ -3,10 +3,11 @@ from rest_framework import serializers
 
 from issues.api.utils import XMLDict
 from issues.excs import MultipleJurisdictionsError
-from issues.models import Issue, Service, Jurisdiction
+from issues.models import Issue, Jurisdiction, Service
 
 
 class ServiceSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Service
         fields = ['service_code', 'service_name', 'description', 'metadata', 'type', 'keywords', 'group']
@@ -71,8 +72,17 @@ class IssueSerializer(serializers.ModelSerializer):
     def get_service_name(self, obj):
         return obj.service.service_name
 
-    def get_extended_attributes(self, instance):
-        return None  # TODO: Implement me
+    def get_extended_attributes(self, obj):
+        extensions = self.context.get('extensions', ())
+        extended_attributes = {}
+        for ex in extensions:
+            extended_attributes.update(
+                ex.get_extended_attributes(
+                    issue=obj,
+                    context=self.context
+                ) or {}
+            )
+        return extended_attributes
 
     def to_representation(self, instance):
         """
@@ -85,7 +95,7 @@ class IssueSerializer(serializers.ModelSerializer):
             representation.pop("lat", None)
             representation.pop("long", None)
 
-        if representation.get('extended_attributes') is None:
+        if not self.context.get('extensions', ()):
             representation.pop('extended_attributes', None)
 
         if representation.get('distance') is None:
