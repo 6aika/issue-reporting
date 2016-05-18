@@ -46,3 +46,8 @@ ISSUE_SCHEMA = {
         "expected_datetime",
     ]
 }
+
+LIST_OF_ISSUES_SCHEMA = {
+    "type": "array",
+    "items": ISSUE_SCHEMA
+}
