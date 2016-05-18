@@ -64,7 +64,6 @@ def random_service(db):
         service_name="Test"
     )
 
-
 @pytest.fixture()
 def testing_issues(db):
     execute_fixture('insert_requests')

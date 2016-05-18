@@ -7,6 +7,7 @@
 
 django-environ==0.4.0
 django-formtools==1.0
+django-parler==1.6.3
 Django==1.9.2             # via django-environ, django-formtools
 djangorestframework==3.3.3
 geopy==1.11.0
