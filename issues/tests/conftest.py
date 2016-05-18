@@ -2,7 +2,8 @@ import pytest
 from django.utils.crypto import get_random_string
 from rest_framework.test import APIClient
 
-from issues.models import Service
+from issues.models import Issue, Service
+from issues.tests.db_utils import execute_fixture
 
 
 def pytest_configure():
@@ -62,3 +63,9 @@ def random_service(db):
         service_code=get_random_string(),
         service_name="Test"
     )
+
+
+@pytest.fixture()
+def testing_issues(db):
+    execute_fixture('insert_requests')
+    return Issue.objects.all()

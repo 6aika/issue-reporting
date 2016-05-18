@@ -18,6 +18,8 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'rest_framework',
     'issues',
+    'issues_citysdk',
+    'issues_media',
 ]
 
 MIDDLEWARE_CLASSES = [

@@ -10,7 +10,7 @@ from .views.statistics import (
 
 urlpatterns = [
     url(r'^requests/$', IssueList.as_view(), name='issue-list'),
-    url(r'^requests/(?P<service_request_id>\w+)/$', IssueDetail.as_view(), name='issue-details'),
+    url(r'^requests/(?P<identifier>\w+)/$', IssueDetail.as_view(), name='issue-detail'),
     url(r'^services/$', ServiceList.as_view(), name='service-list'),
     url(r'^agencies/$', get_agency_responsible_list, name='agency-responsible-list'),
     url(r'^statistics/services/$', get_services_statistics, name='statistics-services'),
