@@ -20,6 +20,9 @@ class IssueExtension(object):
         # TODO: Doc me
         pass
 
+    def parse_extended_attributes(self, issue, extended_attributes):
+        pass
+
 
 def get_extensions():
     """

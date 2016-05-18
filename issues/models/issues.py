@@ -71,7 +71,7 @@ class Issue(models.Model):
         if not self.service_id:
             from issues.models.services import Service
             self.service, created = Service.objects.get_or_create(service_code=self.service_code, defaults={
-                'service_name': self.service_code
+                'service_name': (getattr(self, 'service_name', None) or self.service_code)
             })
         if not self.service_code:
             self.service_code = self.service.service_code
