@@ -1,3 +1,4 @@
+from django.utils import translation
 from rest_framework.generics import ListAPIView
 
 from issues.api.serializers import ServiceSerializer
@@ -9,3 +10,9 @@ class ServiceList(ListAPIView):
     root_tag_name = 'services'
     serializer_class = ServiceSerializer
     queryset = Service.objects.all()
+
+    def initial(self, request, *args, **kwargs):
+        super(ServiceList, self).initial(request, *args, **kwargs)
+        locale = request.query_params.get("locale")
+        if locale:
+            translation.activate(locale)
