@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'issues',
     'issues_citysdk',
     'issues_media',
+    'issues_hel',
 ]
 
 MIDDLEWARE_CLASSES = [

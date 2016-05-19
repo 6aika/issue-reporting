@@ -11,6 +11,7 @@ django-parler==1.6.3
 Django==1.9.2             # via django-environ, django-formtools
 djangorestframework==3.3.3
 geopy==1.11.0
+iso8601==0.1.11
 lxml==3.6.0
 psycopg2==2.6.1
 python-dateutil==2.5.2

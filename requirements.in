@@ -8,3 +8,4 @@ requests~=2.9.1
 django-environ~=0.4.0
 lxml~=3.6.0
 django-parler
+iso8601
