@@ -18,6 +18,16 @@ class Service(TranslatableModel):
             ("blackbox", _("Black Box")),
         ]
     )
+    location_req = models.CharField(
+        verbose_name=_("location requirement"),
+        max_length=32,
+        default="coords_or_address",
+        choices=[
+            ("coords_or_address", _("require coordinates or address")),
+            ("coords", _("require coordinates (no address)")),
+            ("none", _("require no location")),
+        ],
+    )
 
     translations = TranslatedFields(
         service_name=models.CharField(max_length=120, blank=False),

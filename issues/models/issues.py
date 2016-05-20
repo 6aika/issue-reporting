@@ -54,6 +54,19 @@ class Issue(models.Model):
 
     def clean(self):
         self._cache_data()
+
+        if self.service.location_req == "coords_or_address":
+            if not (self.location or self.address):
+                raise ValidationError(
+                    _('%(service)s requires coordinates or an address') % {'service': self.service}
+                )
+
+        elif self.service.location_req == "coords":
+            if not self.location:
+                raise ValidationError(
+                    _('%(service)s requires coordinates') % {'service': self.service}
+                )
+
         return super(Issue, self).clean()
 
     def save(self, **kwargs):
@@ -77,9 +90,14 @@ class Issue(models.Model):
             self.identifier = self._generate_identifier()
         if not self.service_id:
             from issues.models.services import Service
-            self.service, created = Service.objects.get_or_create(service_code=self.service_code, defaults={
-                'service_name': (getattr(self, 'service_name', None) or self.service_code)
-            })
+            # TODO: There should probably be policy for and against this implicit service creation
+            self.service, created = Service.objects.get_or_create(
+                service_code=self.service_code,
+                defaults={
+                    'service_name': (getattr(self, 'service_name', None) or self.service_code),
+                    'location_req': 'none',
+                }
+            )
         if not self.service_code:
             self.service_code = self.service.service_code
         if not self.expected_datetime:

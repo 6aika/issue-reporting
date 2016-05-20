@@ -22,7 +22,8 @@ def test_get_with_log(random_service, mf_api_client):
     issue = Issue.objects.create(
         service=random_service,
         description=get_random_string(),
-        requested_datetime=creation
+        requested_datetime=creation,
+        address='Test Street 10',
     )
     issue.log_entries.create(
         time=creation + timedelta(days=2),
@@ -63,11 +64,13 @@ def test_handler_query(random_service, mf_api_client):
     handlerless_issue = Issue.objects.create(
         service=random_service,
         description=get_random_string(),
+        address='Test Street 10',
     )
     for x in range(3):
         handlerful_issue = Issue.objects.create(
             service=random_service,
             description=get_random_string(),
+            address='Test Street 10',
         )
         handlerful_issue.log_entries.create(
             status='allocated',

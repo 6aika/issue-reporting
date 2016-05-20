@@ -234,6 +234,7 @@ def test_get_issue_multi_jurisdiction_filters_correctly(mf_api_client, random_se
                 jurisdiction=j,
                 service=random_service,
                 description=get_random_string(),
+                address='Test Street 10',
             )
     for j in jurisdictions:
         issues = get_data_from_response(

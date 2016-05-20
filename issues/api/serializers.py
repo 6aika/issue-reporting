@@ -110,18 +110,13 @@ class IssueSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Service code %s is invalid' % service_code)
         data['service'] = service
 
-        lat = data.get('lat')
-        long = data.get('long')
-        service_object_id = data.get('service_object_id')
-        if (lat is None or long is None) and service_object_id is None:
-            raise serializers.ValidationError('Currently all service types require location, '
-                                              'either lat/long or service_object_id.')
-        data['location'] = GEOSGeometry(
-            'SRID=4326;POINT(%s %s)' % (
-                data.pop('long', 0),
-                data.pop('lat', 0)
+        lat = data.pop('lat', None)
+        long = data.pop('long', None)
+        if lat and long:
+            data['location'] = GEOSGeometry(
+                'SRID=4326;POINT(%s %s)' % (long, lat)
             )
-        )
+        # TODO: service_object_id POST support here?
 
         if not data.get('jurisdiction'):
             try:
