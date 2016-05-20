@@ -2,7 +2,7 @@ import pytest
 
 from issues.models import Issue
 from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
-from issues.tests.utils import get_data_from_response, ISSUE_LIST_ENDPOINT
+from issues.tests.utils import get_data_from_response, ISSUE_LIST_ENDPOINT, verify_issue
 
 
 def test_get_requests(testing_issues, mf_api_client):
@@ -16,7 +16,7 @@ def test_get_by_service_request_id(testing_issues, mf_api_client):
         schema=LIST_OF_ISSUES_SCHEMA
     )
     assert len(content) == 1
-    assert content[0]['service_request_id'] == '1982hglaqe8pdnpophff'
+    verify_issue(content[0])
 
 
 def test_get_by_service_request_ids(testing_issues, mf_api_client):
@@ -31,6 +31,7 @@ def test_get_by_service_request_ids(testing_issues, mf_api_client):
         '1982hglaqe8pdnpophff',
         '2981hglaqe8pdnpoiuyt'
     }
+    assert all(verify_issue(c) for c in content)
 
 
 def test_get_by_unexisting_request_id(testing_issues, mf_api_client):
@@ -48,6 +49,7 @@ def test_get_by_service_code(testing_issues, mf_api_client):
     )
 
     for issue in content:
+        assert verify_issue(issue)
         assert issue['service_code'] == service_code
 
 
@@ -62,6 +64,7 @@ def test_get_by_start_date(testing_issues, mf_api_client):
 
     assert len(content) == expected_number_of_requests
     for issue in content:
+        assert verify_issue(issue)
         assert issue['requested_datetime'] > start_date
 
 
@@ -75,8 +78,9 @@ def test_get_by_end_data(testing_issues, mf_api_client):
     )
 
     assert len(content) == expected_number_of_requests
-    for request in content:
-        assert request['requested_datetime'] < end_date
+    for issue in content:
+        assert verify_issue(issue)
+        assert issue['requested_datetime'] < end_date
 
 
 def test_get_by_status(testing_issues, mf_api_client):
@@ -90,6 +94,7 @@ def test_get_by_status(testing_issues, mf_api_client):
 
     assert len(content) == expected_number_of_requests
     for issue in content:
+        assert verify_issue(issue)
         assert issue['status'] == issue_status
 
 
@@ -106,7 +111,7 @@ def test_get(testing_issues, mf_api_client, extensions):
         ),
         schema=LIST_OF_ISSUES_SCHEMA
     )
-
+    assert verify_issue(content[0])
     if extensions:
         assert 'extended_attributes' in content[0]
     else:
@@ -124,6 +129,7 @@ def test_get_by_updated_after(testing_issues, mf_api_client):
 
     assert len(content) == expected_number_of_requests
     for issue in content:
+        assert verify_issue(issue)
         assert issue['updated_datetime'] > updated_after
 
 
@@ -138,6 +144,7 @@ def test_get_by_updated_before(testing_issues, mf_api_client):
 
     assert len(content) == expected_number_of_requests
     for issue in content:
+        assert verify_issue(issue)
         assert issue['updated_datetime'] < updated_before
 
 
@@ -155,4 +162,5 @@ def test_get_within_radius(testing_issues, mf_api_client):
     assert len(content) == expected_number_of_requests
 
     for issue in content:
+        assert verify_issue(issue)
         assert float(issue['distance']) < 1000
