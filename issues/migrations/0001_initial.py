@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('submitter_first_name', models.CharField(blank=True, max_length=140)),
                 ('submitter_last_name', models.CharField(blank=True, max_length=140)),
                 ('submitter_phone', models.CharField(blank=True, max_length=140)),
-                ('location', django.contrib.gis.db.models.fields.PointField(db_index=True, null=True, srid=4326)),
+                ('location', django.contrib.gis.db.models.fields.PointField(db_index=True, blank=True, null=True, srid=4326)),
             ],
         ),
         migrations.CreateModel(

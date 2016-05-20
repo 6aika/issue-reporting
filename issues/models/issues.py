@@ -44,7 +44,7 @@ class Issue(models.Model):
     submitter_first_name = models.CharField(max_length=140, blank=True)
     submitter_last_name = models.CharField(max_length=140, blank=True)
     submitter_phone = models.CharField(max_length=140, blank=True)
-    location = models.PointField(srid=4326, null=True, db_index=True)
+    location = models.PointField(srid=4326, blank=True, null=True, db_index=True)
     moderation = models.CharField(
         max_length=16, default='public', choices=MODERATION_STATUS_CHOICES, editable=False, db_index=True
     )
