@@ -41,13 +41,11 @@ def update_local_issue(
             setattr(issue, field.attname, value)
     if "long" in gr_issue and "lat" in gr_issue:
         issue.location = GEOSGeometry(
-            'SRID=4326;POINT(%s %s)' % (
-                gr_issue.pop('long'),
-                gr_issue.pop('lat')
-            ))
+            'SRID=4326;POINT(%s %s)' % (gr_issue.pop('long'), gr_issue.pop('lat'))
+        )
     # This has no direct mapping in our schema, but it can be used by implicit autocreation of services
     issue.service_name = gr_issue.pop('service_name', None)
-
+    issue._cache_data()
     issue.full_clean()
     issue.save()
 
@@ -65,7 +63,7 @@ def update_from_georeport_v2_url(
     url,
     params=None,
     id_namespace='',
-):
+):  # pragma: no cover
     resp = requests.get(url, params)
     if 'xml' in resp.headers['Content-Type']:
         json_data = transform_xml_to_json(resp.content)

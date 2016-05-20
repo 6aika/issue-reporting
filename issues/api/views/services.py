@@ -11,8 +11,7 @@ class ServiceList(ListAPIView):
     serializer_class = ServiceSerializer
     queryset = Service.objects.all()
 
-    def initial(self, request, *args, **kwargs):
-        super(ServiceList, self).initial(request, *args, **kwargs)
-        locale = request.query_params.get("locale")
-        if locale:
-            translation.activate(locale)
+    def dispatch(self, request, *args, **kwargs):
+        locale = (request.GET.get("locale") or translation.get_language())
+        with translation.override(locale):
+            return super(ServiceList, self).dispatch(request, *args, **kwargs)

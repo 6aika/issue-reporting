@@ -2,8 +2,11 @@ import datetime
 import string
 
 from django.contrib.gis.db import models
+from django.core.exceptions import ValidationError
+from django.template.defaultfilters import truncatechars
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+from django.utils.six import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 ID_KEYSPACE = string.ascii_lowercase + string.digits
@@ -20,6 +23,7 @@ MODERATION_STATUS_CHOICES = [
 ]
 
 
+@python_2_unicode_compatible
 class Issue(models.Model):
     jurisdiction = models.ForeignKey('issues.Jurisdiction', on_delete=models.PROTECT)
     service = models.ForeignKey('issues.Service')
@@ -40,13 +44,29 @@ class Issue(models.Model):
     submitter_first_name = models.CharField(max_length=140, blank=True)
     submitter_last_name = models.CharField(max_length=140, blank=True)
     submitter_phone = models.CharField(max_length=140, blank=True)
-    location = models.PointField(srid=4326, null=True, db_index=True)
+    location = models.PointField(srid=4326, blank=True, null=True, db_index=True)
     moderation = models.CharField(
         max_length=16, default='public', choices=MODERATION_STATUS_CHOICES, editable=False, db_index=True
     )
 
+    def __str__(self):
+        return "%s: %s" % (self.identifier, truncatechars(self.description, 50))
+
     def clean(self):
         self._cache_data()
+
+        if self.service.location_req == "coords_or_address":
+            if not (self.location or self.address):
+                raise ValidationError(
+                    _('%(service)s requires coordinates or an address') % {'service': self.service}
+                )
+
+        elif self.service.location_req == "coords":
+            if not self.location:
+                raise ValidationError(
+                    _('%(service)s requires coordinates') % {'service': self.service}
+                )
+
         return super(Issue, self).clean()
 
     def save(self, **kwargs):
@@ -70,9 +90,14 @@ class Issue(models.Model):
             self.identifier = self._generate_identifier()
         if not self.service_id:
             from issues.models.services import Service
-            self.service, created = Service.objects.get_or_create(service_code=self.service_code, defaults={
-                'service_name': (getattr(self, 'service_name', None) or self.service_code)
-            })
+            # TODO: There should probably be policy for and against this implicit service creation
+            self.service, created = Service.objects.get_or_create(
+                service_code=self.service_code,
+                defaults={
+                    'service_name': (getattr(self, 'service_name', None) or self.service_code),
+                    'location_req': 'none',
+                }
+            )
         if not self.service_code:
             self.service_code = self.service.service_code
         if not self.expected_datetime:

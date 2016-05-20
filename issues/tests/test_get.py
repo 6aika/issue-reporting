@@ -1,14 +1,8 @@
-import jsonschema
 import pytest
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.utils.crypto import get_random_string
 
 from issues.models import Issue
-from issues.models.jurisdictions import Jurisdiction
-from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
-from issues.tests.utils import get_data_from_response
-
-ISSUE_LIST_ENDPOINT = reverse_lazy('georeport/v2:issue-list')
+from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
+from issues.tests.utils import get_data_from_response, ISSUE_LIST_ENDPOINT, verify_issue
 
 
 def test_get_requests(testing_issues, mf_api_client):
@@ -22,7 +16,7 @@ def test_get_by_service_request_id(testing_issues, mf_api_client):
         schema=LIST_OF_ISSUES_SCHEMA
     )
     assert len(content) == 1
-    assert content[0]['service_request_id'] == '1982hglaqe8pdnpophff'
+    verify_issue(content[0])
 
 
 def test_get_by_service_request_ids(testing_issues, mf_api_client):
@@ -37,6 +31,7 @@ def test_get_by_service_request_ids(testing_issues, mf_api_client):
         '1982hglaqe8pdnpophff',
         '2981hglaqe8pdnpoiuyt'
     }
+    assert all(verify_issue(c) for c in content)
 
 
 def test_get_by_unexisting_request_id(testing_issues, mf_api_client):
@@ -54,6 +49,7 @@ def test_get_by_service_code(testing_issues, mf_api_client):
     )
 
     for issue in content:
+        assert verify_issue(issue)
         assert issue['service_code'] == service_code
 
 
@@ -68,6 +64,7 @@ def test_get_by_start_date(testing_issues, mf_api_client):
 
     assert len(content) == expected_number_of_requests
     for issue in content:
+        assert verify_issue(issue)
         assert issue['requested_datetime'] > start_date
 
 
@@ -81,8 +78,9 @@ def test_get_by_end_data(testing_issues, mf_api_client):
     )
 
     assert len(content) == expected_number_of_requests
-    for request in content:
-        assert request['requested_datetime'] < end_date
+    for issue in content:
+        assert verify_issue(issue)
+        assert issue['requested_datetime'] < end_date
 
 
 def test_get_by_status(testing_issues, mf_api_client):
@@ -96,6 +94,7 @@ def test_get_by_status(testing_issues, mf_api_client):
 
     assert len(content) == expected_number_of_requests
     for issue in content:
+        assert verify_issue(issue)
         assert issue['status'] == issue_status
 
 
@@ -112,7 +111,7 @@ def test_get(testing_issues, mf_api_client, extensions):
         ),
         schema=LIST_OF_ISSUES_SCHEMA
     )
-
+    assert verify_issue(content[0])
     if extensions:
         assert 'extended_attributes' in content[0]
     else:
@@ -130,6 +129,7 @@ def test_get_by_updated_after(testing_issues, mf_api_client):
 
     assert len(content) == expected_number_of_requests
     for issue in content:
+        assert verify_issue(issue)
         assert issue['updated_datetime'] > updated_after
 
 
@@ -144,6 +144,7 @@ def test_get_by_updated_before(testing_issues, mf_api_client):
 
     assert len(content) == expected_number_of_requests
     for issue in content:
+        assert verify_issue(issue)
         assert issue['updated_datetime'] < updated_before
 
 
@@ -161,84 +162,5 @@ def test_get_within_radius(testing_issues, mf_api_client):
     assert len(content) == expected_number_of_requests
 
     for issue in content:
+        assert verify_issue(issue)
         assert float(issue['distance']) < 1000
-
-
-@pytest.mark.django_db
-def test_post_issue_no_jurisdiction(mf_api_client, random_service):
-    assert not Jurisdiction.objects.exists()
-    for attempt in [1, 2]:
-        issue = get_data_from_response(
-            mf_api_client.post(ISSUE_LIST_ENDPOINT, {
-                "service_code": random_service.service_code,
-                "lat": 30,
-                "long": 30,
-                "description": get_random_string(),
-            }),
-            201,
-            schema=ISSUE_SCHEMA
-        )
-        assert Issue.objects.filter(identifier=issue['service_request_id']).exists()
-        assert Jurisdiction.objects.filter(identifier="default").exists()  # default Jurisdiction was created
-        assert Jurisdiction.objects.count() == 1
-
-        issue = get_data_from_response(
-            mf_api_client.get(
-                reverse('georeport/v2:issue-detail', kwargs={'identifier': issue['service_request_id']}),
-            ), schema=ISSUE_SCHEMA
-        )
-
-
-@pytest.mark.django_db
-def test_post_issue_multi_jurisdiction(mf_api_client, random_service):
-    assert not Jurisdiction.objects.exists()  # Precondition check
-    Jurisdiction.objects.create(identifier="j1", name="j1")
-    Jurisdiction.objects.create(identifier="j2", name="j2")
-    # Can't post without a Jurisdiction when there are multiple
-    get_data_from_response(
-        mf_api_client.post(ISSUE_LIST_ENDPOINT, {
-            "service_code": random_service.service_code,
-            "lat": 30,
-            "long": 30,
-            "description": get_random_string(),
-        }),
-        400
-    )
-    for j in Jurisdiction.objects.all():
-        # Can't post without a Jurisdiction when there are multiple
-        issue = get_data_from_response(
-            mf_api_client.post(ISSUE_LIST_ENDPOINT, {
-                "jurisdiction_id": j.identifier,
-                "service_code": random_service.service_code,
-                "lat": 30,
-                "long": 30,
-                "description": get_random_string(),
-            }),
-            201,
-            schema=ISSUE_SCHEMA
-        )
-
-        assert Issue.objects.get(identifier=issue["service_request_id"]).jurisdiction == j
-
-
-@pytest.mark.django_db
-def test_get_issue_multi_jurisdiction_filters_correctly(mf_api_client, random_service):
-    assert not Jurisdiction.objects.exists()  # Precondition check
-    jurisdictions = [
-        Jurisdiction.objects.create(identifier="j%s" % x, name="j%s" % x)
-        for x in range(4)
-    ]
-    for j in jurisdictions:
-        for x in range(5):
-            Issue.objects.create(
-                jurisdiction=j,
-                service=random_service,
-                description=get_random_string(),
-            )
-    for j in jurisdictions:
-        issues = get_data_from_response(
-            mf_api_client.get(ISSUE_LIST_ENDPOINT, {'jurisdiction_id': j.identifier}),
-            schema=LIST_OF_ISSUES_SCHEMA
-        )
-        # Only getting the Issues for the requested Jurisdiction:
-        assert len(issues) == Issue.objects.filter(jurisdiction=j).count()

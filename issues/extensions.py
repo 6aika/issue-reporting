@@ -8,19 +8,19 @@ class IssueExtension(object):
     prefetch_name = None
     search_fields = ()
 
-    def filter_issue_queryset(self, request, queryset, view):
+    def filter_issue_queryset(self, request, queryset, view):  # pragma: no cover
         # TODO: Doc me
         return queryset
 
-    def get_extended_attributes(self, issue, context=None):
+    def get_extended_attributes(self, issue, context=None):  # pragma: no cover
         # TODO: Doc me
         return None
 
-    def post_create_issue(self, request, issue):
+    def post_create_issue(self, request, issue):  # pragma: no cover
         # TODO: Doc me
         pass
 
-    def parse_extended_attributes(self, issue, extended_attributes):
+    def parse_extended_attributes(self, issue, extended_attributes):  # pragma: no cover
         pass
 
 

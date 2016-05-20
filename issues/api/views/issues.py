@@ -79,7 +79,7 @@ class IssueFilter(BaseFilterBackend):
             queryset = queryset.filter(updated_datetime__gt=updated_after)
         if updated_before:
             queryset = queryset.filter(updated_datetime__lt=updated_before)
-        if lat and lon:
+        if lat and lon and radius:
             point = fromstr('SRID=4326;POINT(%s %s)' % (lon, lat))
             empty_point = fromstr('POINT(0 0)', srid=4326)
             queryset = queryset.annotate(distance=Case(
@@ -88,8 +88,7 @@ class IssueFilter(BaseFilterBackend):
                 output_field=DistanceField('m')
             ))
 
-            if radius:
-                queryset = queryset.filter(location__distance_lte=(point, D(m=radius)))
+            queryset = queryset.filter(location__distance_lte=(point, D(m=radius)))
         return queryset
 
 
