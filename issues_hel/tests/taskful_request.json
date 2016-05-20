@@ -1,0 +1,68 @@
+{
+  "service_request_id": "3qp16kaphhsc78uc422l",
+  "service_code": "584",
+  "description": "Olen jostain kuullut, että uusia kaupunginosia rakennettaessa suunnitellaan tiettyjä asuntoneliöitä kohti tietty määrä raskaan liikenteen pysäköintipaikkoja. Pitääkö paikkansa ja jos pitää, niin mikä tämä määre on?",
+  "requested_datetime": "2016-03-22T13:27:16+02:00",
+  "updated_datetime": "2016-03-24T16:06:40+02:00",
+  "status": "closed",
+  "status_notes": "Kiitos kysymyksestänne koskien kuorma-autojen pysäköintipaikkoja uusissa kaupunginosissa Helsingissä.\n\nKaupunkisuunnittelulautakunnassa 15.12.2015 hyväksytyn Asuintonttien pysäköintipaikkamäärien laskentaohjeen mukaan kantakaupungin etelä- ja pohjoisosissa, merenrantaisilla alueilla, sekä Lauttasaaressa asukkaiden kuorma-autoille ei tarvitse osoittaa pysäköintipaikkoja.\n\nEsikaupunkialueilla etäisyyden ollessa linnuntietä alle 300 metriä lähimmälle metro- tai juna-asemalle pysäköintipaikkoja asukkaiden kuorma-autoille ei erikseen tarvitse osoittaa tonteilta. Normaali kadunvarsipysäköinti suunnitellaan alueittain tapauskohtaisesti. \n\nMuilla esikaupunkialueilla asukkaiden kuorma-autoille osoitetaan paikkoja vähintään 1 ap / 15 000 k-m2. Asukkaiden kuorma-autojen paikkoja ei tarvitse rakentaa tonteille, mikäli alueen kaduilta ja muilta yleisiltä alueilta on osoitettavissa riittävä määrä paikkoja.\n\nLisätietoja kaupunkisuunnittelulautakunnan päätöksestä: http://dev.hel.fi/paatokset/asia/hel-2015-010556/kslk-2015-31/\nYstävällisin terveisin\n \nLiikennesuunnittelupäällikön sihteeri\nKatja Lappi",
+  "agency_responsible": "Kaupunkisuunnitteluvirasto",
+  "service_name": "",
+  "long": "60.451667",
+  "lat": "22.266944",
+  "extended_attributes": {
+    "title": "Raskaiden ajoneuvojen parkkipaikoista",
+    "tasks": [
+      {
+        "task_created": "2016-03-22T13:27:16+02:00",
+        "task_modified": "2016-03-22T15:32:04+02:00",
+        "owner_name": "Kaupunginkanslia",
+        "task_type": "assigned",
+        "task_state": "re_assigned"
+      },
+      {
+        "task_created": "2016-03-22T15:32:04+02:00",
+        "task_modified": "2016-03-23T09:53:05+02:00",
+        "owner_name": "Rakennusvirasto",
+        "task_type": "assigned",
+        "task_state": "re_assigned"
+      },
+      {
+        "task_created": "2016-03-23T09:53:06+02:00",
+        "task_modified": "2016-03-23T09:53:36+02:00",
+        "owner_name": "Rakennusvirasto",
+        "task_type": "wait_for_answer",
+        "task_state": "re_assigned"
+      },
+      {
+        "task_created": "2016-03-23T09:53:36+02:00",
+        "task_modified": "2016-03-23T10:54:30+02:00",
+        "owner_name": "Kaupunkisuunnitteluvirasto",
+        "task_type": "assigned",
+        "task_state": "re_assigned"
+      },
+      {
+        "task_created": "2016-03-23T10:54:30+02:00",
+        "task_modified": "2016-03-23T15:19:41+02:00",
+        "owner_name": "Kaupunkisuunnitteluvirasto",
+        "task_type": "wait_for_answer",
+        "task_state": "completed"
+      },
+      {
+        "task_created": "2016-03-23T11:00:32+02:00",
+        "task_modified": "2016-03-23T13:40:10+02:00",
+        "owner_name": "Kaupunkisuunnitteluvirasto",
+        "task_type": "wait_for_comment",
+        "task_state": "completed"
+      },
+      {
+        "task_created": "2016-03-23T15:20:08+02:00",
+        "task_modified": "2016-03-23T15:20:48+02:00",
+        "owner_name": "Kaupunkisuunnitteluvirasto",
+        "task_type": "informed",
+        "task_state": "closed"
+      }
+    ],
+    "detailed_status": "PROCESSED"
+  }
+}
