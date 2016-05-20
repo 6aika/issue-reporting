@@ -2,8 +2,11 @@ import datetime
 import string
 
 from django.contrib.gis.db import models
+from django.core.exceptions import ValidationError
+from django.template.defaultfilters import truncatechars
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+from django.utils.six import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 ID_KEYSPACE = string.ascii_lowercase + string.digits
@@ -20,6 +23,7 @@ MODERATION_STATUS_CHOICES = [
 ]
 
 
+@python_2_unicode_compatible
 class Issue(models.Model):
     jurisdiction = models.ForeignKey('issues.Jurisdiction', on_delete=models.PROTECT)
     service = models.ForeignKey('issues.Service')
@@ -44,6 +48,9 @@ class Issue(models.Model):
     moderation = models.CharField(
         max_length=16, default='public', choices=MODERATION_STATUS_CHOICES, editable=False, db_index=True
     )
+
+    def __str__(self):
+        return "%s: %s" % (self.identifier, truncatechars(self.description, 50))
 
     def clean(self):
         self._cache_data()
