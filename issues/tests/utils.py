@@ -1,8 +1,11 @@
 import json
 
 import jsonschema
+from django.core.urlresolvers import reverse_lazy
 
 from issues.api.transforms import transform_xml_to_json
+
+ISSUE_LIST_ENDPOINT = reverse_lazy('georeport/v2:issue-list')
 
 
 def get_data_from_response(response, status_code=200, schema=None):

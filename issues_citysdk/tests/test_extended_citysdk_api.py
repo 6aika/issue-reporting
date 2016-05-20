@@ -1,7 +1,6 @@
 from issues.tests.conftest import mf_api_client, testing_issues  # noqa
 from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
-from issues.tests.test_feedbacks_api import ISSUE_LIST_ENDPOINT
-from issues.tests.utils import get_data_from_response
+from issues.tests.utils import get_data_from_response, ISSUE_LIST_ENDPOINT
 from issues_citysdk.models import Issue_CitySDK
 
 
