@@ -9,7 +9,10 @@ def spark_node(node, in_list=False):
     """
     "Sparkify" a single XML node.
 
+    :param node: The LXML node to sparkify
     :type node: lxml.etree.Element
+    :param in_list: Internal flag; used by this fn when sparkifying a list
+    :type in_list: bool
     :return: list|dict
     """
     kids = node.getchildren()

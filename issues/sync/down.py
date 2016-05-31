@@ -2,9 +2,11 @@ import json
 from copy import deepcopy
 
 import requests
+from django.conf import settings
 from django.contrib.gis.geos import GEOSGeometry
 from django.db.models.fields import DateTimeField
 from django.db.transaction import atomic
+from django.utils import translation
 
 from issues.api.transforms import transform_xml_to_json
 from issues.extensions import get_extensions
@@ -15,11 +17,13 @@ from iso8601 import parse_date
 @atomic
 def update_local_issue(
     gr_issue,
-    id_namespace=''
+    id_namespace='',
+    service_namespace='',
 ):
     """
     :param gr_issue: GeoReportv2 Issue structure (as a dict)
-    :param id_namespace: Namespace to prepend to identifiers
+    :param id_namespace: String to prepend to request identifiers
+    :param service_namespace: String to prepend to service codes
     :return: The created/updated Issue and a `created` flag
     """
 
@@ -43,6 +47,8 @@ def update_local_issue(
         issue.location = GEOSGeometry(
             'SRID=4326;POINT(%s %s)' % (gr_issue.pop('long'), gr_issue.pop('lat'))
         )
+    if 'service_code' in gr_issue:
+        gr_issue['service_code'] = '%s%s' % (service_namespace, gr_issue['service_code'])
     # This has no direct mapping in our schema, but it can be used by implicit autocreation of services
     issue.service_name = gr_issue.pop('service_name', None)
     issue._cache_data()
@@ -64,11 +70,15 @@ def update_from_georeport_v2_url(
     params=None,
     id_namespace='',
 ):  # pragma: no cover
+
+    if not translation.get_language():  # For interactive (shell) use: ensure a language is set
+        translation.activate(settings.LANGUAGE_CODE)
+
     resp = requests.get(url, params)
     if 'xml' in resp.headers['Content-Type']:
         json_data = transform_xml_to_json(resp.content)
     else:
-        json_data = resp.content
+        json_data = resp.text
     issue_datas = json.loads(json_data)
 
     return [

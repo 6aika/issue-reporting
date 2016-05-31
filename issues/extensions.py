@@ -9,18 +9,62 @@ class IssueExtension(object):
     search_fields = ()
 
     def filter_issue_queryset(self, request, queryset, view):  # pragma: no cover
-        # TODO: Doc me
+        """
+        Filter a queryset of Issues given a DRF Request and view.
+
+        This allows extensions to hook into GET queries for requests.
+
+        :param request: DRF request
+        :type request: rest_framework.request.Request
+        :param queryset: Queryset of issues
+        :type queryset: QuerySet[Issue]
+        :param view: The DRF view that was used for this request.
+        :type view: rest_framework.views.APIView
+        :return: The queryset -- even if it wasn't modified.
+        :rtype: QuerySet[Issue]
+        """
         return queryset
 
     def get_extended_attributes(self, issue, context=None):  # pragma: no cover
-        # TODO: Doc me
+        """
+        Get a dictionary of additional `extended_attributes` for a given issue.
+
+        All extensions' `extended_attributes` will be merged into the issue's
+        serialization output.
+
+        :param issue: Issue
+        :type issue: issues.models.Issue
+        :param context: Serializer context.
+        :type context: dict|None
+        :return: New extended attributes (or none)
+        :rtype: dict[str, object]|None
+        """
         return None
 
     def post_create_issue(self, request, issue):  # pragma: no cover
-        # TODO: Doc me
+        """
+        Hook for after an issue is created through the API.
+
+        The given issue has been saved already, naturally.
+
+        :param request: The request that caused this issue to be created.
+        :type request: rest_framework.request.Request
+        :param issue: The issue that was created.
+        :type issue: issues.models.Issue
+        """
         pass
 
     def parse_extended_attributes(self, issue, extended_attributes):  # pragma: no cover
+        """
+        Hook for parsing extension-specific data from an extended attributes dictionary.
+
+        This is called by the GeoReport downloader.
+
+        :param issue: The issue that was created.
+        :type issue: issues.models.Issue
+        :param extended_attributes: Extended attributes dict
+        :type extended_attributes: dict[str, object]
+        """
         pass
 
 
