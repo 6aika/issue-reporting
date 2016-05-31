@@ -64,9 +64,11 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'issues.api.pagination.GeoReportV2Pagination',
+    'PAGE_SIZE': 100,
+    'MAX_PAGE_SIZE': 500,
     'EXCEPTION_HANDLER': 'issues.api.utils.api_exception_handler'
 }
-
 
 DATABASES = {
     'default': env.db_url(default='postgis://postgres:cfh@localhost:5432/cfh')
