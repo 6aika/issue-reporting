@@ -70,7 +70,11 @@ class IssueSerializer(serializers.ModelSerializer):
             return None
 
     def get_service_name(self, obj):
-        return obj.service.service_name
+        return obj.service.safe_translation_getter(
+            "service_name",
+            default=obj.service.service_code,
+            any_language=True
+        )
 
     def get_extended_attributes(self, obj):
         extensions = self.context.get('extensions', ())
