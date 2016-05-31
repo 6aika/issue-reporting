@@ -8,7 +8,10 @@ Based on [hep7agon/city-feedback-hub](https://github.com/hep7agon/city-feedback-
 
 This project implements a civic issue reporting system with a [GeoReport v2](http://wiki.open311.org/GeoReport_v2/) API.
 
-This repository may be used either as a standalone GeoReport V2 API server, or its components may be used as Django applications.
+This repository may be used either as a standalone GeoReport V2 API server,
+or its components may be used as Django applications.
+
+When installing via PyPI or `setup.py`, the standalone project is _not_ available, but the Django applications are.
 
 ## Requirements
 
