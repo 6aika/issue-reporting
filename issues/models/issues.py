@@ -7,6 +7,7 @@ from django.template.defaultfilters import truncatechars
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.six import python_2_unicode_compatible
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 ID_KEYSPACE = string.ascii_lowercase + string.digits
@@ -104,4 +105,4 @@ class Issue(models.Model):
             from issues.analysis import calc_fixing_time
             fixing_time = calc_fixing_time(self.service_code)
             waiting_time = datetime.timedelta(milliseconds=fixing_time)
-            self.expected_datetime = datetime.datetime.now() + waiting_time
+            self.expected_datetime = now() + waiting_time
