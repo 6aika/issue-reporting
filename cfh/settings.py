@@ -85,3 +85,4 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 WSGI_APPLICATION = 'cfh.wsgi.application'
+ISSUES_DEFAULT_MODERATION_STATUS = env.str('ISSUES_DEFAULT_MODERATION_STATUS', default='public')
