@@ -1,14 +1,16 @@
 import datetime
 import string
 
-from django.contrib.gis.db import models
 from django.core.exceptions import ValidationError
+from django.db import models
 from django.template.defaultfilters import truncatechars
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.six import python_2_unicode_compatible
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
+
+from issues.fields import FallbackPointField
 
 ID_KEYSPACE = string.ascii_lowercase + string.digits
 
@@ -45,7 +47,9 @@ class Issue(models.Model):
     submitter_first_name = models.CharField(max_length=140, blank=True)
     submitter_last_name = models.CharField(max_length=140, blank=True)
     submitter_phone = models.CharField(max_length=140, blank=True)
-    location = models.PointField(srid=4326, blank=True, null=True, db_index=True)
+    location = FallbackPointField(srid=4326, blank=True, null=True, db_index=True)
+    lat = models.FloatField(blank=True, null=True, db_index=True, editable=False)
+    long = models.FloatField(blank=True, null=True, db_index=True, editable=False)
     moderation = models.CharField(
         max_length=16, default='public', choices=MODERATION_STATUS_CHOICES, editable=False, db_index=True
     )
@@ -84,6 +88,8 @@ class Issue(models.Model):
                     return id
 
     def _cache_data(self):
+        self._cache_location()
+
         if not self.jurisdiction_id:
             from issues.models.jurisdictions import Jurisdiction
             self.jurisdiction = Jurisdiction.autodetermine()
@@ -106,3 +112,17 @@ class Issue(models.Model):
             fixing_time = calc_fixing_time(self.service_code)
             waiting_time = datetime.timedelta(milliseconds=fixing_time)
             self.expected_datetime = now() + waiting_time
+
+    def _cache_location(self):
+        if (self.long and self.lat) and not self.location:
+            from django.contrib.gis.geos import GEOSGeometry
+            self.location = GEOSGeometry(
+                'SRID=4326;POINT(%s %s)' % (self.long, self.lat)
+            )
+        if self.location:
+            self.long = self.location[0]
+            self.lat = self.location[1]
+        else:
+            self.long = None
+            self.lat = None
+            self.location = None

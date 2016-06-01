@@ -95,8 +95,9 @@ class IssueSerializer(serializers.ModelSerializer):
         :rtype: dict
         """
         representation = super(IssueSerializer, self).to_representation(instance)
-        if instance.location:
-            representation['long'], representation['lat'] = instance.location
+        if not (instance.lat and instance.long):  # Remove null coordinate fields
+            representation.pop('lat', None)
+            representation.pop('long', None)
 
         if not self.context.get('extensions', ()):
             representation.pop('extended_attributes', None)
