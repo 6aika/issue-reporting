@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from issues.extensions import IssueExtension
@@ -45,3 +46,23 @@ class CitySDKExtension(IssueExtension):
             'detailed_status': cs_ext.detailed_status,
             'title': cs_ext.title,
         }
+
+    def extend_issue_serializer(self, serializer):
+        serializer.fields['service_object_id'] = serializers.CharField(write_only=True)
+        serializer.fields['service_object_type'] = serializers.CharField(write_only=True)
+
+    def validate_issue_data(self, serializer, data):
+        if bool(data.get('service_object_id')) ^ bool(data.get('service_object_type')):
+            raise ValidationError('both service_object_id and service_object_type must be set if one is')
+        return data
+
+    def post_create_issue(self, request, issue, data):
+        from issues_citysdk.models import Issue_CitySDK
+        service_object_id = data.pop('service_object_id', None)
+        service_object_type = data.pop('service_object_type', None)
+        if service_object_id and service_object_type:
+            Issue_CitySDK.objects.create(
+                issue=issue,
+                service_object_id=service_object_id,
+                service_object_type=service_object_type,
+            )
