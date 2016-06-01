@@ -117,16 +117,26 @@ def get_extensions_from_request(request):
     """
     if hasattr(request, '_issue_extensions'):  # Sneaky cache
         return request._issue_extensions
-    extensions_param = request.query_params.get('extensions')
+    extension_ids = _get_extension_ids_from_param(request.query_params.get('extensions'))
+    if not extension_ids and request.method == 'POST':
+        try:
+            extension_ids = _get_extension_ids_from_param(request.data.get('extensions'))
+        except (AttributeError, KeyError):
+            pass
+
+    extensions = set(ex() for ex in get_extensions() if ex.identifier in extension_ids)
+    request._issue_extensions = extensions
+    return extensions
+
+
+def _get_extension_ids_from_param(extensions_param):
     if extensions_param in ('true', 'all'):
         extension_ids = get_extension_ids()
     elif extensions_param:
         extension_ids = set(extensions_param.split(','))
     else:
-        extension_ids = ()
-    extensions = set(ex() for ex in get_extensions() if ex.identifier in extension_ids)
-    request._issue_extensions = extensions
-    return extensions
+        extension_ids = set()
+    return extension_ids
 
 
 def apply_select_and_prefetch(queryset, extensions):
