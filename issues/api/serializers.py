@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from issues.api.utils import XMLDict
 from issues.excs import MultipleJurisdictionsError
+from issues.extensions import get_extensions
 from issues.models import Issue, Jurisdiction, Service
 
 
@@ -133,4 +134,11 @@ class IssueSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['moderation'] = getattr(settings, 'ISSUES_DEFAULT_MODERATION_STATUS', 'public')
-        return super().create(validated_data)
+        instance = super().create(validated_data)
+
+        extensions = get_extensions()
+        request = self.context['request']
+        for ex in extensions:
+            ex().post_create_issue(request=request, issue=instance)
+
+        return instance
