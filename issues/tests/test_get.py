@@ -1,8 +1,11 @@
 import pytest
 
+from issues.gis import determine_gissiness
 from issues.models import Issue
 from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import get_data_from_response, ISSUE_LIST_ENDPOINT, verify_issue
+
+GISSY = determine_gissiness()
 
 
 def test_get_requests(testing_issues, mf_api_client):
@@ -156,8 +159,12 @@ def test_get_within_radius(testing_issues, mf_api_client):
 
     content = get_data_from_response(
         mf_api_client.get(ISSUE_LIST_ENDPOINT, {'lat': lat, 'long': long, 'radius': radius}),
-        schema=LIST_OF_ISSUES_SCHEMA
+        schema=(LIST_OF_ISSUES_SCHEMA if GISSY else None),
+        status_code=(500 if not GISSY else 200)
     )
+
+    if not GISSY:
+        return
 
     assert len(content) == expected_number_of_requests
 

@@ -2,8 +2,13 @@ language: python
 python: 3.4
 addons:
   postgresql: "9.4"
+services:
+  - mysql
 sudo: false
-env: DEBUG=1
+env:
+  - DEBUG=1 DATABASE_URL=sqlite:///tmp/ir-{envname}.sqlite3
+  - DEBUG=1 DATABASE_URL=mysql://travis:@localhost/ir
+  - DEBUG=1
 cache:
   directories:
     - $HOME/.cache/pip
@@ -11,6 +16,6 @@ before_cache:
 - rm -fr $HOME/.cache/pip/log
 install:
 - pip install --upgrade pip
-- pip install coveralls -r requirements.txt -r requirements-dev.txt
+- pip install mysqlclient coveralls -r requirements.txt -r requirements-dev.txt
 script: py.test .
 after_success: coveralls
