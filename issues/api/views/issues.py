@@ -35,6 +35,8 @@ class IssueFilter(BaseFilterBackend):
         service_codes = request.query_params.get('service_code')
         start_date = request.query_params.get('start_date')
         statuses = request.query_params.get('status')
+        updated_after = request.query_params.get('updated_after')
+        updated_before = request.query_params.get('updated_before')
 
         if jurisdiction_id:
             queryset = queryset.filter(jurisdiction__identifier=jurisdiction_id)
@@ -52,7 +54,12 @@ class IssueFilter(BaseFilterBackend):
         if agency_responsible:
             queryset = queryset.filter(agency_responsible__iexact=agency_responsible)
 
-        queryset = self._apply_citysdk_filter(request, queryset)
+        if updated_after:  # CitySDK extension
+            queryset = queryset.filter(updated_datetime__gt=updated_after)
+        if updated_before:  # CitySDK extension
+            queryset = queryset.filter(updated_datetime__lt=updated_before)
+
+        queryset = self._apply_geo_filters(request, queryset)
         queryset = apply_select_and_prefetch(queryset=queryset, extensions=extensions)
 
         for ex in extensions:
@@ -67,7 +74,7 @@ class IssueFilter(BaseFilterBackend):
 
         return queryset
 
-    def _apply_citysdk_filter(self, request, queryset):
+    def _apply_geo_filters(self, request, queryset):
         # Strictly speaking these are not queries that should be possible with a GeoReport v2
         # core implementation, but as they do not require extra data in the models, it's worth it
         # to have them available "for free".
@@ -75,12 +82,6 @@ class IssueFilter(BaseFilterBackend):
         lat = request.query_params.get('lat')
         lon = request.query_params.get('long')
         radius = request.query_params.get('radius')
-        updated_after = request.query_params.get('updated_after')
-        updated_before = request.query_params.get('updated_before')
-        if updated_after:
-            queryset = queryset.filter(updated_datetime__gt=updated_after)
-        if updated_before:
-            queryset = queryset.filter(updated_datetime__lt=updated_before)
         if lat and lon and radius:
             if not determine_gissiness():
                 raise APIException('this installation is not capable of lat/lon/radius queries')
