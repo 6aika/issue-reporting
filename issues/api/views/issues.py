@@ -1,7 +1,3 @@
-from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.db.models.sql import DistanceField
-from django.contrib.gis.geos import fromstr
-from django.contrib.gis.measure import D
 from django.db.models import Case, When
 from rest_framework.exceptions import APIException
 from rest_framework.filters import BaseFilterBackend
@@ -85,6 +81,10 @@ class IssueFilter(BaseFilterBackend):
         if lat and lon and radius:
             if not determine_gissiness():
                 raise APIException('this installation is not capable of lat/lon/radius queries')
+            from django.contrib.gis.db.models.functions import Distance
+            from django.contrib.gis.db.models.sql import DistanceField
+            from django.contrib.gis.geos import fromstr
+            from django.contrib.gis.measure import D
             point = fromstr('SRID=4326;POINT(%s %s)' % (lon, lat))
             empty_point = fromstr('POINT(0 0)', srid=4326)
             queryset = queryset.annotate(distance=Case(
