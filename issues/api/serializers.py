@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import serializers
+from rest_framework.fields import empty
+from rest_framework.utils import model_meta
 
 from issues.api.utils import XMLDict
 from issues.excs import MultipleJurisdictionsError
@@ -134,11 +136,34 @@ class IssueSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['moderation'] = getattr(settings, 'ISSUES_DEFAULT_MODERATION_STATUS', 'public')
-        instance = super().create(validated_data)
-
+        instance = self._create(validated_data)
         extensions = get_extensions()
         request = self.context['request']
         for ex in extensions:
             ex().post_create_issue(request=request, issue=instance)
 
+        return instance
+
+    def _create(self, validated_data):
+        validated_data = validated_data.copy()  # We're going to pop stuff off here.
+        # This logic is mostly copied from super().create(),
+        # aside from the concrete_data stuff.
+        ModelClass = self.Meta.model
+        info = model_meta.get_field_info(ModelClass)
+        many_to_many = {}
+        for field_name, relation_info in info.relations.items():
+            if relation_info.to_many and (field_name in validated_data):
+                many_to_many[field_name] = validated_data.pop(field_name)
+
+        # Build a dict of fields we're guaranteed to be able to pass to `Model.create()`
+        concrete_fields = set(info.fields) | set(info.forward_relations)
+        concrete_data = {
+            field: value
+            for (field, value)
+            in validated_data.items()
+            if field in concrete_fields
+        }
+        instance = ModelClass.objects.create(**concrete_data)
+        for field_name, value in many_to_many.items():
+            setattr(instance, field_name, value)
         return instance
