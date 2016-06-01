@@ -8,6 +8,7 @@ from rest_framework.filters import BaseFilterBackend
 from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveAPIView
 
 from issues.api.serializers import IssueSerializer
+from issues.signals import issue_posted
 from issues.extensions import apply_select_and_prefetch, get_extensions_from_request
 from issues.gis import determine_gissiness
 from issues.models import Issue
@@ -108,6 +109,7 @@ class IssueList(IssueViewBase, ListCreateAPIView):
         extensions = get_extensions_from_request(request)
         for ex in extensions:
             ex.post_create_issue(request=request, issue=new_issue)
+        issue_posted.send(sender=self, issue=new_issue, request=request)
 
 
 class IssueDetail(IssueViewBase, RetrieveAPIView):
