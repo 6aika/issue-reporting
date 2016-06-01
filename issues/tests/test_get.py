@@ -171,3 +171,28 @@ def test_get_within_radius(testing_issues, mf_api_client):
     for issue in content:
         assert verify_issue(issue)
         assert float(issue['distance']) < 1000
+
+
+@pytest.mark.parametrize('flip_lat', (False, True))
+@pytest.mark.parametrize('flip_long', (False, True))
+@pytest.mark.parametrize('sep', ";,")
+def test_get_with_bbox(testing_issues, mf_api_client, flip_lat, flip_long, sep):
+    longs = (24.768, 24.77)
+    lats = (60.191, 60.194)
+    if flip_lat:
+        lats = lats[::-1]
+    if flip_long:
+        longs = longs[::-1]
+
+    bbox_string = sep.join(str(c) for c in (lats[0], longs[0], lats[1], longs[1]))
+
+    content = get_data_from_response(
+        mf_api_client.get(ISSUE_LIST_ENDPOINT, {'bbox': bbox_string}),
+        schema=LIST_OF_ISSUES_SCHEMA
+    )
+
+    assert len(content) == 1
+    assert content[0]['service_request_id'] == '9374kdfksdfhsdfasdf'
+
+    for issue in content:
+        assert verify_issue(issue)

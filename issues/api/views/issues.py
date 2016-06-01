@@ -5,6 +5,7 @@ from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveA
 
 from issues.api.serializers import IssueSerializer
 from issues.signals import issue_posted
+from issues.utils import parse_bbox
 from issues.extensions import apply_select_and_prefetch, get_extensions_from_request
 from issues.gis import determine_gissiness
 from issues.models import Issue
@@ -74,6 +75,18 @@ class IssueFilter(BaseFilterBackend):
         # Strictly speaking these are not queries that should be possible with a GeoReport v2
         # core implementation, but as they do not require extra data in the models, it's worth it
         # to have them available "for free".
+        bbox = request.query_params.get('bbox')
+        if bbox:
+            bbox = parse_bbox(bbox)
+            (lat1, long1), (lat2, long2) = bbox
+            if determine_gissiness():
+                from django.contrib.gis.geos import Polygon
+                queryset = queryset.filter(location__contained=Polygon.from_bbox(
+                    (long1, lat1, long2, lat2)
+                ))
+            else:  # Fall back to looking at lat/long directly
+                queryset = queryset.filter(lat__range=(lat1, lat2))
+                queryset = queryset.filter(long__range=(long1, long2))
 
         lat = request.query_params.get('lat')
         lon = request.query_params.get('long')
