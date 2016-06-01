@@ -41,7 +41,7 @@ class IssueExtension(object):
         """
         return None
 
-    def post_create_issue(self, request, issue):  # pragma: no cover
+    def post_create_issue(self, request, issue, data):  # pragma: no cover
         """
         Hook for after an issue is created through the API.
 
@@ -51,6 +51,8 @@ class IssueExtension(object):
         :type request: rest_framework.request.Request
         :param issue: The issue that was created.
         :type issue: issues.models.Issue
+        :param data: The data dict that was used to create the Issue
+        :type data: dict
         """
         pass
 
@@ -66,6 +68,32 @@ class IssueExtension(object):
         :type extended_attributes: dict[str, object]
         """
         pass
+
+    def extend_issue_serializer(self, serializer):
+        """
+        Extend an issue serializer instance.
+
+        For instance, one could add fields to `serializer.fields`.
+
+        :param serializer: IssueSerializer
+        :type serializer: issues.api.serializers.IssueSerializer
+        """
+        pass
+
+    def validate_issue_data(self, serializer, data):
+        """
+        Extension hook to validate issue data.
+
+        This is called by IssueSerializer.validate().
+
+        :param serializer: IssueSerializer
+        :type serializer: issues.api.serializers.IssueSerializer
+        :param data: data dict
+        :type data: dict
+        :return: the data dict, possibly modified (or replaced wholesale?!)
+        :rtype: dict
+        """
+        return data
 
 
 def get_extensions():

@@ -67,6 +67,12 @@ class IssueSerializer(serializers.ModelSerializer):
         for f in write_only_fields:
             extra_kwargs.setdefault(f, {})["write_only"] = True
 
+    def __init__(self, instance=None, data=empty, **kwargs):
+        super().__init__(instance, data, **kwargs)
+
+        for ext in self.context.get('extensions', ()):
+            ext.extend_issue_serializer(self)
+
     def get_distance(self, obj):
         if hasattr(obj, 'distance'):
             return float(obj.distance.m)
@@ -132,6 +138,11 @@ class IssueSerializer(serializers.ModelSerializer):
             except MultipleJurisdictionsError as mjd:
                 raise serializers.ValidationError(mjd.args[0])
 
+        for ex in self.context.get('extensions', ()):
+            new_data = ex.validate_issue_data(self, data)
+            if new_data:
+                data = new_data
+
         return data
 
     def create(self, validated_data):
@@ -140,8 +151,7 @@ class IssueSerializer(serializers.ModelSerializer):
         extensions = get_extensions()
         request = self.context['request']
         for ex in extensions:
-            ex().post_create_issue(request=request, issue=instance)
-
+            ex().post_create_issue(request=request, issue=instance, data=validated_data)
         return instance
 
     def _create(self, validated_data):
