@@ -38,6 +38,9 @@ The `cfh` project is configured via environment variables, described below.
 * `SECRET_KEY`: the Django secret key. Must be set when not `DEBUG`ging.
 * `DATABASE_URL`: an URL pointing to the SQL database for the project.
 
+All of the Django settings described below are also available as equivalently
+named environment variables for the standalone project.
+
 ## Development
 
 * Install dependencies from both `requirements.txt` and `requirements-dev.txt`.
@@ -58,3 +61,8 @@ For instance, to use the City of Helsinki's `palautews` service for this, use Dj
 from issues.sync.down import update_from_georeport_v2_url
 update_from_georeport_v2_url("https://asiointi.hel.fi/palautews/rest/v1/requests.json")
 ```
+## Django settings
+
+* `ISSUES_DEFAULT_MODERATION_STATUS`:
+  * Set to `unmoderated` to set newly created issues as unmoderated, which makes them not appear in lists
+    before set to public.

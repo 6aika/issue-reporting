@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import serializers
 
@@ -129,3 +130,7 @@ class IssueSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(mjd.args[0])
 
         return data
+
+    def create(self, validated_data):
+        validated_data['moderation'] = getattr(settings, 'ISSUES_DEFAULT_MODERATION_STATUS', 'public')
+        return super().create(validated_data)
