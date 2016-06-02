@@ -1,7 +1,3 @@
-from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.db.models.sql import DistanceField
-from django.contrib.gis.geos import fromstr
-from django.contrib.gis.measure import D
 from django.db.models import Case, When
 from rest_framework.exceptions import APIException
 from rest_framework.filters import BaseFilterBackend
@@ -9,6 +5,7 @@ from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveA
 
 from issues.api.serializers import IssueSerializer
 from issues.signals import issue_posted
+from issues.utils import parse_bbox
 from issues.extensions import apply_select_and_prefetch, get_extensions_from_request
 from issues.gis import determine_gissiness
 from issues.models import Issue
@@ -35,6 +32,8 @@ class IssueFilter(BaseFilterBackend):
         service_codes = request.query_params.get('service_code')
         start_date = request.query_params.get('start_date')
         statuses = request.query_params.get('status')
+        updated_after = request.query_params.get('updated_after')
+        updated_before = request.query_params.get('updated_before')
 
         if jurisdiction_id:
             queryset = queryset.filter(jurisdiction__identifier=jurisdiction_id)
@@ -52,7 +51,12 @@ class IssueFilter(BaseFilterBackend):
         if agency_responsible:
             queryset = queryset.filter(agency_responsible__iexact=agency_responsible)
 
-        queryset = self._apply_citysdk_filter(request, queryset)
+        if updated_after:  # CitySDK extension
+            queryset = queryset.filter(updated_datetime__gt=updated_after)
+        if updated_before:  # CitySDK extension
+            queryset = queryset.filter(updated_datetime__lt=updated_before)
+
+        queryset = self._apply_geo_filters(request, queryset)
         queryset = apply_select_and_prefetch(queryset=queryset, extensions=extensions)
 
         for ex in extensions:
@@ -67,23 +71,33 @@ class IssueFilter(BaseFilterBackend):
 
         return queryset
 
-    def _apply_citysdk_filter(self, request, queryset):
+    def _apply_geo_filters(self, request, queryset):
         # Strictly speaking these are not queries that should be possible with a GeoReport v2
         # core implementation, but as they do not require extra data in the models, it's worth it
         # to have them available "for free".
+        bbox = request.query_params.get('bbox')
+        if bbox:
+            bbox = parse_bbox(bbox)
+            (lat1, long1), (lat2, long2) = bbox
+            if determine_gissiness():
+                from django.contrib.gis.geos import Polygon
+                queryset = queryset.filter(location__contained=Polygon.from_bbox(
+                    (long1, lat1, long2, lat2)
+                ))
+            else:  # Fall back to looking at lat/long directly
+                queryset = queryset.filter(lat__range=(lat1, lat2))
+                queryset = queryset.filter(long__range=(long1, long2))
 
         lat = request.query_params.get('lat')
         lon = request.query_params.get('long')
         radius = request.query_params.get('radius')
-        updated_after = request.query_params.get('updated_after')
-        updated_before = request.query_params.get('updated_before')
-        if updated_after:
-            queryset = queryset.filter(updated_datetime__gt=updated_after)
-        if updated_before:
-            queryset = queryset.filter(updated_datetime__lt=updated_before)
         if lat and lon and radius:
             if not determine_gissiness():
                 raise APIException('this installation is not capable of lat/lon/radius queries')
+            from django.contrib.gis.db.models.functions import Distance
+            from django.contrib.gis.db.models.sql import DistanceField
+            from django.contrib.gis.geos import fromstr
+            from django.contrib.gis.measure import D
             point = fromstr('SRID=4326;POINT(%s %s)' % (lon, lat))
             empty_point = fromstr('POINT(0 0)', srid=4326)
             queryset = queryset.annotate(distance=Case(
