@@ -41,7 +41,7 @@ class IssueExtension(object):
         """
         return None
 
-    def post_create_issue(self, request, issue):  # pragma: no cover
+    def post_create_issue(self, request, issue, data):  # pragma: no cover
         """
         Hook for after an issue is created through the API.
 
@@ -51,6 +51,8 @@ class IssueExtension(object):
         :type request: rest_framework.request.Request
         :param issue: The issue that was created.
         :type issue: issues.models.Issue
+        :param data: The data dict that was used to create the Issue
+        :type data: dict
         """
         pass
 
@@ -66,6 +68,32 @@ class IssueExtension(object):
         :type extended_attributes: dict[str, object]
         """
         pass
+
+    def extend_issue_serializer(self, serializer):
+        """
+        Extend an issue serializer instance.
+
+        For instance, one could add fields to `serializer.fields`.
+
+        :param serializer: IssueSerializer
+        :type serializer: issues.api.serializers.IssueSerializer
+        """
+        pass
+
+    def validate_issue_data(self, serializer, data):
+        """
+        Extension hook to validate issue data.
+
+        This is called by IssueSerializer.validate().
+
+        :param serializer: IssueSerializer
+        :type serializer: issues.api.serializers.IssueSerializer
+        :param data: data dict
+        :type data: dict
+        :return: the data dict, possibly modified (or replaced wholesale?!)
+        :rtype: dict
+        """
+        return data
 
 
 def get_extensions():
@@ -89,16 +117,26 @@ def get_extensions_from_request(request):
     """
     if hasattr(request, '_issue_extensions'):  # Sneaky cache
         return request._issue_extensions
-    extensions_param = request.query_params.get('extensions')
+    extension_ids = _get_extension_ids_from_param(request.query_params.get('extensions'))
+    if not extension_ids and request.method == 'POST':
+        try:
+            extension_ids = _get_extension_ids_from_param(request.data.get('extensions'))
+        except (AttributeError, KeyError):
+            pass
+
+    extensions = set(ex() for ex in get_extensions() if ex.identifier in extension_ids)
+    request._issue_extensions = extensions
+    return extensions
+
+
+def _get_extension_ids_from_param(extensions_param):
     if extensions_param in ('true', 'all'):
         extension_ids = get_extension_ids()
     elif extensions_param:
         extension_ids = set(extensions_param.split(','))
     else:
-        extension_ids = ()
-    extensions = set(ex() for ex in get_extensions() if ex.identifier in extension_ids)
-    request._issue_extensions = extensions
-    return extensions
+        extension_ids = set()
+    return extension_ids
 
 
 def apply_select_and_prefetch(queryset, extensions):

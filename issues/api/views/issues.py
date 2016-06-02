@@ -104,12 +104,9 @@ class IssueList(IssueViewBase, ListCreateAPIView):
     )
 
     def perform_create(self, serializer):
-        request = self.request
-        new_issue = serializer.save()
-        extensions = get_extensions_from_request(request)
-        for ex in extensions:
-            ex.post_create_issue(request=request, issue=new_issue)
-        issue_posted.send(sender=self, issue=new_issue, request=request)
+        super(IssueList, self).perform_create(serializer)
+        instance = serializer.instance
+        issue_posted.send(sender=self, issue=instance, request=self.request)
 
 
 class IssueDetail(IssueViewBase, RetrieveAPIView):

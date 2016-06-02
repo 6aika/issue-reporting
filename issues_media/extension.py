@@ -9,7 +9,7 @@ class MediaExtension(IssueExtension):
     identifier = 'media'
     prefetch_name = 'media'
 
-    def post_create_issue(self, request, issue):
+    def post_create_issue(self, request, issue, data):
         from issues_media.models import IssueMedia
         for file in request.FILES.getlist('media', ()):
             assert isinstance(file, UploadedFile)
