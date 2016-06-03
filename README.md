@@ -37,6 +37,7 @@ The `cfh` project is configured via environment variables, described below.
 * `DEBUG`: enable debug/development mode and set sane development defaults.
 * `SECRET_KEY`: the Django secret key. Must be set when not `DEBUG`ging.
 * `DATABASE_URL`: an URL pointing to the SQL database for the project.
+* `LANGUAGES`: a comma-separated list of ISO 639-1 language codes to enable. Defaults to `en,fi`
 
 All of the Django settings described below are also available as equivalently
 named environment variables for the standalone project.

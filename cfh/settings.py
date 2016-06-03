@@ -1,5 +1,6 @@
 import os
 
+import babel
 from environ import Env
 
 env = Env()
@@ -74,7 +75,13 @@ DATABASES = {
     'default': env.db_url(default='postgis://postgres:cfh@localhost:5432/cfh')
 }
 
-LANGUAGE_CODE = 'en-us'
+language_names = babel.Locale('en').languages
+LANGUAGES = [
+    (code, language_names.get(code, code.title()))
+    for code
+    in env.str('LANGUAGES', default='en,fi').split(',')
+]
+LANGUAGE_CODE = LANGUAGES[0][0]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 MEDIA_URL = '/media/'
 ROOT_URLCONF = 'cfh.urls'
@@ -86,3 +93,13 @@ USE_L10N = True
 USE_TZ = True
 WSGI_APPLICATION = 'cfh.wsgi.application'
 ISSUES_DEFAULT_MODERATION_STATUS = env.str('ISSUES_DEFAULT_MODERATION_STATUS', default='public')
+
+PARLER_LANGUAGES = {
+    None: [
+        {'code': code} for (code, name) in LANGUAGES
+    ],
+    'default': {
+        'fallback': LANGUAGE_CODE,
+        'hide_untranslated': False,
+    }
+}
