@@ -1,0 +1,19 @@
+{% extends "issues_simple_ui/base.html" %}{% load static simple_ui_tags %}
+{% block title %}{{ title|default:'Report Issue' }}{% endblock %}
+{% block content %}
+    <h1>{{ title|default:'Report Issue' }}</h1>
+    {% if content %}
+        {{ content|safe }}
+        <hr>
+    {% endif %}
+    <div id="report-form-container"></div>
+{% endblock %}
+{% block configjs %}
+    {% get_content "thank_you" as thank_you %}
+    <script>var config = {% get_config_json thank_you=thank_you %};</script>
+{% endblock %}
+{% block js %}
+    <script src="{% static "issues_simple_ui/vendor/leaflet/leaflet.js" %}"></script>
+    <script src="{% static "issues_simple_ui/issue-utils.js" %}"></script>
+    <script src="{% static "issues_simple_ui/report.js" %}"></script>
+{% endblock %}

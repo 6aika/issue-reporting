@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'issues_media',
     'issues_hel',
     'issues_log',
+    'issues_simple_ui',
 ]
 
 MIDDLEWARE_CLASSES = [

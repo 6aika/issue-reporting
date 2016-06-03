@@ -1,0 +1,12 @@
+{% extends "issues_simple_ui/base.html" %}{% load static simple_ui_tags i18n %}
+{% block content %}
+    {% get_image "index" as index_img %}
+    {% if index_img %}<img src="{{ index_img }}" class="img-responsive">{% endif %}
+    <h1>{{ title }}</h1>
+    {{ content|safe }}
+    <hr>
+    <div class="row">
+        <div class="col-md-6"><a href="{% url "report-issue" %}" class="btn btn-block btn-primary">{% trans "Report an issue" %}</a></div>
+        <div class="col-md-6"><a href="#" class="btn btn-block btn-primary">{% trans "Browse issues" %}</a></div>
+    </div>
+{% endblock %}
