@@ -62,10 +62,8 @@ class IssueFilter(BaseFilterBackend):
         for ex in extensions:
             queryset = ex.filter_issue_queryset(request, queryset, view)
 
-        order_by = request.query_params.get('order_by')
-
-        if order_by:
-            queryset = queryset.order_by(order_by)
+        order_by = (request.query_params.get('order_by') or '-pk')
+        queryset = queryset.order_by(order_by)
 
         # TODO: Implement pagination
 
