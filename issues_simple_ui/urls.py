@@ -11,5 +11,8 @@ urlpatterns = [
         content_identifier='report',
         template_name='issues_simple_ui/report.html',
     ), name='report-issue'),
-
+    url(r'^browse/$', SimpleContentView.as_view(
+        content_identifier='browse',
+        template_name='issues_simple_ui/browse.html',
+    ), name='browse-issues'),
 ]

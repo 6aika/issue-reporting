@@ -46,8 +46,71 @@ window.IssueUtils = (function (L, m, config) {
     };
   }
 
+
+  // From Underscore.
+  var debounce = function (func, wait, immediate) {
+    var timeout;
+    return function () {
+      var context = this, args = arguments;
+      var later = function () {
+        timeout = null;
+        if (!immediate) func.apply(context, args);
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
+    };
+  };
+
+  /**
+   * Instrument a mithril prop with support for a change listener.
+   * @param prop A mithril-prop-like object.
+   * @param valueWillChange {function} A function that will be called when the value is about to change.
+   * @returns {prop}
+   */
+  var observeProp = function (prop, valueWillChange) {
+    var iProp = function iProp() {
+      var current = prop();
+      if (arguments.length === 0) return current;
+      var val = arguments[0];
+      if (current !== val) {
+        if (valueWillChange) {
+          valueWillChange(val, current);
+        }
+        prop(val);
+      }
+      return val;
+    };
+    iProp.toJSON = function () {
+      return prop();
+    };
+    return iProp;
+  };
+
+  /**
+   * Return a cached version of the pure function `cachee`.
+   * The cachee function will be called (whenever necessary) with the retval of `dependency`.
+   * The returned function does not accept any arguments.
+   */
+  var purify = function (cachee, dependency) {
+    var lastArg, lastValue;
+    return function () {
+      var arg = dependency();
+      if (arg === lastArg) {
+        return lastValue;
+      }
+      lastArg = arg;
+      lastValue = cachee(arg);
+      return lastValue;
+    };
+  };
+
   return {
     bootstrapFormField: bootstrapFormField,
+    debounce: debounce,
     getLeafletSetup: getLeafletSetup,
+    observeProp: observeProp,
+    purify: purify,
   };
 }(window.L, window.m, window.config));
