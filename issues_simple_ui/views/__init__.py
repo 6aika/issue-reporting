@@ -1,0 +1,1 @@
+from .simple_content_view import SimpleContentView
