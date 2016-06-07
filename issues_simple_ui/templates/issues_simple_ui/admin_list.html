@@ -1,0 +1,47 @@
+{% extends "issues_simple_ui/base.html" %}{% load static simple_ui_tags i18n %}
+{% block title %}Issues{% endblock %}
+{% block content %}
+    <div class="btn-group">
+        {% for fs in filter_specs %}
+            <a href="?filter={{ fs.id }}"
+               class="btn btn-default {% if filter == fs.id %}active{% endif %}">
+                {{ fs.title }}
+            </a>
+        {% endfor %}
+    </div>
+    <hr>
+    <table class="table table-striped table-condensed">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Opened</th>
+            <th>Open for</th>
+            <th>Status</th>
+            <th>Moderation</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for issue in issues %}
+            {% url "admin-issue-detail" pk=issue.pk as u %}
+            <tr>
+                <td>{{ issue.pk }}</td>
+                <td><a href="{{ u }}">{{ issue.identifier }}</a></td>
+                <td><a href="{{ u }}">{{ issue.description|truncatewords:20 }}</a></td>
+                <td>{{ issue.requested_datetime|date:"SHORT_DATETIME_FORMAT" }}</td>
+                <td>{{ issue.requested_datetime|timesince }}</td>
+                <td>{{ issue.get_status_display }}</td>
+                <td>{{ issue.get_moderation_display }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <ul class="pagination">
+        {% for r_page in page_obj.paginator.page_range %}
+            <li{% if page_obj.number == r_page %} class="active"{% endif %}><a
+                    href="?page={{ r_page }}">{{ r_page }}</a></li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
