@@ -95,6 +95,7 @@ USE_TZ = True
 WSGI_APPLICATION = 'cfh.wsgi.application'
 GEOREPORT_API_ROOT = env.str('ISSUES_GEOREPORT_API_ROOT', default='api/georeport/v2/')
 ISSUES_DEFAULT_MODERATION_STATUS = env.str('ISSUES_DEFAULT_MODERATION_STATUS', default='public')
+LOGIN_REDIRECT_URL = '/'
 
 PARLER_LANGUAGES = {
     None: [

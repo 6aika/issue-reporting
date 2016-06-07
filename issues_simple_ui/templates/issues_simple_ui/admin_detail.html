@@ -1,0 +1,78 @@
+{% extends "issues_simple_ui/base.html" %}{% load static simple_ui_tags i18n %}
+{% block title %}Issue Detail: {{ issue.identifier }}{% endblock %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="btn-group">
+            {% if issue.moderation != "public" %}
+                <button class="btn btn-primary" name="action" value="moderation:public">
+                    Set Public
+                </button>
+            {% endif %}
+            {% if issue.moderation != "hidden" %}
+                <button class="btn btn-danger" name="action" value="moderation:hidden">
+                    Set Hidden
+                </button>
+            {% endif %}
+
+        </div>
+    </form>
+    <hr>
+    <div class="row">
+        <div class="col-md-5">
+            <table class="table table-striped">
+                <tbody>
+                {% for datum in data %}
+                    <tr>
+                        <th>{{ datum.title|title }}</th>
+                        <td>{{ datum.value|linebreaksbr }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-7">
+            <h2 style="margin-top:0">{{ issue.citysdk.title|default:issue.identifier }}</h2>
+            <blockquote>{{ issue.description|linebreaksbr }}</blockquote>
+
+            {% if issue.status_notes %}
+                <blockquote>{{ issue.status_notes|linebreaksbr }}</blockquote>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-5">
+            <h4>Log Entries</h4>
+            <table class="table table-striped">
+                {% for entry in issue.log_entries.all %}
+                    <tr>
+                        <th>
+                            {{ entry.time|date:"DATETIME_FORMAT" }}<br>
+                            {{ entry.status }}<br>
+                            ({{ entry.handler }})
+                        </th>
+                        <td>{{ entry.note }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="col-md-7">
+
+            {% if log_form %}
+                <h4>Add Log Entry</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="log">
+                    <table class="table">
+                        {{ log_form.as_table }}
+                        <tr>
+                            <td colspan="2"><input type="submit" value="OK" class="btn btn-primary"></td>
+                        </tr>
+                    </table>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
