@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.contrib.admin.views.decorators import staff_member_required
+import django.contrib.auth.views as auth_views
 
 from issues_simple_ui.views import SimpleContentView
 from issues_simple_ui.views.admin_views import AdminListView, AdminDetailView
@@ -14,6 +15,19 @@ urlpatterns = [
         r'^admin/issues/$',
         staff_member_required(AdminListView.as_view()),
         name='admin-issue-list',
+    ),
+    url(
+        r'^login/',
+        view=auth_views.login,
+        kwargs=dict(
+            template_name='issues_simple_ui/login.html',
+        ),
+    ),
+
+    url(
+        r'^logout/',
+        view=auth_views.logout,
+        kwargs=dict(next_page='/'),
     ),
     url(r'^report/$', SimpleContentView.as_view(
         content_identifier='report',
