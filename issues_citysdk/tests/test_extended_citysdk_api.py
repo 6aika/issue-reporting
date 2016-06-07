@@ -62,6 +62,7 @@ def test_by_description(testing_issues, mf_api_client):
 def test_post_service_object(random_service, mf_api_client):
     service_object_id = get_random_string()
     service_object_type = 'http://www.hel.fi/servicemap/v2'
+    title = get_random_string()
 
     issue = get_data_from_response(
         mf_api_client.post(
@@ -73,6 +74,7 @@ def test_post_service_object(random_service, mf_api_client):
                 'description': 'hellote',
                 'service_object_id': service_object_id,
                 'service_object_type': service_object_type,
+                'title': title,
             }
         ),
         schema=ISSUE_SCHEMA,
@@ -83,4 +85,4 @@ def test_post_service_object(random_service, mf_api_client):
 
     assert iex.service_object_id == issue['extended_attributes']['service_object_id'] == service_object_id
     assert iex.service_object_type == issue['extended_attributes']['service_object_type'] == service_object_type
-
+    assert iex.title == issue['extended_attributes']['title'] == title

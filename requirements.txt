@@ -5,15 +5,14 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 
+babel==2.3.4
 django-environ==0.4.0
-django-formtools==1.0
 django-parler==1.6.3
-Django==1.9.2             # via django-environ, django-formtools
+django==1.9.6             # via django-environ
 djangorestframework==3.3.3
-geopy==1.11.0
 iso8601==0.1.11
 lxml==3.6.0
-psycopg2==2.6.1
-python-dateutil==2.5.2
-requests==2.9.1
+python-dateutil==2.5.3
+pytz==2016.4              # via babel
+requests==2.9.2
 six==1.10.0

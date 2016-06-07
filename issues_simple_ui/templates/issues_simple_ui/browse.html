@@ -1,0 +1,19 @@
+{% extends "issues_simple_ui/base.html" %}{% load static simple_ui_tags %}
+{% block title %}{{ title|default:'Browse Issues' }}{% endblock %}
+{% block content %}
+    <h1>{{ title|default:'Browse Issues' }}</h1>
+    {% if content %}
+        {{ content|safe }}
+        <hr>
+    {% endif %}
+    <div id="browse-app-container"></div>
+{% endblock %}
+{% block configjs %}
+    <script>var config = {% get_config_json %};</script>
+{% endblock %}
+{% block js %}
+    <script src="{% static "issues_simple_ui/vendor/leaflet/leaflet.js" %}"></script>
+    <script src="{% static "issues_simple_ui/issue-utils.js" %}"></script>
+    <script src="{% static "issues_simple_ui/little-pen.js" %}"></script>
+    <script src="{% static "issues_simple_ui/browse.js" %}"></script>
+{% endblock %}

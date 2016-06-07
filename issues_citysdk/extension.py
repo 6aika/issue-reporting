@@ -48,8 +48,9 @@ class CitySDKExtension(IssueExtension):
         }
 
     def extend_issue_serializer(self, serializer):
-        serializer.fields['service_object_id'] = serializers.CharField(write_only=True)
-        serializer.fields['service_object_type'] = serializers.CharField(write_only=True)
+        serializer.fields['service_object_id'] = serializers.CharField(write_only=True, required=False)
+        serializer.fields['service_object_type'] = serializers.CharField(write_only=True, required=False)
+        serializer.fields['title'] = serializers.CharField(write_only=True, required=False)
 
     def validate_issue_data(self, serializer, data):
         if bool(data.get('service_object_id')) ^ bool(data.get('service_object_type')):
@@ -60,9 +61,17 @@ class CitySDKExtension(IssueExtension):
         from issues_citysdk.models import Issue_CitySDK
         service_object_id = data.pop('service_object_id', None)
         service_object_type = data.pop('service_object_type', None)
+
+        ext_data = {}
         if service_object_id and service_object_type:
-            Issue_CitySDK.objects.create(
-                issue=issue,
+            ext_data.update(
                 service_object_id=service_object_id,
                 service_object_type=service_object_type,
             )
+
+        title = data.pop('title', None)
+        if title:
+            ext_data['title'] = title
+
+        if ext_data:
+            Issue_CitySDK.objects.create(issue=issue, **ext_data)

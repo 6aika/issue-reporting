@@ -1,0 +1,34 @@
+{% load simple_ui_tags static %}{% get_content "global" as global_content %}
+<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{{ title }}{% endblock %} &ndash; {{ global_content.title|default:"Feedback" }}</title>
+    <link rel="stylesheet" href="{% static "issues_simple_ui/vendor/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "issues_simple_ui/vendor/leaflet/leaflet.css" %}">
+    <style>
+        .map-container {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+{% block nav %}
+    <nav class="navbar navbar-default" style="border-radius: 0">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">{{ global_content.title|default:"Feedback" }}</a>
+            </div>
+        </div>
+    </nav>
+{% endblock nav %}
+<div class="container" id="main">
+    {% block content %}{% endblock content %}
+</div>
+<script src="{% static "issues_simple_ui/vendor/mithril.min.js" %}"></script>
+<script src="{% static "issues_simple_ui/polyfill.js" %}"></script>
+{% block configjs %}<script>var config = {% get_config_json %};</script>{% endblock %}
+{% block js %}{% endblock %}
+</body>
+</html>
