@@ -76,7 +76,7 @@ class IssueFilter(BaseFilterBackend):
         bbox = request.query_params.get('bbox')
         if bbox:
             bbox = parse_bbox(bbox)
-            (lat1, long1), (lat2, long2) = bbox
+            (long1, lat1), (long2, lat2) = bbox
             queryset = queryset.filter(lat__range=(lat1, lat2))
             queryset = queryset.filter(long__range=(long1, long2))
 

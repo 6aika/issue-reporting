@@ -184,7 +184,7 @@ def test_get_with_bbox(testing_issues, mf_api_client, flip_lat, flip_long, sep):
     if flip_long:
         longs = longs[::-1]
 
-    bbox_string = sep.join(str(c) for c in (lats[0], longs[0], lats[1], longs[1]))
+    bbox_string = sep.join(str(c) for c in (longs[0], lats[0], longs[1], lats[1]))
 
     content = get_data_from_response(
         mf_api_client.get(ISSUE_LIST_ENDPOINT, {'bbox': bbox_string}),
