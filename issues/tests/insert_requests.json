@@ -28,7 +28,7 @@
     "submitter_first_name": "",
     "submitter_last_name": "",
     "submitter_phone": "",
-    "location": "SRID=4326;POINT (24.9364543000000012 60.1852955000000023)"
+    "location": "SRID=4326;POINT (24.9364543 60.1852955)"
   }
 },
 {
@@ -52,7 +52,7 @@
     "submitter_first_name": "",
     "submitter_last_name": "",
     "submitter_phone": "",
-    "location": "SRID=4326;POINT (24.9492350000000016 60.1865850000000009)"
+    "location": "SRID=4326;POINT (24.949235 60.186585)"
   }
 },
 {
@@ -76,7 +76,7 @@
     "submitter_first_name": "",
     "submitter_last_name": "",
     "submitter_phone": "",
-    "location": "SRID=4326;POINT (24.9407120000000013 60.1833010000000002)"
+    "location": "SRID=4326;POINT (24.940712 60.1833)"
   }
 },
 {
@@ -100,7 +100,7 @@
     "submitter_first_name": "",
     "submitter_last_name": "",
     "submitter_phone": "",
-    "location": "SRID=4326;POINT (24.7696250000000013 60.1920050000000018)"
+    "location": "SRID=4326;POINT (24.769625 60.192)"
   }
 }
 ]

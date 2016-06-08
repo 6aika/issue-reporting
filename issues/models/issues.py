@@ -10,7 +10,7 @@ from django.utils.six import python_2_unicode_compatible
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
-from issues.fields import FallbackPointField
+from issues.fields import GeoPointField
 
 ID_KEYSPACE = string.ascii_lowercase + string.digits
 
@@ -47,7 +47,7 @@ class Issue(models.Model):
     submitter_first_name = models.CharField(max_length=140, blank=True)
     submitter_last_name = models.CharField(max_length=140, blank=True)
     submitter_phone = models.CharField(max_length=140, blank=True)
-    location = FallbackPointField(srid=4326, blank=True, null=True, db_index=True)
+    location = GeoPointField(blank=True, null=True, db_index=True)
     lat = models.FloatField(blank=True, null=True, db_index=True, editable=False)
     long = models.FloatField(blank=True, null=True, db_index=True, editable=False)
     moderation = models.CharField(
