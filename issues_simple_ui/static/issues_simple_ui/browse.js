@@ -123,12 +123,7 @@
 
           map.on('littlePenSelectBox', function (args) {
             state.circle(null);
-            state.bbox([
-              args.bounds.getSouth(),
-              args.bounds.getWest(),
-              args.bounds.getNorth(),
-              args.bounds.getEast(),
-            ].join(','));
+            state.bbox(args.bounds.toBBoxString());
           });
           map.on('littlePenSelectCircle', function (args) {
             state.bbox(null);
