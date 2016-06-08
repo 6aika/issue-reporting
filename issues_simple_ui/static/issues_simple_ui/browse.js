@@ -134,7 +134,7 @@
             state.bbox(null);
             state.circle({
               lat: args.center.lat,
-              lng: args.center.lng,
+              long: args.center.lng,
               radius: args.radius,
             });
           });
