@@ -23,7 +23,7 @@ def _string_value_to_coords(value):
     return latlng
 
 
-class _FallbackPointField(CharField):
+class GeoPointFieldFallback(CharField):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault("max_length", 128)
         kwargs['db_index'] = False
@@ -55,9 +55,11 @@ class _FallbackPointField(CharField):
 if determine_gissiness():
     from django.contrib.gis.db.models.fields import PointField as _GISPointField
 
-
-    class FallbackPointField(_GISPointField):
-        pass
+    class GeoPointField(_GISPointField):
+        def __init__(self, verbose_name=None, dim=2, **kwargs):
+            kwargs['geography'] = True
+            kwargs['srid'] = 4326
+            super().__init__(verbose_name, dim, **kwargs)
 else:
-    class FallbackPointField(_FallbackPointField):
+    class GeoPointField(GeoPointFieldFallback):
         pass

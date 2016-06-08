@@ -76,34 +76,27 @@ class IssueFilter(BaseFilterBackend):
         bbox = request.query_params.get('bbox')
         if bbox:
             bbox = parse_bbox(bbox)
-            (lat1, long1), (lat2, long2) = bbox
-            if determine_gissiness():
-                from django.contrib.gis.geos import Polygon
-                queryset = queryset.filter(location__contained=Polygon.from_bbox(
-                    (long1, lat1, long2, lat2)
-                ))
-            else:  # Fall back to looking at lat/long directly
-                queryset = queryset.filter(lat__range=(lat1, lat2))
-                queryset = queryset.filter(long__range=(long1, long2))
+            (long1, lat1), (long2, lat2) = bbox
+            queryset = queryset.filter(lat__range=(lat1, lat2))
+            queryset = queryset.filter(long__range=(long1, long2))
 
         lat = request.query_params.get('lat')
         lon = request.query_params.get('long')
         radius = request.query_params.get('radius')
         if lat and lon and radius:
+            try:
+                lat = float(lat)
+                lon = float(lon)
+                radius = float(radius)
+            except ValueError:
+                raise APIException('lat/lon/radius must all be valid decimal numbers')
             if not determine_gissiness():
                 raise APIException('this installation is not capable of lat/lon/radius queries')
             from django.contrib.gis.db.models.functions import Distance
-            from django.contrib.gis.db.models.sql import DistanceField
-            from django.contrib.gis.geos import fromstr
+            from django.contrib.gis.geos import Point
             from django.contrib.gis.measure import D
-            point = fromstr('SRID=4326;POINT(%s %s)' % (lon, lat))
-            empty_point = fromstr('POINT(0 0)', srid=4326)
-            queryset = queryset.annotate(distance=Case(
-                When(location__distance_gt=(empty_point, D(m=0.0)), then=Distance('location', point)),
-                default=None,
-                output_field=DistanceField('m')
-            ))
-
+            point = Point(x=lon, y=lat, srid=4326)
+            queryset = queryset.annotate(distance=Distance('location', point))
             queryset = queryset.filter(location__distance_lte=(point, D(m=radius)))
         return queryset
 

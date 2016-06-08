@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('submitter_first_name', models.CharField(blank=True, max_length=140)),
                 ('submitter_last_name', models.CharField(blank=True, max_length=140)),
                 ('submitter_phone', models.CharField(blank=True, max_length=140)),
-                ('location', issues.fields.FallbackPointField(db_index=True, blank=True, null=True, srid=4326)),
+                ('location', issues.fields.GeoPointField(db_index=True, blank=True, null=True)),
             ],
         ),
         migrations.CreateModel(

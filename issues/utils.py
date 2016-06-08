@@ -3,7 +3,7 @@ from django.utils.encoding import force_text
 
 def parse_bbox(bbox):
     """
-    Parse a bounding box string into an lat/lon/lat/long 4-tuple.
+    Parse a bounding box string into an lon/lat/lon/lat 4-tuple.
 
     :param bbox: bounding box string
     :return: pair of coordinates
@@ -12,7 +12,7 @@ def parse_bbox(bbox):
     bbox = force_text(bbox)
     sep = (';' if ';' in bbox else ',')
     try:
-        lat1, lon1, lat2, lon2 = [float(c) for c in bbox.split(sep)]
+        lon1, lat1, lon2, lat2 = [float(c) for c in bbox.split(sep)]
     except IndexError:
         raise ValueError('bbox %r is not exactly 4 coordinates' % bbox)
     except ValueError as exc:
@@ -30,4 +30,4 @@ def parse_bbox(bbox):
         if not (-180 < lon < +180):
             raise ValueError('longitude %f is out of range (-180..+180)' % lon)
 
-    return ((lat1, lon1), (lat2, lon2))
+    return ((lon1, lat1), (lon2, lat2))

@@ -6,21 +6,21 @@ from django.db.models import Field
 from django.db.models.sql import InsertQuery, Query
 from django.db.models.sql.compiler import SQLInsertCompiler, SQLCompiler
 
-from issues.fields import FallbackPointField, _FallbackPointField
+from issues.fields import GeoPointField, GeoPointFieldFallback
 from issues.gis import determine_gissiness
 
 
-class TotesAModel(models.Model):
-    f = _FallbackPointField()
+class ModelUsingFallback(models.Model):
+    f = GeoPointFieldFallback()
 
     class Meta:
         db_table = 'foo'
         managed = False
 
 
-def test_fallbackpointfield_heritage():
-    assert issubclass(FallbackPointField, Field)  # Well that's a given.
-    assert issubclass(FallbackPointField, GeometryField) == determine_gissiness()  # Only geometrical if gissy!
+def test_GeoPointField_heritage():
+    assert issubclass(GeoPointField, Field)  # Well that's a given.
+    assert issubclass(GeoPointField, GeometryField) == determine_gissiness()  # Only geometrical if gissy!
 
 
 @pytest.mark.parametrize('val', [
@@ -33,9 +33,9 @@ def test_fallback_serialization(val):
     Test that the non-gissy fallback point field does actually serialize into a semicolon-separated
     format even in the SQL level.
     """
-    obj = TotesAModel(f=val)
-    query = InsertQuery(TotesAModel)
-    query.insert_values(TotesAModel._meta.get_fields(), [obj])
+    obj = ModelUsingFallback(f=val)
+    query = InsertQuery(ModelUsingFallback)
+    query.insert_values(ModelUsingFallback._meta.get_fields(), [obj])
     comp = query.get_compiler(using="default")
     assert isinstance(comp, SQLInsertCompiler)
     comp.return_id = True  # prevent bulk
@@ -51,5 +51,5 @@ def test_fallback_deserialization(val):
     """
     Test that semicola-separated values from the database get deserialized into 2-tuples.
     """
-    field = [f for f in TotesAModel._meta.get_fields() if isinstance(f, _FallbackPointField)][0]
+    field = [f for f in ModelUsingFallback._meta.get_fields() if isinstance(f, GeoPointFieldFallback)][0]
     assert field.to_python(val) == (60, 22)
