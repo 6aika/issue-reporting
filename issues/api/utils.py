@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
@@ -22,7 +24,7 @@ def api_exception_handler(exc, context):
     return response
 
 
-class XMLDict(dict):
+class XMLDict(OrderedDict):
     def __init__(self, dict, xml_tag=None):
         super(XMLDict, self).__init__(dict)
         self.xml_tag = xml_tag
