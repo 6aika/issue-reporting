@@ -9,7 +9,11 @@ SECRET_KEY = env.str('SECRET_KEY', default=('cfh' if DEBUG else Env.NOTSET))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ALLOWED_HOSTS = ['*']
 
-INSTALLED_APPS = [
+DATABASES = {
+    'default': env.db_url(default='postgis://postgres:cfh@localhost:5432/cfh')
+}
+
+INSTALLED_APPS = list(filter(None, [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -25,7 +29,8 @@ INSTALLED_APPS = [
     'issues_hel',
     'issues_log',
     'issues_simple_ui',
-]
+    ('issues_geometry' if ('gis' in DATABASES['default']['ENGINE']) else None)
+]))
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -72,10 +77,6 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'issues.api.utils.api_exception_handler'
 }
 
-DATABASES = {
-    'default': env.db_url(default='postgis://postgres:cfh@localhost:5432/cfh')
-}
-
 language_names = babel.Locale('en').languages
 LANGUAGES = [
     (code, language_names.get(code, code.title()))
@@ -95,6 +96,7 @@ USE_TZ = True
 WSGI_APPLICATION = 'cfh.wsgi.application'
 GEOREPORT_API_ROOT = env.str('ISSUES_GEOREPORT_API_ROOT', default='api/georeport/v2/')
 ISSUES_DEFAULT_MODERATION_STATUS = env.str('ISSUES_DEFAULT_MODERATION_STATUS', default='public')
+ISSUES_GEOMETRY_SRID = env.int('ISSUES_GEOMETRY_SRID', default=4326)
 LOGIN_REDIRECT_URL = '/'
 
 PARLER_LANGUAGES = {
