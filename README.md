@@ -67,3 +67,5 @@ update_from_georeport_v2_url("https://asiointi.hel.fi/palautews/rest/v1/requests
 * `ISSUES_DEFAULT_MODERATION_STATUS`:
   * Set to `unmoderated` to set newly created issues as unmoderated, which makes them not appear in lists
     before set to public.
+* `ISSUES_GEOMETRY_SRID`:
+  * The SRID to use for the geometry fields in `issues_geometry`. Defaults to 4326 (WGS84).

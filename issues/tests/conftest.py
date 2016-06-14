@@ -41,12 +41,29 @@ class FormatEnforcingAPIClient(APIClient):
             data = {}
         data["format"] = self.format
         resp = super().get(path, data, follow, **extra)
+        self._check_response_format(resp)
+        return resp
+
+    def post(self, path, data=None, format=None, content_type=None, follow=False, **extra):
+        assert not format
+        assert not content_type
+        resp = super().post(self._format_path(path), data=data, follow=follow, **extra)
+        self._check_response_format(resp)
+        return resp
+
+    def _check_response_format(self, resp):
         if resp.status_code < 400:
             if self.format == "sjson":
                 assert "json" in resp["Content-Type"]
             else:
                 assert self.format in resp["Content-Type"]
-        return resp
+
+    def _format_path(self, path):
+        return '%s%sformat=%s' % (
+            path,
+            ('&' if '?' in path else '?'),
+            self.format
+        )
 
 
 @pytest.fixture(params=['xml', 'json', 'sjson'])
@@ -63,6 +80,7 @@ def random_service(db):
         service_code=get_random_string(),
         service_name="Test"
     )
+
 
 @pytest.fixture()
 def testing_issues(db):

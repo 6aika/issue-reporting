@@ -1,5 +1,9 @@
+import json
+from collections import OrderedDict
+
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
+from rest_framework.utils.encoders import JSONEncoder
 
 from issues.excs import InvalidAppError
 
@@ -22,7 +26,7 @@ def api_exception_handler(exc, context):
     return response
 
 
-class XMLDict(dict):
+class XMLDict(OrderedDict):
     def __init__(self, dict, xml_tag=None):
         super(XMLDict, self).__init__(dict)
         self.xml_tag = xml_tag
@@ -32,6 +36,28 @@ class XMLList(list):
     def __init__(self, list, xml_tag=None):
         super(XMLList, self).__init__(list)
         self.xml_tag = xml_tag
+
+
+class IWriteXML(object):
+    def write_xml(self, xml):
+        """
+        Write this object to the given XMLGenerator.
+        :type xml: xml.sax.saxutils.XMLGenerator
+        """
+        raise NotImplementedError("...")
+
+
+class JSONInXML(IWriteXML, dict):
+    """
+    When rendering XML, write this object as JSON.
+
+    This is meant for GeoJSON serialization, which should be "native"
+    JSON when rendering JSON, and a string (instead of a horribly mangled
+    XML representation) when rendering XML.
+    """
+
+    def write_xml(self, xml):
+        xml.characters(json.dumps(self, cls=JSONEncoder))
 
 
 def get_application_from_api_key(api_key):
