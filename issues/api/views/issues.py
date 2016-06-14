@@ -66,8 +66,6 @@ class IssueFilter(BaseFilterBackend):
         order_by = (request.query_params.get('order_by') or '-pk')
         queryset = queryset.order_by(order_by)
 
-        # TODO: Implement pagination
-
         return queryset
 
     def _apply_geo_filters(self, request, queryset):

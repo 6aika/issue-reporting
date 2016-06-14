@@ -127,10 +127,9 @@ class IssueSerializer(serializers.ModelSerializer):
         lat = data.pop('lat', None)
         long = data.pop('long', None)
         if lat and long:
-            data['location'] = GEOSGeometry(
+            data['location'] = GEOSGeometry(  # TODO: Maybe remove? Looks like a GEOS dependency
                 'SRID=4326;POINT(%s %s)' % (long, lat)
             )
-        # TODO: service_object_id POST support here?
 
         if not data.get('jurisdiction'):
             try:
