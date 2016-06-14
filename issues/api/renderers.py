@@ -50,38 +50,36 @@ class XMLRenderer(BaseRenderer):
         xml = SimplerXMLGenerator(stream, self.charset)
         xml.startDocument()
         root_tag_name = (getattr(data, "xml_tag", None) or self.root_tag_name)
-        xml.startElement(root_tag_name, {})
-        self._to_xml(xml, data)
-        xml.endElement(root_tag_name)
+        self._to_xml(xml, data, root_tag_name)
         xml.endDocument()
         return stream.getvalue()
 
-    def _to_xml(self, xml, data):
-        if data is True:
-            return xml.characters('true')
-        if data is False:
-            return xml.characters('false')
+    def _to_xml(self, xml, data, tag_name=None):
 
-        if isinstance(data, (list, tuple)):
+        if tag_name:
+            xml.startElement(tag_name, {})
+
+        if hasattr(data, 'write_xml'):
+            # Support for the `IWriteXML` protocol.
+            data.write_xml(xml)
+        elif data is True:
+            xml.characters('true')
+        elif data is False:
+            xml.characters('false')
+        elif isinstance(data, (list, tuple)):
             for item in data:
-                tag_name = (getattr(data, "xml_tag", None) or self.item_tag_name)
-                xml.startElement(tag_name, {})
-                self._to_xml(xml, item)
-                xml.endElement(tag_name)
-
+                self._to_xml(xml, item, tag_name=(getattr(data, "xml_tag", None) or self.item_tag_name))
         elif isinstance(data, dict):
             key_order = getattr(data, "key_order", ())
             for key in sorted(six.iterkeys(data), key=order_by_sort_order(key_order)):
-                xml.startElement(key, {})
-                self._to_xml(xml, data[key])
-                xml.endElement(key)
-
-        elif data is None:
-            # Don't output any value
+                self._to_xml(xml, data[key], key)
+        elif data is None:  # Don't output any value
             pass
-
         else:
             xml.characters(smart_text(data))
+
+        if tag_name:
+            xml.endElement(tag_name)
 
 
 class SparkJSONRenderer(JSONRenderer):
