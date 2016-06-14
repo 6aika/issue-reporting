@@ -7,6 +7,8 @@ from django.middleware.csrf import get_token
 from django.utils.safestring import mark_safe
 from django.utils.translation import get_language
 
+from issues.excs import InvalidAppError
+from issues.models import Application
 from issues_simple_ui.models import Content, Image
 
 register = template.Library()
@@ -39,8 +41,17 @@ def get_config_json(context, **extra):
     if user and user.is_authenticated():
         extra['csrf_token'] = get_token(request)
 
+    try:
+        application = Application.autodetermine()
+    except InvalidAppError:
+        application, _ = Application.objects.get_or_create(
+            identifier='simple_ui',
+            defaults={'name': 'Simple UI',},
+        )
+
     return mark_safe(json.dumps(dict({
         'language': get_language().split('-')[0],
+        'api_key': application.key,
         'api_root': '/%s' % settings.GEOREPORT_API_ROOT,
         'map_settings': {  # TODO: Make this configurable
             'center': [60.1699, 24.9384],
