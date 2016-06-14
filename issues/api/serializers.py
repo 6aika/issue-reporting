@@ -118,6 +118,10 @@ class IssueSerializer(serializers.ModelSerializer):
         return XMLDict(representation, "request")
 
     def validate(self, data):
+        application = self.context.get('application')
+        if application:
+            data['application'] = application
+
         service_code = data.pop('service_code')
         service = Service.objects.filter(service_code=service_code).first()
         if not service:
