@@ -157,7 +157,7 @@
 
       if (xhr.status == 201) {
         state.status('submitted');
-        state.createdRequest(JSON.parse(xhr.responseText));
+        state.createdRequest(JSON.parse(xhr.responseText)[0]);
       } else {
         state.status(null);
         alert('Oops!\n' + xhr.responseText);

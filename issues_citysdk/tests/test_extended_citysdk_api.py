@@ -64,7 +64,7 @@ def test_post_service_object(random_service, mf_api_client):
     service_object_type = 'http://www.hel.fi/servicemap/v2'
     title = get_random_string()
 
-    issue = get_data_from_response(
+    issues = get_data_from_response(
         mf_api_client.post(
             ISSUE_LIST_ENDPOINT + '?extensions=citysdk',
             {
@@ -77,9 +77,10 @@ def test_post_service_object(random_service, mf_api_client):
                 'title': title,
             }
         ),
-        schema=ISSUE_SCHEMA,
+        schema=LIST_OF_ISSUES_SCHEMA,
         status_code=201
     )
+    issue = issues[0]
     verify_issue(issue)
     iex = Issue_CitySDK.objects.get(issue__identifier=issue['service_request_id'])
 

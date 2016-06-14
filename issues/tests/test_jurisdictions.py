@@ -11,7 +11,7 @@ from issues.tests.utils import get_data_from_response, ISSUE_LIST_ENDPOINT
 def test_post_issue_no_jurisdiction(mf_api_client, random_service):
     assert not Jurisdiction.objects.exists()
     for attempt in [1, 2]:
-        issue = get_data_from_response(
+        issues = get_data_from_response(
             mf_api_client.post(ISSUE_LIST_ENDPOINT, {
                 "service_code": random_service.service_code,
                 "lat": 30,
@@ -19,8 +19,9 @@ def test_post_issue_no_jurisdiction(mf_api_client, random_service):
                 "description": get_random_string(),
             }),
             201,
-            schema=ISSUE_SCHEMA
+            schema=LIST_OF_ISSUES_SCHEMA
         )
+        issue = issues[0]
         assert Issue.objects.filter(identifier=issue['service_request_id']).exists()
         assert Jurisdiction.objects.filter(identifier="default").exists()  # default Jurisdiction was created
         assert Jurisdiction.objects.count() == 1
@@ -49,7 +50,7 @@ def test_post_issue_multi_jurisdiction(mf_api_client, random_service):
     )
     for j in Jurisdiction.objects.all():
         # Can't post without a Jurisdiction when there are multiple
-        issue = get_data_from_response(
+        issues = get_data_from_response(
             mf_api_client.post(ISSUE_LIST_ENDPOINT, {
                 "jurisdiction_id": j.identifier,
                 "service_code": random_service.service_code,
@@ -58,10 +59,10 @@ def test_post_issue_multi_jurisdiction(mf_api_client, random_service):
                 "description": get_random_string(),
             }),
             201,
-            schema=ISSUE_SCHEMA
+            schema=LIST_OF_ISSUES_SCHEMA
         )
 
-        assert Issue.objects.get(identifier=issue["service_request_id"]).jurisdiction == j
+        assert Issue.objects.get(identifier=issues[0]["service_request_id"]).jurisdiction == j
 
 
 @pytest.mark.django_db

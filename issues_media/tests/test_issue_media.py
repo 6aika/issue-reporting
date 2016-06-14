@@ -6,7 +6,7 @@ from django.utils.crypto import get_random_string
 
 from issues.models.issues import Issue
 from issues.tests.conftest import mf_api_client, random_service  # noqa
-from issues.tests.schemata import ISSUE_SCHEMA
+from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import get_data_from_response, ISSUE_LIST_ENDPOINT
 # https://raw.githubusercontent.com/mathiasbynens/small/master/jpeg.jpg
 from issues_media.models import IssueMedia
@@ -23,7 +23,7 @@ def test_post_media(mf_api_client, random_service):
         ContentFile(content=VERY_SMALL_JPEG, name="x%d.jpg" % x)
         for x in range(3)
     ]
-    issue = get_data_from_response(
+    issues = get_data_from_response(
         mf_api_client.post(
             '%s?extensions=media' % ISSUE_LIST_ENDPOINT,
             data={
@@ -34,9 +34,10 @@ def test_post_media(mf_api_client, random_service):
                 'media': files,
             }
         ),
-        status_code=201
+        status_code=201,
+        schema=LIST_OF_ISSUES_SCHEMA,
     )
-    id = issue['service_request_id']
+    id = issues[0]['service_request_id']
     assert Issue.objects.filter(identifier=id).exists()
     assert IssueMedia.objects.filter(issue__identifier=id).count() == 3
 

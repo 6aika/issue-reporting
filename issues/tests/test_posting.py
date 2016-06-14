@@ -4,7 +4,7 @@ import pytest
 from django.utils.crypto import get_random_string
 
 from issues.signals import issue_posted
-from issues.tests.schemata import ISSUE_SCHEMA
+from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import close_enough
 from issues.tests.utils import get_data_from_response, ISSUE_LIST_ENDPOINT, verify_issue
 
@@ -17,7 +17,7 @@ def test_default_moderation_status(mf_api_client, random_service, settings, stat
     freshly created issues are not visible via the list endpoint
     """
     settings.ISSUES_DEFAULT_MODERATION_STATUS = status
-    issue = get_data_from_response(
+    issues = get_data_from_response(
         mf_api_client.post(ISSUE_LIST_ENDPOINT, {
             "lat": 15,
             "long": 15,
@@ -25,9 +25,9 @@ def test_default_moderation_status(mf_api_client, random_service, settings, stat
             "service_code": random_service.service_code,
         }),
         201,
-        schema=ISSUE_SCHEMA
+        schema=LIST_OF_ISSUES_SCHEMA
     )
-    verify_issue(issue)
+    verify_issue(issues[0])
 
     issues = get_data_from_response(
         mf_api_client.get(ISSUE_LIST_ENDPOINT),
@@ -56,11 +56,12 @@ def test_post_issue_roundtrip(mf_api_client, random_service, input_data):
     issue_posted.connect(signal_handler)
 
     input_data = dict(input_data, service_code=random_service.service_code)
-    issue = get_data_from_response(
+    issues = get_data_from_response(
         mf_api_client.post(ISSUE_LIST_ENDPOINT, input_data),
         201,
-        schema=ISSUE_SCHEMA
+        schema=LIST_OF_ISSUES_SCHEMA,
     )
+    issue = issues[0]
     verify_issue(issue)
 
     # Test that the issue matches what we posted
