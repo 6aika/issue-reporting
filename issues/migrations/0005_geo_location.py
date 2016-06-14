@@ -7,8 +7,10 @@ from django.db.models import Model
 
 
 def recache_lat_long(apps, schema_editor):
-    from issues.models import Issue  # This _should_ use apps, but those Issues have no `cache_location`...
+    from issues.models import Issue as CurrentIssue
+    Issue = apps.get_model('issues', 'Issue')
     for issue in Issue.objects.filter(location__isnull=False):
+        issue._cache_location = CurrentIssue._cache_location
         issue._cache_location()
         Model.save(self=issue, update_fields=('lat', 'long'))
 
