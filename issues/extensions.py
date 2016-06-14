@@ -2,10 +2,17 @@ from django.apps import apps
 
 
 class IssueExtension(object):
-    # TODO: Document these args
+    #: The identifier for the extension (as referred to in the `extensions` argument)
     identifier = None
+
+    #: The `related_name` for this extension's Issue extension model. This will be added to
+    #: `select_related` queries done over the API.
     related_name = None
+
+    #: Like `related_name`, but for `prefetch_related`. (Used by the media and log extensions, for instance.)
     prefetch_name = None
+
+    #: Additional fields to search over when the `search` query parameter is used to query
     search_fields = ()
 
     def filter_issue_queryset(self, request, queryset, view):  # pragma: no cover

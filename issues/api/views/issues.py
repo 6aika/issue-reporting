@@ -5,6 +5,7 @@ from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveA
 from rest_framework.response import Response
 
 from issues.api.serializers import IssueSerializer
+from issues.api.utils import get_application_from_request
 from issues.extensions import apply_select_and_prefetch, get_extensions_from_request
 from issues.gis import determine_gissiness
 from issues.models import Issue
@@ -19,6 +20,7 @@ class IssueViewBase(GenericAPIView):
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
         ctx['extensions'] = get_extensions_from_request(self.request)
+        ctx['application'] = get_application_from_request(self.request)
         return ctx
 
 
@@ -65,8 +67,6 @@ class IssueFilter(BaseFilterBackend):
 
         order_by = (request.query_params.get('order_by') or '-pk')
         queryset = queryset.order_by(order_by)
-
-        # TODO: Implement pagination
 
         return queryset
 

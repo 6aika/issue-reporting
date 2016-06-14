@@ -118,6 +118,10 @@ class IssueSerializer(serializers.ModelSerializer):
         return XMLDict(representation, "request")
 
     def validate(self, data):
+        application = self.context.get('application')
+        if application:
+            data['application'] = application
+
         service_code = data.pop('service_code')
         service = Service.objects.filter(service_code=service_code).first()
         if not service:
@@ -127,10 +131,9 @@ class IssueSerializer(serializers.ModelSerializer):
         lat = data.pop('lat', None)
         long = data.pop('long', None)
         if lat and long:
-            data['location'] = GEOSGeometry(
+            data['location'] = GEOSGeometry(  # TODO: Maybe remove? Looks like a GEOS dependency
                 'SRID=4326;POINT(%s %s)' % (long, lat)
             )
-        # TODO: service_object_id POST support here?
 
         if not data.get('jurisdiction'):
             try:
@@ -157,7 +160,7 @@ class IssueSerializer(serializers.ModelSerializer):
     def _create(self, validated_data):
         validated_data = validated_data.copy()  # We're going to pop stuff off here.
         # This logic is mostly copied from super().create(),
-        # aside from the concrete_data stuff.
+        # aside from the concrete_data stuff and `.clean()`ing the model before saving.
         ModelClass = self.Meta.model
         info = model_meta.get_field_info(ModelClass)
         many_to_many = {}
@@ -173,7 +176,9 @@ class IssueSerializer(serializers.ModelSerializer):
             in validated_data.items()
             if field in concrete_fields
         }
-        instance = ModelClass.objects.create(**concrete_data)
+        instance = ModelClass(**concrete_data)
+        instance.clean()
+        instance.save()
         for field_name, value in many_to_many.items():
             setattr(instance, field_name, value)
         return instance

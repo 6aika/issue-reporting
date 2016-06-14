@@ -1,3 +1,9 @@
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import serializers
+
+from issues.excs import InvalidAppError
+
+
 def api_exception_handler(exc, context):
     # Call REST framework's default exception handler first,
     # to get the standard error response.
@@ -17,14 +23,38 @@ def api_exception_handler(exc, context):
 
 
 class XMLDict(dict):
-
     def __init__(self, dict, xml_tag=None):
         super(XMLDict, self).__init__(dict)
         self.xml_tag = xml_tag
 
 
 class XMLList(list):
-
     def __init__(self, list, xml_tag=None):
         super(XMLList, self).__init__(list)
         self.xml_tag = xml_tag
+
+
+def get_application_from_api_key(api_key):
+    from issues.models import Application
+    if api_key:
+        try:
+            app = Application.objects.get(key=api_key)
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError('Invalid API key')
+        if not app.active:
+            raise serializers.ValidationError('The %s application is not active' % app)
+    else:
+        try:
+            app = Application.autodetermine()
+        except InvalidAppError as iae:
+            raise serializers.ValidationError(iae.args[0])
+    return app
+
+
+def get_application_from_request(request):
+    for value in (
+        request.query_params.get('api_key'),
+        (request.data.get('api_key') if request.method == 'POST' else None),
+    ):
+        if value is not None:
+            return get_application_from_api_key(value)

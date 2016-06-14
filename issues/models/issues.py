@@ -28,6 +28,7 @@ MODERATION_STATUS_CHOICES = [
 
 @python_2_unicode_compatible
 class Issue(models.Model):
+    application = models.ForeignKey('issues.Application', on_delete=models.PROTECT)
     jurisdiction = models.ForeignKey('issues.Jurisdiction', on_delete=models.PROTECT)
     service = models.ForeignKey('issues.Service')
     service_code = models.CharField(max_length=64, db_index=True)
@@ -90,11 +91,17 @@ class Issue(models.Model):
     def _cache_data(self):
         self._cache_location()
 
+        if not self.application_id:
+            from issues.models.applications import Application
+            self.application = Application.autodetermine()
+
         if not self.jurisdiction_id:
             from issues.models.jurisdictions import Jurisdiction
             self.jurisdiction = Jurisdiction.autodetermine()
+
         if not self.identifier:
             self.identifier = self._generate_identifier()
+
         if not self.service_id:
             from issues.models.services import Service
             # TODO: There should probably be policy for and against this implicit service creation
@@ -105,8 +112,10 @@ class Issue(models.Model):
                     'location_req': 'none',
                 }
             )
+
         if not self.service_code:
             self.service_code = self.service.service_code
+
         if not self.expected_datetime:
             from issues.analysis import calc_fixing_time
             fixing_time = calc_fixing_time(self.service_code)

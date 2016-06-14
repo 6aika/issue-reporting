@@ -20,7 +20,7 @@ def get_data_from_response(response, status_code=200, schema=None):
         response["Content-Type"] = "application/json"
 
     data = json.loads(response.content.decode('utf-8'))
-    if schema:
+    if schema and response.status_code < 400:
         jsonschema.validate(data, schema)
     return data
 
@@ -66,7 +66,7 @@ def verify_issue(data, issue=None):
         assert close_enough(float(data["long"]), lon)
         assert close_enough(float(data["lat"]), lat)
 
-    return True  # for use in `assert verify_issue()`
+    return issue  # for use in `assert verify_issue()`
 
 
 def close_enough(a, b, epsilon=0.001):

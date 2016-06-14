@@ -3,6 +3,7 @@ import random
 import pytest
 from django.utils.crypto import get_random_string
 
+from issues.models.applications import Application
 from issues.signals import issue_posted
 from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import close_enough
@@ -75,3 +76,32 @@ def test_post_issue_roundtrip(mf_api_client, random_service, input_data):
     # Test that the issue_posted signal was fired and the last issue posted
     # is what we expect
     assert sig_issue[0].identifier == issue['service_request_id']
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize('api_key_mode', ('none', 'default-only', 'actual-apps'))
+@pytest.mark.parametrize('pass_api_key', (False, True))
+def test_post_issue_api_key(mf_api_client, random_service, api_key_mode, pass_api_key):
+    expected_app = Application.autodetermine()
+    expected_status = 201
+    if api_key_mode == 'actual-apps':
+        for x in range(5):
+            expected_app = Application.objects.create(identifier='app%d' % (x + 1))
+        if not pass_api_key:
+            expected_status = 400
+
+    input_data = dict(
+        description=get_random_string(),
+        service_code=random_service.service_code,
+        address='hello',
+        api_key=(expected_app.key if pass_api_key else ''),
+    )
+    issues = get_data_from_response(
+        mf_api_client.post(ISSUE_LIST_ENDPOINT, input_data),
+        status_code=expected_status,
+        schema=LIST_OF_ISSUES_SCHEMA,
+    )
+    if expected_status >= 400:
+        return  # Nothing more to do here
+    issue = verify_issue(issues[0])
+    assert issue.application == expected_app
