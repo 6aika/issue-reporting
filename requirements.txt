@@ -11,6 +11,7 @@ django-parler==1.6.3
 django==1.9.6             # via django-environ
 djangorestframework==3.3.3
 iso8601==0.1.11
+jsonschema==2.5.1
 lxml==3.6.0
 python-dateutil==2.5.3
 pytz==2016.4              # via babel

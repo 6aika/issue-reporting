@@ -3,6 +3,7 @@ django-environ~=0.4.0
 django-parler
 djangorestframework~=3.3.3
 iso8601
+jsonschema
 lxml~=3.6.0
 python-dateutil~=2.5.0
 requests~=2.9.1

@@ -12,7 +12,6 @@ coverage==4.1             # via pytest-cov
 first==2.0.1              # via pip-tools
 flake8==2.5.4
 isort==4.2.5
-jsonschema==2.5.1
 mccabe==0.4.0             # via flake8
 pep8==1.7.0               # via autopep8, flake8
 pip-tools==1.6.5
