@@ -1,14 +1,15 @@
-from django.db.models import Case, When
+from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveAPIView
+from rest_framework.response import Response
 
 from issues.api.serializers import IssueSerializer
-from issues.signals import issue_posted
-from issues.utils import parse_bbox
 from issues.extensions import apply_select_and_prefetch, get_extensions_from_request
 from issues.gis import determine_gissiness
 from issues.models import Issue
+from issues.signals import issue_posted
+from issues.utils import parse_bbox
 
 
 class IssueViewBase(GenericAPIView):
@@ -113,6 +114,16 @@ class IssueList(IssueViewBase, ListCreateAPIView):
         instance = serializer.instance
         issue_posted.send(sender=self, issue=instance, request=self.request)
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            [serializer.data],
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
 
 class IssueDetail(IssueViewBase, RetrieveAPIView):
     lookup_url_kwarg = "identifier"
