@@ -6,6 +6,7 @@
     initialValue: [],
   });
   var map = null;
+  var mapMarkerGroup = null;
 
   function initiateSearch() {
     var params = {
@@ -45,8 +46,29 @@
     }).then(function (res) {
       state.searching(false);
       state.results(res);
+      updateMapWithResults(res.results);
+      updateLoadingSpinner();
       m.redraw(true);
     });
+    updateLoadingSpinner();
+  }
+
+  function updateLoadingSpinner() {
+    var ctr = document.getElementById('spinner-container');
+    if (!ctr) {
+      ctr = document.createElement('div');
+      ctr.id = 'spinner-container';
+      ctr.innerHTML = '<div class=spinner></div>';
+      document.body.appendChild(ctr);
+    }
+    if (state.searching()) {
+      ctr.classList.add('visible');
+    } else {
+      if (!ctr.classList.contains('visible')) return;
+      setTimeout(function () {  // Give the spinner some time to be visible; our API is too fast. ;)
+        ctr.classList.remove('visible');
+      }, 300);
+    }
   }
 
   var initiateNewSearchSoon = IssueUtils.debounce(function () {
@@ -74,16 +96,50 @@
     return services();
   });
 
+  function updateMapWithResults(issues) {
+    if (!map) {
+      return;
+    }
+    var group = new L.FeatureGroup();
+    var latLngs = [];
+    issues.filter(function (issue) {
+      return issue.lat && issue.long;
+    }).forEach(function (issue) {
+      var latLng = new L.LatLng(issue.lat, issue.long);
+      latLngs.push(latLng);
+      var marker = L.marker(latLng);
+      var markerContent = ([
+        (issue.description).replace(/</g, '&lt;').replace(/>/g, '&gt;'),
+        "<br>",
+        gettext("Show").link("#" + issue.service_request_id)
+      ]).join("");
+      marker.bindPopup(markerContent, {showOnMouseOver: true});
+      group.addLayer(marker);
+    });
+
+    if (mapMarkerGroup) {
+      map.removeLayer(mapMarkerGroup);
+      mapMarkerGroup = null;
+    }
+    map.addLayer(group);
+    if (latLngs.length) {
+      var bounds = new L.LatLngBounds(latLngs);
+      bounds.pad(0.05);
+      map.fitBounds(bounds);
+    }
+    mapMarkerGroup = group;
+  }
+
   function getBaseFilterRow() {
     return m('.row', [
-      m('.col-md-12', bootstrapFormField({
+      m('.col-md-6', bootstrapFormField({
         type: 'search',
         id: 'search',
         bind: state.search,
         label: gettext('Search for issues'),
         placeholder: gettext('Search for text...'),
       })),
-      m('.col-md-12', bootstrapFormField({
+      m('.col-md-6', bootstrapFormField({
         tag: 'select',
         id: 'service',
         bind: state.service,
@@ -95,27 +151,27 @@
 
   function getGeoFilterPanel() {
     return m('div', [
-      m('.btn-group', [
-        m('a.btn.btn-default', {
+      m('.btn-group.btn-group-justified', [
+        m('a.btn.btn-sm.btn-default' + (map && map.getLittlePenMode() == 'box' ? '.active' : ''), {
           href: '#',
           onclick: function () {
             map.startLittlePen('box');
           },
         }, gettext('Search by box')),
-        m('a.btn.btn-default', {
+        m('a.btn.btn-sm.btn-default' + (map && map.getLittlePenMode() == 'circle' ? '.active' : ''), {
           href: '#',
           onclick: function () {
             map.startLittlePen('circle');
           },
         }, gettext('Search by circle')),
-        m('a.btn.btn-default', {
+        m('a.btn.btn-sm.btn-default', {
           href: '#',
           onclick: function () {
             map.clearLittlePen();
             state.bbox(null);
             state.circle(null);
           },
-        }, gettext('Clear search')),
+        }, gettext('Clear search area')),
       ]),
       m('div', {
         config: IssueUtils.getLeafletSetup(function (context) {
@@ -148,7 +204,11 @@
 
   function renderResult(result) {
     var ea = result.extended_attributes || {};
-    return m('div.result', [
+    var props = {
+      key: result.service_request_id,
+      id: result.service_request_id,
+    };
+    return m('div.result', props, [
       m('div.row', [
         m('div.col-md-8', [
           (ea.title ? m('h2', ea.title) : null),
@@ -173,7 +233,8 @@
 
   function getPaginator(results, id) {
     if (results.pageCount <= 1) return;
-    var paginator = results._mithril_paginator;
+    var cacheKey = '_mith_' + id;
+    var paginator = results[cacheKey];
     if (!paginator) {
       var range = [];
       for (var page = 1; page <= parseInt(results.pageCount); page++) {
@@ -184,14 +245,15 @@
           'li' + (state.page() === page ? '.active' : ''),
           m('a', {
             href: '#' + id,
-            onclick: function () {
-              results._mithril_paginator = null; // Uncache
+            onclick: function (event) {
+              results[cacheKey] = null; // Uncache
               state.page(page);
+              event.preventDefault();
             },
           }, page)
         );
       }));
-      results._mithril_paginator = paginator;
+      results[cacheKey] = paginator;
     }
     return paginator;
   }
@@ -214,8 +276,10 @@
     return m('div', [
       m('.well', [
         m('.row', [
-          m('.col-md-4', getBaseFilterRow()),
-          m('.col-md-8', getGeoFilterPanel()),
+          m('.col-md-12', [
+            getBaseFilterRow(),
+            getGeoFilterPanel(),
+          ]),
         ]),
       ]),
       getResults(),

@@ -6,12 +6,8 @@
     <title>{% block title %}{{ title }}{% endblock %} &ndash; {{ global_content.title|default:"Feedback" }}</title>
     <link rel="stylesheet" href="{% static "issues_simple_ui/vendor/bootstrap.min.css" %}">
     <link rel="stylesheet" href="{% static "issues_simple_ui/vendor/leaflet/leaflet.css" %}">
-    <style>
-        .map-container {
-            width: 100%;
-            height: 400px;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static "issues_simple_ui/vendor/spinner.css" %}">
+    <link rel="stylesheet" href="{% static "issues_simple_ui/style.css" %}">
 </head>
 <body>
 {% block nav %}
