@@ -6,6 +6,7 @@
     initialValue: [],
   });
   var map = null;
+  var mapMarkerGroup = null;
 
   function initiateSearch() {
     var params = {
@@ -45,6 +46,7 @@
     }).then(function (res) {
       state.searching(false);
       state.results(res);
+      updateMapWithResults(res.results);
       m.redraw(true);
     });
   }
@@ -73,6 +75,40 @@
   }, function () {
     return services();
   });
+
+  function updateMapWithResults(issues) {
+    if (!map) {
+      return;
+    }
+    var group = new L.FeatureGroup();
+    var latLngs = [];
+    issues.filter(function (issue) {
+      return issue.lat && issue.long;
+    }).forEach(function (issue) {
+      var latLng = new L.LatLng(issue.lat, issue.long);
+      latLngs.push(latLng);
+      var marker = L.marker(latLng);
+      var markerContent = ([
+        (issue.description).replace(/</g, '&lt;').replace(/>/g, '&gt;'),
+        "<br>",
+        gettext("Show").link("#" + issue.service_request_id)
+      ]).join("");
+      marker.bindPopup(markerContent, {showOnMouseOver: true});
+      group.addLayer(marker);
+    });
+
+    if (mapMarkerGroup) {
+      map.removeLayer(mapMarkerGroup);
+      mapMarkerGroup = null;
+    }
+    map.addLayer(group);
+    if (latLngs.length) {
+      var bounds = new L.LatLngBounds(latLngs);
+      bounds.pad(0.05);
+      map.fitBounds(bounds);
+    }
+    mapMarkerGroup = group;
+  }
 
   function getBaseFilterRow() {
     return m('.row', [
@@ -148,7 +184,11 @@
 
   function renderResult(result) {
     var ea = result.extended_attributes || {};
-    return m('div.result', [
+    var props = {
+      key: result.service_request_id,
+      id: result.service_request_id,
+    };
+    return m('div.result', props, [
       m('div.row', [
         m('div.col-md-8', [
           (ea.title ? m('h2', ea.title) : null),
