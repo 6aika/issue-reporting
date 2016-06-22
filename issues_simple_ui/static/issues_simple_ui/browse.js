@@ -47,8 +47,28 @@
       state.searching(false);
       state.results(res);
       updateMapWithResults(res.results);
+      updateLoadingSpinner();
       m.redraw(true);
     });
+    updateLoadingSpinner();
+  }
+
+  function updateLoadingSpinner() {
+    var ctr = document.getElementById('spinner-container');
+    if (!ctr) {
+      ctr = document.createElement('div');
+      ctr.id = 'spinner-container';
+      ctr.innerHTML = '<div class=spinner></div>';
+      document.body.appendChild(ctr);
+    }
+    if (state.searching()) {
+      ctr.classList.add('visible');
+    } else {
+      if (!ctr.classList.contains('visible')) return;
+      setTimeout(function () {  // Give the spinner some time to be visible; our API is too fast. ;)
+        ctr.classList.remove('visible');
+      }, 300);
+    }
   }
 
   var initiateNewSearchSoon = IssueUtils.debounce(function () {
