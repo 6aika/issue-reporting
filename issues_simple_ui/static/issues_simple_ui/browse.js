@@ -173,7 +173,8 @@
 
   function getPaginator(results, id) {
     if (results.pageCount <= 1) return;
-    var paginator = results._mithril_paginator;
+    var cacheKey = '_mith_' + id;
+    var paginator = results[cacheKey];
     if (!paginator) {
       var range = [];
       for (var page = 1; page <= parseInt(results.pageCount); page++) {
@@ -184,14 +185,15 @@
           'li' + (state.page() === page ? '.active' : ''),
           m('a', {
             href: '#' + id,
-            onclick: function () {
-              results._mithril_paginator = null; // Uncache
+            onclick: function (event) {
+              results[cacheKey] = null; // Uncache
               state.page(page);
+              event.preventDefault();
             },
           }, page)
         );
       }));
-      results._mithril_paginator = paginator;
+      results[cacheKey] = paginator;
     }
     return paginator;
   }
