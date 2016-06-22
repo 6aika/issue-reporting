@@ -112,14 +112,14 @@
 
   function getBaseFilterRow() {
     return m('.row', [
-      m('.col-md-12', bootstrapFormField({
+      m('.col-md-6', bootstrapFormField({
         type: 'search',
         id: 'search',
         bind: state.search,
         label: gettext('Search for issues'),
         placeholder: gettext('Search for text...'),
       })),
-      m('.col-md-12', bootstrapFormField({
+      m('.col-md-6', bootstrapFormField({
         tag: 'select',
         id: 'service',
         bind: state.service,
@@ -131,27 +131,27 @@
 
   function getGeoFilterPanel() {
     return m('div', [
-      m('.btn-group', [
-        m('a.btn.btn-default', {
+      m('.btn-group.btn-group-justified', [
+        m('a.btn.btn-sm.btn-default' + (map && map.getLittlePenMode() == 'box' ? '.active' : ''), {
           href: '#',
           onclick: function () {
             map.startLittlePen('box');
           },
         }, gettext('Search by box')),
-        m('a.btn.btn-default', {
+        m('a.btn.btn-sm.btn-default' + (map && map.getLittlePenMode() == 'circle' ? '.active' : ''), {
           href: '#',
           onclick: function () {
             map.startLittlePen('circle');
           },
         }, gettext('Search by circle')),
-        m('a.btn.btn-default', {
+        m('a.btn.btn-sm.btn-default', {
           href: '#',
           onclick: function () {
             map.clearLittlePen();
             state.bbox(null);
             state.circle(null);
           },
-        }, gettext('Clear search')),
+        }, gettext('Clear search area')),
       ]),
       m('div', {
         config: IssueUtils.getLeafletSetup(function (context) {
@@ -256,8 +256,10 @@
     return m('div', [
       m('.well', [
         m('.row', [
-          m('.col-md-4', getBaseFilterRow()),
-          m('.col-md-8', getGeoFilterPanel()),
+          m('.col-md-12', [
+            getBaseFilterRow(),
+            getGeoFilterPanel(),
+          ]),
         ]),
       ]),
       getResults(),
