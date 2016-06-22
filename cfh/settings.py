@@ -66,10 +66,10 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
     ),
     'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.BrowsableAPIRenderer',
         'issues.api.renderers.XMLRenderer',
         'issues.api.renderers.SparkJSONRenderer',
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
     ),
     'DEFAULT_PAGINATION_CLASS': 'issues.api.pagination.GeoReportV2Pagination',
     'PAGE_SIZE': 100,

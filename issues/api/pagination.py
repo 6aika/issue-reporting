@@ -10,14 +10,17 @@ class GeoReportV2Pagination(PageNumberPagination):
     def get_paginated_response(self, data):
         return Response(
             data,
-            headers={
-                'X-Next-Page-URL': self.get_next_link(),
-                'X-Page-Count': self.page.paginator.num_pages,
-                'X-Page-Size': self.page.paginator.per_page,
-                'X-Previous-Page-URL': self.get_previous_link(),
-                'X-Result-Count': self.page.paginator.count,
-            }
-        )
+            headers=dict(
+                (key, value)
+                for (key, value) in {
+                    'X-Next-Page-URL': self.get_next_link(),
+                    'X-Page-Count': self.page.paginator.num_pages,
+                    'X-Page-Size': self.page.paginator.per_page,
+                    'X-Previous-Page-URL': self.get_previous_link(),
+                    'X-Result-Count': self.page.paginator.count,
+                }.items()
+                if (key and value)
+            ))
 
     def get_page_size(self, request):
         for param in self.page_size_query_params:
