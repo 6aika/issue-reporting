@@ -23,6 +23,12 @@ class IssueViewBase(GenericAPIView):
         ctx['application'] = get_application_from_request(self.request)
         return ctx
 
+    def get_queryset(self):
+        return apply_select_and_prefetch(
+            queryset=Issue.objects.filter(moderation='public'),
+            extensions=get_extensions_from_request(self.request)
+        )
+
 
 class IssueFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
@@ -104,7 +110,6 @@ class IssueFilter(BaseFilterBackend):
 
 class IssueList(IssueViewBase, ListCreateAPIView):
     serializer_class = IssueSerializer
-    queryset = Issue.objects.filter(moderation='public')
     filter_backends = (
         IssueFilter,
     )
@@ -125,13 +130,8 @@ class IssueList(IssueViewBase, ListCreateAPIView):
             headers=headers
         )
 
+
 class IssueDetail(IssueViewBase, RetrieveAPIView):
     lookup_url_kwarg = "identifier"
     lookup_field = "identifier"
     serializer_class = IssueSerializer
-
-    def get_queryset(self):
-        return apply_select_and_prefetch(
-            queryset=Issue.objects.all(),
-            extensions=get_extensions_from_request(self.request)
-        )

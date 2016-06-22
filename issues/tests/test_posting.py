@@ -18,7 +18,7 @@ def test_default_moderation_status(mf_api_client, random_service, settings, stat
     freshly created issues are not visible via the list endpoint
     """
     settings.ISSUES_DEFAULT_MODERATION_STATUS = status
-    issues = get_data_from_response(
+    posted_issues = get_data_from_response(
         mf_api_client.post(ISSUE_LIST_ENDPOINT, {
             "lat": 15,
             "long": 15,
@@ -28,13 +28,13 @@ def test_default_moderation_status(mf_api_client, random_service, settings, stat
         201,
         schema=LIST_OF_ISSUES_SCHEMA
     )
-    verify_issue(issues[0])
+    verify_issue(posted_issues[0])
 
-    issues = get_data_from_response(
+    listed_issues = get_data_from_response(
         mf_api_client.get(ISSUE_LIST_ENDPOINT),
         200,
     )
-    assert bool(issues) == (status == 'public')
+    assert bool(listed_issues) == (status == 'public')
 
 
 ROUNDTRIP_TEST_CASES = [  # TODO: Add more test cases!
