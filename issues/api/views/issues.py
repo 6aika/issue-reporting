@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.filters import BaseFilterBackend
@@ -8,7 +9,7 @@ from issues.api.serializers import IssueSerializer
 from issues.api.utils import get_application_from_request
 from issues.extensions import apply_select_and_prefetch, get_extensions_from_request
 from issues.gis import determine_gissiness
-from issues.models import Issue
+from issues.models import Issue, Service
 from issues.signals import issue_posted
 from issues.utils import parse_bbox
 
@@ -25,7 +26,9 @@ class IssueViewBase(GenericAPIView):
 
     def get_queryset(self):
         return apply_select_and_prefetch(
-            queryset=Issue.objects.filter(moderation='public'),
+            queryset=Issue.objects.filter(moderation='public').prefetch_related(
+                Prefetch('service', queryset=Service.objects.translated())
+            ),
             extensions=get_extensions_from_request(self.request)
         )
 
