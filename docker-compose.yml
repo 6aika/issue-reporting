@@ -1,0 +1,17 @@
+version: '2'
+services:
+  db:
+    image: mdillon/postgis:9.5
+  web:
+    build: .
+    command: gunicorn -w 4 cfh.wsgi:application
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      WAIT_FOR_IT: db:5432
+      DATABASE_URL: postgis://postgres:postgres@db:5432/postgres
+      SECRET_KEY: 

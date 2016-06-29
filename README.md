@@ -67,7 +67,39 @@ update_from_georeport_v2_url("https://asiointi.hel.fi/palautews/rest/v1/requests
 ## Django settings
 
 * `ISSUES_DEFAULT_MODERATION_STATUS`:
-  * Set to `unmoderated` to set newly created issues as unmoderated, which makes them not appear in lists
+  Set to `unmoderated` to set newly created issues as unmoderated, which makes them not appear in lists
     before set to public.
 * `ISSUES_GEOMETRY_SRID`:
-  * The SRID to use for the geometry fields in `issues_geometry`. Defaults to 4326 (WGS84).
+  The SRID to use for the geometry fields in `issues_geometry`. Defaults to 4326 (WGS84).
+  
+## Try it out via Docker
+
+For both of the below methods, do take note of the 
+
+```
+===== SUPERUSER CREDENTIALS =====
+#       Username: adminxxx      #
+#       Password: xxxxxxxx      #
+#################################
+```
+
+box that appears in the output.  You will need those credentials to log in to the admin and add a Service or two.
+
+### Docker-Compose
+
+A `docker-compose.yml` file is supplied that will start up a PostGIS-backed instance on `localhost:8000`.
+
+Simply run
+
+```shell
+env SECRET_KEY=SOMETHING_UNIQUE_AND_SECRET_HERE docker-compose up
+```
+
+### Plain ol' Docker
+
+To quickly run an "evaluation" instance without GIS (using SQLite as the database backend, that is),
+
+```shell
+docker build -t cfh .
+docker run -it -e DEBUG=1 -e DATABASE_URL=sqlite:////data/db.sqlite3 -P cfh
+```
