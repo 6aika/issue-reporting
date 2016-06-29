@@ -23,6 +23,7 @@ INSTALLED_APPS = list(filter(None, [
     'django.contrib.gis',
     'rest_framework',
     'parler',
+    'cfh',
     'issues',
     'issues_citysdk',
     'issues_media',
