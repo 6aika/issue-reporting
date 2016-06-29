@@ -38,6 +38,8 @@ The `cfh` project is configured via environment variables, described below.
 * `SECRET_KEY`: the Django secret key. Must be set when not `DEBUG`ging.
 * `DATABASE_URL`: an URL pointing to the SQL database for the project.
 * `LANGUAGES`: a comma-separated list of ISO 639-1 language codes to enable. Defaults to `en,fi`
+* `MEDIA_ROOT`: The root filesystem directory for media uploads
+* `STATIC_ROOT`: The root filesystem directory where static files are gathered into
 
 All of the Django settings described below are also available as equivalently
 named environment variables for the standalone project.

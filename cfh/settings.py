@@ -85,10 +85,10 @@ LANGUAGES = [
     in env.str('LANGUAGES', default='en,fi').split(',')
 ]
 LANGUAGE_CODE = LANGUAGES[0][0]
-MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
+MEDIA_ROOT = env.str('MEDIA_ROOT', default=os.path.join(BASE_DIR, 'mediafiles'))
 MEDIA_URL = '/media/'
 ROOT_URLCONF = 'cfh.urls'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = env.str('STATIC_ROOT', default=os.path.join(BASE_DIR, 'static'))
 STATIC_URL = '/static/'
 TIME_ZONE = 'Europe/Helsinki'
 USE_I18N = True
