@@ -4,7 +4,7 @@ from django.utils.crypto import get_random_string
 
 from issues.models import Jurisdiction, Issue
 from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
-from issues.tests.utils import get_data_from_response, ISSUE_LIST_ENDPOINT
+from issues.tests.utils import get_data_from_response, ISSUE_LIST_ENDPOINT, verify_issue
 
 
 @pytest.mark.django_db
@@ -26,11 +26,12 @@ def test_post_issue_no_jurisdiction(mf_api_client, random_service):
         assert Jurisdiction.objects.filter(identifier="default").exists()  # default Jurisdiction was created
         assert Jurisdiction.objects.count() == 1
 
-        issue = get_data_from_response(
+        issues = get_data_from_response(
             mf_api_client.get(
                 reverse('georeport/v2:issue-detail', kwargs={'identifier': issue['service_request_id']}),
-            ), schema=ISSUE_SCHEMA
+            ), schema=LIST_OF_ISSUES_SCHEMA
         )
+        verify_issue(issues[0])
 
 
 @pytest.mark.django_db
