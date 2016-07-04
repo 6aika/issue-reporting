@@ -42,14 +42,16 @@ def test_post_media(mf_api_client, random_service):
     assert IssueMedia.objects.filter(issue__identifier=id).count() == 3
 
     # Now see that we can actually get the media back
-    issue = get_data_from_response(
+    issues = get_data_from_response(
         mf_api_client.get(
             reverse('georeport/v2:issue-detail', kwargs={"identifier": id}),
             {
                 'extensions': 'media',
             }
         ),
-        schema=ISSUE_SCHEMA
+        schema=LIST_OF_ISSUES_SCHEMA
     )
+    issue = issues[0]
     media_list = issue['extended_attributes']['media_urls']
     assert issue
+    assert len(media_list) == 3
