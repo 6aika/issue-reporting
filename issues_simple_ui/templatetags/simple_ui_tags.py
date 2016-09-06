@@ -55,7 +55,8 @@ def get_config_json(context, **extra):
         'api_root': '/%s' % settings.GEOREPORT_API_ROOT,
         'map_settings': {  # TODO: Make this configurable
             'center': [60.1699, 24.9384],
-            'tileUrl': 'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png',
-            'attribution': 'Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a>',
+            'tileUrl': 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'attribution': '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            'subdomains': ['a', 'b', 'c']
         },
     }, **extra)))
