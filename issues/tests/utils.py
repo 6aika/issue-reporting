@@ -36,6 +36,7 @@ ISSUE_VERIFICATION_FIELDS = [
     "address",
 ]]
 
+
 def verify_issue(data, issue=None):
     """
     Verify the given data describes the issue passed in.

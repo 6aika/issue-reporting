@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.management import BaseCommand
 from django.utils.crypto import get_random_string
 
+
 def print_box(write, title, contents):
     title = "===== %s =====" % title
     box_width = len(title)

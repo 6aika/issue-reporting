@@ -68,7 +68,7 @@ class IssueSerializer(serializers.ModelSerializer):
             extra_kwargs.setdefault(f, {})["write_only"] = True
 
     def __init__(self, instance=None, data=empty, **kwargs):
-        super().__init__(instance, data, **kwargs)
+        super(IssueSerializer, self).__init__(instance, data, **kwargs)
 
         for ext in self.context.get('extensions', ()):
             ext.extend_issue_serializer(self)

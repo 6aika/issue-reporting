@@ -40,14 +40,14 @@ class FormatEnforcingAPIClient(APIClient):
         if not data:
             data = {}
         data["format"] = self.format
-        resp = super().get(path, data, follow, **extra)
+        resp = super(FormatEnforcingAPIClient, self).get(path, data, follow, **extra)
         self._check_response_format(resp)
         return resp
 
     def post(self, path, data=None, format=None, content_type=None, follow=False, **extra):
         assert not format
         assert not content_type
-        resp = super().post(self._format_path(path), data=data, follow=follow, **extra)
+        resp = super(FormatEnforcingAPIClient, self).post(self._format_path(path), data=data, follow=follow, **extra)
         self._check_response_format(resp)
         return resp
 

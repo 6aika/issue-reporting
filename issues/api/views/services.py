@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from django.utils import translation
 from rest_framework.generics import ListAPIView
 

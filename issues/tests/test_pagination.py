@@ -1,5 +1,8 @@
-import pytest
+from __future__ import division
+
 from math import ceil
+
+import pytest
 
 from issues.api.pagination import GeoReportV2Pagination
 from issues.models import Issue
@@ -15,6 +18,6 @@ def test_pagination(mf_api_client, random_service, param, count):
         Issue.objects.create(service=random_service, description=i)
     resp = mf_api_client.get(ISSUE_LIST_ENDPOINT, {param: count})
     assert resp['x-result-count'] == str(30)
-    assert resp['x-page-count'] == str(ceil(30 / count))
+    assert resp['x-page-count'] == str(int(ceil(30 / count)))
     content = get_data_from_response(resp, schema=LIST_OF_ISSUES_SCHEMA)
     assert len(content) == count

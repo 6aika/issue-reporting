@@ -1,10 +1,10 @@
 import pytest
 from django.contrib.gis.db.models.fields import GeometryField
 from django.contrib.gis.geos import GEOSGeometry
-from django.db import models, connection
+from django.db import connection, models
 from django.db.models import Field
 from django.db.models.sql import InsertQuery, Query
-from django.db.models.sql.compiler import SQLInsertCompiler, SQLCompiler
+from django.db.models.sql.compiler import SQLCompiler, SQLInsertCompiler
 
 from issues.fields import GeoPointField, GeoPointFieldFallback
 from issues.gis import determine_gissiness

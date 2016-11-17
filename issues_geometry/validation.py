@@ -1,6 +1,6 @@
-from jsonschema import RefResolver, Draft4Validator
+from jsonschema import Draft4Validator, RefResolver
 
-from issues_geometry.schemata import GEOJSON_SCHEMA, GEOJSON_GEOMETRY_SCHEMA
+from issues_geometry.schemata import GEOJSON_GEOMETRY_SCHEMA, GEOJSON_SCHEMA
 
 
 class LocalRefResolver(RefResolver):

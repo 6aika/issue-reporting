@@ -2,9 +2,9 @@ import pytest
 from django.core.urlresolvers import reverse
 from django.utils.crypto import get_random_string
 
-from issues.models import Jurisdiction, Issue
+from issues.models import Issue, Jurisdiction
 from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
-from issues.tests.utils import get_data_from_response, ISSUE_LIST_ENDPOINT, verify_issue
+from issues.tests.utils import ISSUE_LIST_ENDPOINT, get_data_from_response, verify_issue
 
 
 @pytest.mark.django_db

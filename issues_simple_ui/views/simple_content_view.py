@@ -10,6 +10,6 @@ class SimpleContentView(TemplateView):
     content_identifier = None
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(SimpleContentView, self).get_context_data(**kwargs)
         context.update(Content.retrieve(self.content_identifier))
         return context

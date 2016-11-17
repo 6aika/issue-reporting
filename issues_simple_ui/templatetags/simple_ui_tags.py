@@ -46,7 +46,7 @@ def get_config_json(context, **extra):
     except InvalidAppError:
         application, _ = Application.objects.get_or_create(
             identifier='simple_ui',
-            defaults={'name': 'Simple UI',},
+            defaults={'name': 'Simple UI'},
         )
 
     return mark_safe(json.dumps(dict({

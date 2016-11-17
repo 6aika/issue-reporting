@@ -3,7 +3,7 @@ import pytest
 from issues.gis import determine_gissiness
 from issues.models import Issue
 from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
-from issues.tests.utils import get_data_from_response, ISSUE_LIST_ENDPOINT, verify_issue
+from issues.tests.utils import ISSUE_LIST_ENDPOINT, get_data_from_response, verify_issue
 
 GISSY = determine_gissiness()
 

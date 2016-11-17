@@ -11,6 +11,6 @@ class TaskSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return XMLDict(
-            super().to_representation(instance),
+            super(TaskSerializer, self).to_representation(instance),
             'task'
         )

@@ -1,13 +1,13 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
-from django.db.models import Q
 from django import forms
+from django.db.models import Q
 from django.http.response import HttpResponseRedirect
 from django.utils.encoding import force_text
 from django.utils.formats import localize
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView, ListView
 
 from issues.models import Issue
 from issues_log.models import LogEntry
@@ -33,7 +33,7 @@ class AdminListView(ListView):
     filter_specs_by_id = {f['id']: f for f in filter_specs}
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs = super(AdminListView, self).get_queryset()
         filter = self.filter_specs_by_id.get(self.request.GET.get('filter'))
         if filter:
             q = filter['q']
@@ -44,7 +44,7 @@ class AdminListView(ListView):
         return qs
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(AdminListView, self).get_context_data(**kwargs)
         context['filter_specs'] = self.filter_specs
         context['filter'] = self.request.GET.get('filter')
         return context
@@ -58,7 +58,7 @@ class LogForm(forms.ModelForm):
     def __init__(self, **kwargs):
         issue = kwargs.pop('issue')
         user = kwargs.pop('user')
-        super().__init__(**kwargs)
+        super(LogForm, self).__init__(**kwargs)
         self.instance.issue = issue
         self.initial['handler'] = force_text(user)
 
@@ -93,7 +93,7 @@ class AdminDetailView(DetailView):
         )
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(AdminDetailView, self).get_context_data(**kwargs)
         issue = context[self.context_object_name]
         data = self.build_issue_data(issue)
         context['data'] = data
