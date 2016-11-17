@@ -9,7 +9,6 @@ from django.core.urlresolvers import reverse
 from issues.tests.conftest import mf_api_client, random_service  # noqa
 from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import ISSUE_LIST_ENDPOINT, get_data_from_response, verify_issue
-from issues_geometry.models import IssueGeometry
 from issues_geometry.validation import GeoJSONValidator
 
 if 'issue_geometry' not in settings.INSTALLED_APPS:
@@ -87,6 +86,7 @@ AURAJOKIRANTA_GEOJSON = {
 
 @pytest.mark.parametrize('geometry_data', [None, AURAJOKIRANTA_GEOJSON, AURAJOKIRANTA_GEOJSON['geometry']])
 def test_post_geometry(random_service, mf_api_client, geometry_data):
+    from issues_geometry.models import IssueGeometry
     post_data = {
         'extensions': 'geometry',
         'service_code': random_service.service_code,
