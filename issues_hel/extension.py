@@ -19,7 +19,7 @@ class HelExtension(IssueExtension):
         task_list = extended_attributes.pop('tasks', ())
         if task_list:
             self._import_task_list(issue, task_list)
-        super().parse_extended_attributes(issue, extended_attributes)
+        super(HelExtension, self).parse_extended_attributes(issue, extended_attributes)
 
     def _import_task_list(self, issue, task_list):
         from issues_hel.models import Task

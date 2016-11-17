@@ -28,7 +28,7 @@ class GeoPointFieldFallback(CharField):
         kwargs.setdefault("max_length", 128)
         kwargs['db_index'] = False
         kwargs.pop('srid', False)
-        super().__init__(*args, **kwargs)
+        super(GeoPointFieldFallback, self).__init__(*args, **kwargs)
 
     def from_db_value(self, value, expression, connection, context):
         if not value:
@@ -59,7 +59,7 @@ if determine_gissiness():
         def __init__(self, verbose_name=None, dim=2, **kwargs):
             kwargs['geography'] = True
             kwargs['srid'] = 4326
-            super().__init__(verbose_name, dim, **kwargs)
+            super(GeoPointField, self).__init__(verbose_name, dim, **kwargs)
 else:
     class GeoPointField(GeoPointFieldFallback):
         pass

@@ -10,7 +10,7 @@ class ApplicationAdmin(ModelAdmin):
     search_fields = ('identifier', 'name',)
 
     def get_readonly_fields(self, request, obj=None):
-        fields = super().get_readonly_fields(request, obj)
+        fields = super(ApplicationAdmin, self).get_readonly_fields(request, obj)
         if obj and obj.pk:
             fields += ('key',)
         return fields

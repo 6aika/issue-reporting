@@ -64,7 +64,7 @@ class GeometryExtension(IssueExtension):
             )
             data['long'], data['lat'] = geometry.centroid
 
-        return super().validate_issue_data(serializer, data)
+        return super(GeometryExtension, self).validate_issue_data(serializer, data)
 
     def post_create_issue(self, request, issue, data):
         from issues_geometry.models import IssueGeometry

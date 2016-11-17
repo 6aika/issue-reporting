@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.db.models import Prefetch
 from rest_framework import status
 from rest_framework.exceptions import APIException
@@ -19,7 +20,7 @@ class IssueViewBase(GenericAPIView):
     root_tag_name = 'requests'
 
     def get_serializer_context(self):
-        ctx = super().get_serializer_context()
+        ctx = super(IssueViewBase, self).get_serializer_context()
         ctx['extensions'] = get_extensions_from_request(self.request)
         ctx['application'] = get_application_from_request(self.request)
         return ctx

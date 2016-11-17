@@ -10,10 +10,10 @@ class ConfigurableGeometryField(GeometryField):
 
     def __init__(self, **kwargs):
         kwargs['srid'] = DEFAULT_SRID
-        super().__init__(**kwargs)
+        super(ConfigurableGeometryField, self).__init__(**kwargs)
 
     def deconstruct(self):  # pragma: no cover
-        (name, path, args, kwargs) = super().deconstruct()
+        (name, path, args, kwargs) = super(ConfigurableGeometryField, self).deconstruct()
         kwargs.pop('srid', None)  # We deal with this in the ctor
         return (name, path, args, kwargs)
 
