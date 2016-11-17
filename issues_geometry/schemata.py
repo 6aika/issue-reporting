@@ -1,4 +1,6 @@
-# Schemata adapted from https://github.com/fge/sample-json-schemas/tree/master/geojson (licensed under either of the AFL or BSD license)
+# Schemata adapted from
+# https://github.com/fge/sample-json-schemas/tree/master/geojson (licensed
+# under either of the AFL or BSD license)
 
 GEOJSON_GEOMETRY_SCHEMA = {
     "$schema": "http://json-schema.org/draft-04/schema#",

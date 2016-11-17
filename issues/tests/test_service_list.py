@@ -8,7 +8,6 @@ TEST_LOCALES = ("en", "fi", "sv")
 SERVICE_LIST_ENDPOINT = reverse_lazy('georeport/v2:service-list')
 
 
-
 def test_service_list_i18n(mf_api_client, random_service):
     assert isinstance(random_service, Service)
     for lang in TEST_LOCALES:

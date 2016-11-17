@@ -16,7 +16,6 @@ if 'issue_geometry' not in settings.INSTALLED_APPS:
     pytest.skip('app disabled')
 
 
-
 AURAJOKIRANTA_GEOJSON = {
     "type": "Feature",
     "properties": {},

@@ -85,4 +85,4 @@ def update_from_georeport_v2_url(
         update_local_issue(issue_data, id_namespace=id_namespace)
         for issue_data
         in issue_datas
-        ]
+    ]
