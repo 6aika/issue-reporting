@@ -1,9 +1,9 @@
+import django.contrib.auth.views as auth_views
 from django.conf.urls import url
 from django.contrib.admin.views.decorators import staff_member_required
-import django.contrib.auth.views as auth_views
 
 from issues_simple_ui.views import SimpleContentView
-from issues_simple_ui.views.admin_views import AdminListView, AdminDetailView
+from issues_simple_ui.views.admin_views import AdminDetailView, AdminListView
 
 urlpatterns = [
     url(

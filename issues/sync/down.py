@@ -7,11 +7,11 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.db.models.fields import DateTimeField
 from django.db.transaction import atomic
 from django.utils import translation
+from iso8601 import parse_date
 
 from issues.api.transforms import transform_xml_to_json
 from issues.extensions import get_extensions
 from issues.models import Issue
-from iso8601 import parse_date
 
 
 @atomic

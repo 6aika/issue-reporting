@@ -1,7 +1,7 @@
-from django.contrib.admin import site, ModelAdmin
+from django.contrib.admin import ModelAdmin, site
 from parler.admin import TranslatableAdmin
 
-from .models import Issue, Jurisdiction, Service, Application
+from .models import Application, Issue, Jurisdiction, Service
 
 
 class ApplicationAdmin(ModelAdmin):

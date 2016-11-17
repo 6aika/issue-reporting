@@ -1,13 +1,13 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
-from django.db.models import Q
 from django import forms
+from django.db.models import Q
 from django.http.response import HttpResponseRedirect
 from django.utils.encoding import force_text
 from django.utils.formats import localize
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView, ListView
 
 from issues.models import Issue
 from issues_log.models import LogEntry

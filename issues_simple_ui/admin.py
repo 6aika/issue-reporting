@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.forms.widgets import RadioSelect
 from parler.admin import TranslatableAdmin
 
-from issues_simple_ui.enums import IMAGE_IDENTIFIERS, CONTENT_IDENTIFIERS
+from issues_simple_ui.enums import CONTENT_IDENTIFIERS, IMAGE_IDENTIFIERS
 from issues_simple_ui.models import Content, Image
 
 

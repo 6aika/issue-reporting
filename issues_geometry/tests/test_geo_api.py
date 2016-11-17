@@ -2,19 +2,19 @@
 import json
 import re
 
+import pytest
 from django.conf import settings
 from django.core.urlresolvers import reverse
-
-import pytest
-
-if 'issue_geometry' not in settings.INSTALLED_APPS:
-    pytest.skip('app disabled')
 
 from issues.tests.conftest import mf_api_client, random_service  # noqa
 from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import ISSUE_LIST_ENDPOINT, get_data_from_response, verify_issue
 from issues_geometry.models import IssueGeometry
 from issues_geometry.validation import GeoJSONValidator
+
+if 'issue_geometry' not in settings.INSTALLED_APPS:
+    pytest.skip('app disabled')
+
 
 
 AURAJOKIRANTA_GEOJSON = {

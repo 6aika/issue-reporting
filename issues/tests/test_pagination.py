@@ -1,6 +1,8 @@
 from __future__ import division
-import pytest
+
 from math import ceil
+
+import pytest
 
 from issues.api.pagination import GeoReportV2Pagination
 from issues.models import Issue
