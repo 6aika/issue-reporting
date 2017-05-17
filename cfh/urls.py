@@ -14,5 +14,5 @@ if 'django.contrib.admin' in settings.INSTALLED_APPS:
 
     urlpatterns.append(url(r'^admin/', site.urls))
 
-if settings.DEBUG:
+if settings.DEBUG:  # pragma: no cover
     urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))

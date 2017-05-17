@@ -9,5 +9,5 @@ class IssuesSimpleUiConfig(AppConfig):
     def ready(self):
         try:
             apps.get_model("issues_log.LogEntry")
-        except LookupError:
+        except LookupError:  # pragma: no cover
             raise ImproperlyConfigured("Using the Simple UI requires the log extension.")

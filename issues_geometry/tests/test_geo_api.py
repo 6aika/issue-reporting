@@ -3,6 +3,7 @@ import json
 import re
 
 import pytest
+import sys
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
@@ -11,7 +12,7 @@ from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import ISSUE_LIST_ENDPOINT, get_data_from_response, verify_issue
 from issues_geometry.validation import GeoJSONValidator
 
-if 'issue_geometry' not in settings.INSTALLED_APPS:
+if 'issues_geometry' not in settings.INSTALLED_APPS:
     pytest.skip('app disabled')
 
 
@@ -86,6 +87,8 @@ AURAJOKIRANTA_GEOJSON = {
 
 @pytest.mark.parametrize('geometry_data', [None, AURAJOKIRANTA_GEOJSON, AURAJOKIRANTA_GEOJSON['geometry']])
 def test_post_geometry(random_service, mf_api_client, geometry_data):
+    if sys.version_info[0] == 2 and mf_api_client.format != 'json':
+        pytest.xfail('unsupported')
     from issues_geometry.models import IssueGeometry
     post_data = {
         'extensions': 'geometry',
@@ -120,7 +123,7 @@ def test_post_geometry(random_service, mf_api_client, geometry_data):
             reverse('georeport/v2:issue-detail', kwargs={'identifier': issue.identifier}),
             {'extensions': 'geometry'},
         )
-    )
+    )[0]
 
     for data in (issue_data, retrieved_issue_data):
         verify_issue(data)
