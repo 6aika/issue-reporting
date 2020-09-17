@@ -1,15 +1,26 @@
+os: linux
+dist: focal
 language: python
 python:
   - 3.6
 addons:
-  postgresql: "9.4"
+  apt:
+    packages:
+      - libgdal-dev
+      - postgresql-12-postgis-3
+      - postgresql-12-postgis-3-scripts
+before_script:
+  - psql -U postgres -c "create extension postgis"
+  - psql -U postgres -c "create database testdb"
+  - psql -U postgres -c "CREATE USER testuser WITH PASSWORD 'password'"
+  - psql -U postgres -c "ALTER ROLE testuser SUPERUSER"
 services:
   - mysql
-sudo: false
+  - postgresql
 env:
   - DEBUG=1 DATABASE_URL=sqlite:///tmp/ir-{envname}.sqlite3
   - DEBUG=1 DATABASE_URL=mysql://travis:@localhost/ir
-  - DEBUG=1
+  - DEBUG=1 DATABASE_URL=postgis://testuser:password@localhost:5432/testdb
 cache:
   directories:
     - $HOME/.cache/pip
