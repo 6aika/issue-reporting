@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import datetime
 import string
 
@@ -58,7 +56,7 @@ class Issue(models.Model):
     )
 
     def __str__(self):
-        return "%s: %s" % (self.identifier, truncatechars(self.description, 50))
+        return "{}: {}".format(self.identifier, truncatechars(self.description, 50))
 
     def clean(self):
         self._cache_data()
@@ -75,11 +73,11 @@ class Issue(models.Model):
                     _('%(service)s requires coordinates') % {'service': self.service}
                 )
 
-        return super(Issue, self).clean()
+        return super().clean()
 
     def save(self, **kwargs):
         self._cache_data()
-        super(Issue, self).save(**kwargs)
+        super().save(**kwargs)
 
     def _generate_identifier(self):
         for length in range(8, 65, 4):
@@ -128,7 +126,7 @@ class Issue(models.Model):
         if (self.long and self.lat) and not self.location:
             from django.contrib.gis.geos import GEOSGeometry
             self.location = GEOSGeometry(
-                'SRID=4326;POINT(%s %s)' % (self.long, self.lat)
+                f'SRID=4326;POINT({self.long} {self.lat})'
             )
         if self.location:
             self.long = self.location[0]

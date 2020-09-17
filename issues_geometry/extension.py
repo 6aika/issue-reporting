@@ -14,9 +14,9 @@ from issues_geometry.validation import GeoJSONValidator
 class GeoJSONField(serializers.JSONField):
 
     def to_internal_value(self, data):
-        if isinstance(data, six.binary_type):  # pragma: no cover
+        if isinstance(data, bytes):  # pragma: no cover
             data = data.decode('utf-8')
-        if isinstance(data, six.text_type):  # pragma: no branch
+        if isinstance(data, str):  # pragma: no branch
             data = json.loads(data)
         if not isinstance(data, dict):
             self.fail('invalid')
@@ -64,7 +64,7 @@ class GeometryExtension(IssueExtension):
             )
             data['long'], data['lat'] = geometry.centroid
 
-        return super(GeometryExtension, self).validate_issue_data(serializer, data)
+        return super().validate_issue_data(serializer, data)
 
     def post_create_issue(self, request, issue, data):
         from issues_geometry.models import IssueGeometry

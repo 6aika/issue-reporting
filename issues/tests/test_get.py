@@ -30,7 +30,7 @@ def test_get_by_service_request_ids(testing_issues, mf_api_client):
         ),
         schema=LIST_OF_ISSUES_SCHEMA
     )
-    assert set(c['service_request_id'] for c in content) == {
+    assert {c['service_request_id'] for c in content} == {
         '1982hglaqe8pdnpophff',
         '2981hglaqe8pdnpoiuyt'
     }

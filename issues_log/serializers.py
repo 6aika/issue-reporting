@@ -10,4 +10,4 @@ class LogEntrySerializer(serializers.ModelSerializer):
         exclude = ('issue',)
 
     def to_representation(self, instance):
-        return XMLDict(super(LogEntrySerializer, self).to_representation(instance), 'entry')
+        return XMLDict(super().to_representation(instance), 'entry')

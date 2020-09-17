@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from django.utils import translation
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.generics import ListAPIView
@@ -28,4 +26,4 @@ class ServiceList(ListAPIView):
     def dispatch(self, request, *args, **kwargs):
         locale = (request.GET.get("locale") or translation.get_language())
         with translation.override(locale):
-            return super(ServiceList, self).dispatch(request, *args, **kwargs)
+            return super().dispatch(request, *args, **kwargs)

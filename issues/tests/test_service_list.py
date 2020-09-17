@@ -45,4 +45,4 @@ def test_service_list_jurisdiction_filter(mf_api_client):
             mf_api_client.get(SERVICE_LIST_ENDPOINT, query)
         )
         assert len(data) == len(expected)
-        assert set(s['service_name'] for s in data) == set(s.service_name for s in expected)
+        assert {s['service_name'] for s in data} == {s.service_name for s in expected}

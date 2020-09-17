@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.utils import six
 from django.utils.encoding import smart_text
 from django.utils.six.moves import StringIO
@@ -71,7 +69,7 @@ class XMLRenderer(BaseRenderer):
                 self._to_xml(xml, item, tag_name=(getattr(data, "xml_tag", None) or self.item_tag_name))
         elif isinstance(data, dict):
             key_order = getattr(data, "key_order", ())
-            for key in sorted(six.iterkeys(data), key=order_by_sort_order(key_order)):
+            for key in sorted(data.keys(), key=order_by_sort_order(key_order)):
                 self._to_xml(xml, data[key], key)
         elif data is None:  # Don't output any value
             pass

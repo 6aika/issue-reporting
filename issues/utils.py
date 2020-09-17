@@ -16,7 +16,7 @@ def parse_bbox(bbox):
     except IndexError:
         raise ValueError('bbox %r is not exactly 4 coordinates' % bbox)
     except ValueError as exc:
-        raise ValueError('bbox %r has invalidly formed numbers (%s)' % (bbox, exc))
+        raise ValueError(f'bbox {bbox!r} has invalidly formed numbers ({exc})')
     if lat1 > lat2:
         lat2, lat1 = lat1, lat2
     if lon1 > lon2:

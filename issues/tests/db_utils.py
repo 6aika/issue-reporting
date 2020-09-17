@@ -16,7 +16,7 @@ def execute_fixture(name):
     filename = os.path.join(FIXTURE_DIR, name + '.json')
     connection = connections["default"]
     with connection.constraint_checks_disabled():
-        with open(filename, "r") as stream:
+        with open(filename) as stream:
             objects = serializers.deserialize("json", stream)
             for obj in objects:
                 if hasattr(obj.object, "_cache_data"):

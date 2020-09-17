@@ -19,7 +19,7 @@ class HelExtension(IssueExtension):
         task_list = extended_attributes.pop('tasks', ())
         if task_list:
             self._import_task_list(issue, task_list)
-        super(HelExtension, self).parse_extended_attributes(issue, extended_attributes)
+        super().parse_extended_attributes(issue, extended_attributes)
 
     def _import_task_list(self, issue, task_list):
         from issues_hel.models import Task
@@ -28,7 +28,7 @@ class HelExtension(IssueExtension):
         if extant_tasks.count() == len(task_list):
             # No change in number... maybe mtimes have changed?
             extant_mtimes = set(extant_tasks.values_list('task_modified', flat=True))
-            new_mtimes = set(parse_date(task_data.get('task_modified', '')) for task_data in task_list)
+            new_mtimes = {parse_date(task_data.get('task_modified', '')) for task_data in task_list}
             if extant_mtimes == new_mtimes:
                 # Nothing to do!
                 return

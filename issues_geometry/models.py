@@ -10,15 +10,14 @@ class ConfigurableGeometryField(GeometryField):
 
     def __init__(self, **kwargs):
         kwargs['srid'] = DEFAULT_SRID
-        super(ConfigurableGeometryField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def deconstruct(self):  # pragma: no cover
-        (name, path, args, kwargs) = super(ConfigurableGeometryField, self).deconstruct()
+        (name, path, args, kwargs) = super().deconstruct()
         kwargs.pop('srid', None)  # We deal with this in the ctor
         return (name, path, args, kwargs)
 
 
-@python_2_unicode_compatible
 class IssueGeometry(models.Model):
     issue = models.OneToOneField('issues.Issue', on_delete=models.CASCADE, related_name='geometry')
     geometry = ConfigurableGeometryField()

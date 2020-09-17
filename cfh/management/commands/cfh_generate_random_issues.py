@@ -76,4 +76,4 @@ class Command(BaseCommand):
                 description=generate_description(),
             )
             issue.save()
-        self.stdout.write('{} issues created'.format(count))
+        self.stdout.write(f'{count} issues created')

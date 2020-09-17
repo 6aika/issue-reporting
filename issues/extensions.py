@@ -1,7 +1,7 @@
 from django.apps import apps
 
 
-class IssueExtension(object):
+class IssueExtension:
     #: The identifier for the extension (as referred to in the `extensions` argument)
     identifier = None
 
@@ -113,7 +113,7 @@ def get_extensions():
 
 
 def get_extension_ids():
-    return set(ex.identifier for ex in get_extensions())
+    return {ex.identifier for ex in get_extensions()}
 
 
 def get_extensions_from_request(request):
@@ -131,7 +131,7 @@ def get_extensions_from_request(request):
         except (AttributeError, KeyError):
             pass
 
-    extensions = set(ex() for ex in get_extensions() if ex.identifier in extension_ids)
+    extensions = {ex() for ex in get_extensions() if ex.identifier in extension_ids}
     request._issue_extensions = extensions
     return extensions
 

@@ -26,7 +26,7 @@ def spark_node(node, in_list=False):
         if not children:
             return {}
 
-        if all(isinstance(j_kid, text_type) for j_kid in children):
+        if all(isinstance(j_kid, str) for j_kid in children):
             # All of the children turned into bare strings:
             return {node.tag: children}  # Wrap them in an object
         elif all(isinstance(j_kid, dict) and len(j_kid) == 1 for j_kid in children):
@@ -62,7 +62,7 @@ def transform_xml_to_json(xml):
     :param xml: XML string/bytes
     :return: JSON string
     """
-    if isinstance(xml, text_type):
+    if isinstance(xml, str):
         xml = xml.encode("UTF-8")  # Here's hoping it's UTF-8
     xml = ET.fromstring(xml)
     dct = spark_node(xml)
