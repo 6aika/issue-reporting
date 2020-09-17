@@ -28,7 +28,7 @@ MODERATION_STATUS_CHOICES = [
 class Issue(models.Model):
     application = models.ForeignKey('issues.Application', on_delete=models.PROTECT)
     jurisdiction = models.ForeignKey('issues.Jurisdiction', on_delete=models.PROTECT)
-    service = models.ForeignKey('issues.Service')
+    service = models.ForeignKey('issues.Service', on_delete=models.CASCADE)
     service_code = models.CharField(max_length=64, db_index=True)
     identifier = models.CharField(max_length=64, unique=True)
     description = models.TextField()
