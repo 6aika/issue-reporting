@@ -1,3 +1,4 @@
+import iso8601
 import pytest
 
 from issues.gis import determine_gissiness
@@ -68,7 +69,7 @@ def test_get_by_start_date(testing_issues, mf_api_client):
     assert len(content) == expected_number_of_requests
     for issue in content:
         assert verify_issue(issue)
-        assert issue['requested_datetime'] > start_date
+        assert iso8601.parse_date(issue['requested_datetime']) > iso8601.parse_date(start_date)
 
 
 def test_get_by_end_data(testing_issues, mf_api_client):
@@ -83,7 +84,7 @@ def test_get_by_end_data(testing_issues, mf_api_client):
     assert len(content) == expected_number_of_requests
     for issue in content:
         assert verify_issue(issue)
-        assert issue['requested_datetime'] < end_date
+        assert iso8601.parse_date(issue['requested_datetime']) < iso8601.parse_date(end_date)
 
 
 def test_get_by_status(testing_issues, mf_api_client):
@@ -133,7 +134,7 @@ def test_get_by_updated_after(testing_issues, mf_api_client):
     assert len(content) == expected_number_of_requests
     for issue in content:
         assert verify_issue(issue)
-        assert issue['updated_datetime'] > updated_after
+        assert iso8601.parse_date(issue['updated_datetime']) > iso8601.parse_date(updated_after)
 
 
 def test_get_by_updated_before(testing_issues, mf_api_client):
@@ -148,7 +149,7 @@ def test_get_by_updated_before(testing_issues, mf_api_client):
     assert len(content) == expected_number_of_requests
     for issue in content:
         assert verify_issue(issue)
-        assert issue['updated_datetime'] < updated_before
+        assert iso8601.parse_date(issue['updated_datetime']) < iso8601.parse_date(updated_before)
 
 
 def test_get_within_radius(testing_issues, mf_api_client):
