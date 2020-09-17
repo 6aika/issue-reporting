@@ -1,7 +1,7 @@
 from django.utils.crypto import get_random_string
 
 from issues.tests.conftest import mf_api_client, random_service, testing_issues  # noqa
-from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
+from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import ISSUE_LIST_ENDPOINT, get_data_from_response, verify_issue
 from issues_citysdk.models import Issue_CitySDK
 

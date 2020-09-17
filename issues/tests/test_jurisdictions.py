@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string
 
 from issues.models import Issue, Jurisdiction
-from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
+from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import ISSUE_LIST_ENDPOINT, get_data_from_response, verify_issue
 
 

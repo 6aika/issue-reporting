@@ -61,7 +61,6 @@ class IssueExtension:
         :param data: The data dict that was used to create the Issue
         :type data: dict
         """
-        pass
 
     def parse_extended_attributes(self, issue, extended_attributes):  # pragma: no cover
         """
@@ -74,7 +73,6 @@ class IssueExtension:
         :param extended_attributes: Extended attributes dict
         :type extended_attributes: dict[str, object]
         """
-        pass
 
     def extend_issue_serializer(self, serializer):
         """
@@ -85,7 +83,6 @@ class IssueExtension:
         :param serializer: IssueSerializer
         :type serializer: issues.api.serializers.IssueSerializer
         """
-        pass
 
     def validate_issue_data(self, serializer, data):
         """

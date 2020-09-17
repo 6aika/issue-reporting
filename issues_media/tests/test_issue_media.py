@@ -8,7 +8,7 @@ from django.utils.crypto import get_random_string
 
 from issues.models.issues import Issue
 from issues.tests.conftest import mf_api_client, random_service  # noqa
-from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
+from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import ISSUE_LIST_ENDPOINT, get_data_from_response
 # https://raw.githubusercontent.com/mathiasbynens/small/master/jpeg.jpg
 from issues_media.models import IssueMedia
