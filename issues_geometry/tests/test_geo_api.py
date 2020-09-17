@@ -4,7 +4,7 @@ import re
 import pytest
 import sys
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from issues.tests.conftest import mf_api_client, random_service  # noqa
 from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA

@@ -18,7 +18,7 @@ urlpatterns = [
     ),
     url(
         r'^login/',
-        view=auth_views.login,
+        view=auth_views.LoginView.as_view(),
         kwargs=dict(
             template_name='issues_simple_ui/login.html',
         ),
@@ -26,7 +26,7 @@ urlpatterns = [
 
     url(
         r'^logout/',
-        view=auth_views.logout,
+        view=auth_views.LogoutView.as_view(),
         kwargs=dict(next_page='/'),
     ),
     url(r'^report/$', SimpleContentView.as_view(

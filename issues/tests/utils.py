@@ -1,7 +1,7 @@
 import json
 
 import jsonschema
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 from issues.api.transforms import transform_xml_to_json
 
