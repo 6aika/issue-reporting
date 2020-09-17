@@ -1,7 +1,7 @@
 from warnings import warn
 
 from django.contrib.gis.db.backends.base.operations import BaseSpatialOperations
-from django.db import connection
+from django.db import connections, DEFAULT_DB_ALIAS
 
 
 class NoIssueGIS(Warning):
@@ -17,6 +17,8 @@ def determine_gissiness():
             NoIssueGIS
         )
         return False
+
+    connection = connections[DEFAULT_DB_ALIAS]
 
     if not isinstance(connection.ops, BaseSpatialOperations):  # pragma: no cover
         warn(

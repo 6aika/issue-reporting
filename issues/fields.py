@@ -29,7 +29,7 @@ class GeoPointFieldFallback(CharField):
         kwargs.pop('srid', False)
         super().__init__(*args, **kwargs)
 
-    def from_db_value(self, value, expression, connection, context):
+    def from_db_value(self, value, expression, connection):
         if not value:
             return None
         latlng = _string_value_to_coords(value)
@@ -39,7 +39,7 @@ class GeoPointFieldFallback(CharField):
         if (Point and isinstance(value, Point)) or isinstance(value, (list, tuple)):
             value = f"{value[0]};{value[1]}"
 
-        return self.from_db_value(value, None, None, None)
+        return self.from_db_value(value, None, None)
 
     def get_prep_value(self, value):
         if not value:
