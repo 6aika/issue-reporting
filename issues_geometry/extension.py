@@ -12,6 +12,8 @@ from issues_geometry.validation import GeoJSONValidator
 class GeoJSONField(serializers.JSONField):
 
     def to_internal_value(self, data):
+        if not data:
+            return None
         if isinstance(data, bytes):  # pragma: no cover
             data = data.decode('utf-8')
         if isinstance(data, str):  # pragma: no branch
