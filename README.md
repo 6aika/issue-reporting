@@ -47,7 +47,7 @@ named environment variables for the standalone project.
 
 ## Development
 
-* Install dependencies from both `requirements.txt` and `requirements-dev.txt`.
+* Install dependencies from `requirements-dev.txt`.
 * If the `DEBUG` envvar is truthy, sane development defaults are automatically inferred.
 * Use `pip-tools` to manage the two requirements files.
 

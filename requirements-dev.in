@@ -1,3 +1,4 @@
+-r requirements.in
 autoflake
 autopep8
 flake8
