@@ -1,9 +1,7 @@
 import json
 
-import six
 from django.contrib.gis.geos.geometry import GEOSGeometry
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils.encoding import force_text
 from rest_framework import serializers
 
 from issues.api.utils import JSONInXML

@@ -2,8 +2,6 @@ import json
 from collections import OrderedDict
 from xml.etree import ElementTree as ET
 
-from six import text_type
-
 
 def spark_node(node, in_list=False):
     """

@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.gis.db.models.fields import GeometryField
-from six import python_2_unicode_compatible
 
 DEFAULT_SRID = getattr(settings, 'ISSUES_GEOMETRY_SRID', 4326)
 

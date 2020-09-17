@@ -1,10 +1,8 @@
 from django.contrib.gis.db import models
-from django.utils.six import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from parler.models import TranslatableModel, TranslatedFields
 
 
-@python_2_unicode_compatible
 class Service(TranslatableModel):
     jurisdictions = models.ManyToManyField("Jurisdiction", related_name="services")
     service_code = models.CharField(unique=True, null=False, max_length=120)

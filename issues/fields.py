@@ -1,7 +1,6 @@
 import re
 
 from django.db.models import CharField
-from six import string_types
 
 from issues.gis import determine_gissiness
 
