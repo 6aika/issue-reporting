@@ -16,7 +16,7 @@ def test_post_issue_no_jurisdiction(mf_api_client, random_service):
                 "service_code": random_service.service_code,
                 "lat": 30,
                 "long": 30,
-                "description": get_random_string(),
+                "description": get_random_string(12),
             }),
             201,
             schema=LIST_OF_ISSUES_SCHEMA
@@ -45,7 +45,7 @@ def test_post_issue_multi_jurisdiction(mf_api_client, random_service):
             "service_code": random_service.service_code,
             "lat": 30,
             "long": 30,
-            "description": get_random_string(),
+            "description": get_random_string(12),
         }),
         400
     )
@@ -57,7 +57,7 @@ def test_post_issue_multi_jurisdiction(mf_api_client, random_service):
                 "service_code": random_service.service_code,
                 "lat": 30,
                 "long": 30,
-                "description": get_random_string(),
+                "description": get_random_string(12),
             }),
             201,
             schema=LIST_OF_ISSUES_SCHEMA
@@ -78,7 +78,7 @@ def test_get_issue_multi_jurisdiction_filters_correctly(mf_api_client, random_se
             Issue.objects.create(
                 jurisdiction=j,
                 service=random_service,
-                description=get_random_string(),
+                description=get_random_string(12),
                 address='Test Street 10',
             )
     for j in jurisdictions:

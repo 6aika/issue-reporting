@@ -25,7 +25,7 @@ def test_simple_ui_content(client):
 @pytest.mark.django_db
 def test_simple_ui_admin(admin_client):
     issue = Issue.objects.create(
-        description=get_random_string(),
+        description=get_random_string(12),
     )
     list_content = admin_client.get(resolve_url('admin-issue-list')).content.decode('utf-8')
     assert issue.description in list_content

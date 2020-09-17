@@ -73,7 +73,7 @@ def mf_api_client(request):
 @pytest.fixture()
 def random_service(db):
     return Service.objects.create(
-        service_code=get_random_string(),
+        service_code=get_random_string(12),
         service_name="Test"
     )
 

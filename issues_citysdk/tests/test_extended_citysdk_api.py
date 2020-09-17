@@ -60,9 +60,9 @@ def test_by_description(testing_issues, mf_api_client):
 
 
 def test_post_service_object(random_service, mf_api_client):
-    service_object_id = get_random_string()
+    service_object_id = get_random_string(12)
     service_object_type = 'http://www.hel.fi/servicemap/v2'
-    title = get_random_string()
+    title = get_random_string(12)
 
     issues = get_data_from_response(
         mf_api_client.post(

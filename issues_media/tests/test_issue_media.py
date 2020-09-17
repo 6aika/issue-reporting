@@ -35,7 +35,7 @@ def test_post_media(mf_api_client, random_service):
                 'service_code': random_service.service_code,
                 'lat': 30,
                 'long': 30,
-                'description': get_random_string(),
+                'description': get_random_string(12),
                 'media': files,
             }
         ),

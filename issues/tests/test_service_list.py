@@ -32,8 +32,8 @@ def test_service_list_i18n(mf_api_client, random_service):
 def test_service_list_jurisdiction_filter(mf_api_client):
     tku = Jurisdiction.objects.create(identifier='fi.turku')
     hel = Jurisdiction.objects.create(identifier='fi.hel')
-    tku_service = Service.objects.create(service_code=get_random_string(), service_name='Aurajokipalvelu')
-    hel_service = Service.objects.create(service_code=get_random_string(), service_name='Suomenlinnapalvelu')
+    tku_service = Service.objects.create(service_code=get_random_string(12), service_name='Aurajokipalvelu')
+    hel_service = Service.objects.create(service_code=get_random_string(12), service_name='Suomenlinnapalvelu')
     tku_service.jurisdictions.add(tku)
     hel_service.jurisdictions.add(hel)
     for query, expected in (

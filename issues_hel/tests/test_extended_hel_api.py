@@ -15,7 +15,7 @@ def test_get_with_tasks(random_service, mf_api_client):
         pytest.xfail("tasks are misrendered using the spark convention")  # TODO: Fix that
     issue = Issue.objects.create(
         service=random_service,
-        description=get_random_string(),
+        description=get_random_string(12),
         address='Test Street 10',
     )
     for x, time in enumerate((
