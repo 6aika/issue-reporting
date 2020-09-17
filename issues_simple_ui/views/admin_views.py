@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django import forms
 from django.db.models import Q
 from django.http.response import HttpResponseRedirect
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.formats import localize
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -60,7 +60,7 @@ class LogForm(forms.ModelForm):
         user = kwargs.pop('user')
         super().__init__(**kwargs)
         self.instance.issue = issue
-        self.initial['handler'] = force_text(user)
+        self.initial['handler'] = force_str(user)
 
 
 class AdminDetailView(DetailView):

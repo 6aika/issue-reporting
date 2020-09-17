@@ -1,4 +1,4 @@
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 
 def parse_bbox(bbox):
@@ -9,7 +9,7 @@ def parse_bbox(bbox):
     :return: pair of coordinates
     :rtype: tuple[tuple[float, float], tuple[float, float]]
     """
-    bbox = force_text(bbox)
+    bbox = force_str(bbox)
     sep = (';' if ';' in bbox else ',')
     try:
         lon1, lat1, lon2, lat2 = [float(c) for c in bbox.split(sep)]

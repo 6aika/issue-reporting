@@ -1,6 +1,6 @@
 import io
 
-from django.utils.encoding import smart_text
+from django.utils.encoding import force_str
 from django.utils.xmlutils import SimplerXMLGenerator
 from rest_framework.renderers import BaseRenderer, JSONRenderer
 
@@ -74,7 +74,7 @@ class XMLRenderer(BaseRenderer):
         elif data is None:  # Don't output any value
             pass
         else:
-            xml.characters(smart_text(data))
+            xml.characters(force_str(data))
 
         if tag_name:
             xml.endElement(tag_name)
