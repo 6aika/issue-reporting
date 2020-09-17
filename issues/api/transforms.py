@@ -43,7 +43,7 @@ def spark_node(node, in_list=False):
     dct.xml_tag = node.tag
 
     for kid in kids:
-        if kid.getchildren():
+        if list(kid):  # Has children?
             dct[kid.tag] = spark_node(kid)
         elif kid.text:
             dct[kid.tag] = kid.text

@@ -18,7 +18,7 @@ class ServiceList(ListAPIView):
     item_tag_name = 'service'
     root_tag_name = 'services'
     serializer_class = ServiceSerializer
-    queryset = Service.objects.all()
+    queryset = Service.objects.all().order_by('service_code')
     filter_backends = (
         ServiceFilter,
     )
