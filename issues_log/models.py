@@ -1,6 +1,6 @@
 from django.contrib.gis.db import models
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 LOG_STATUS_CHOICES = [
     # Request has been allocated to handler, can happen several times:

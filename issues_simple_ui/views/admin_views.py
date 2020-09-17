@@ -6,7 +6,7 @@ from django.http.response import HttpResponseRedirect
 from django.utils.encoding import force_text
 from django.utils.formats import localize
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, ListView
 
 from issues.models import Issue
