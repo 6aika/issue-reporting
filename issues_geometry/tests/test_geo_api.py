@@ -12,7 +12,7 @@ from issues.tests.utils import ISSUE_LIST_ENDPOINT, get_data_from_response, veri
 from issues_geometry.validation import GeoJSONValidator
 
 if 'issues_geometry' not in settings.INSTALLED_APPS:
-    pytest.skip('app disabled')
+    pytestmark = pytest.mark.skip('issues_geometry app disabled')
 
 
 AURAJOKIRANTA_GEOJSON = {
