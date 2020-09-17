@@ -38,7 +38,7 @@ def get_config_json(context, **extra):
     """
     request = context['request']
     user = request.user
-    if user and user.is_authenticated():
+    if user and user.is_authenticated:
         extra['csrf_token'] = get_token(request)
 
     try:
