@@ -16,7 +16,7 @@ GEOS_POINT_EXPRESSION_RE = re.compile(r'.*POINT \((?P<lon>.+?) (?P<lat>.+?)\)')
 def _string_value_to_coords(value):
     geos_match = GEOS_POINT_EXPRESSION_RE.match(value)
     if geos_match:
-        value = "%(lon)s;%(lat)s" % geos_match.groupdict()
+        value = f"{geos_match.groupdict()['lon']};{geos_match.groupdict()['lat']}"
     latlng = tuple(float(c) for c in value.split(";"))
     assert len(latlng) == 2
     assert all(-180 < c < 180 for c in latlng)
@@ -38,7 +38,7 @@ class GeoPointFieldFallback(CharField):
 
     def to_python(self, value):
         if (Point and isinstance(value, Point)) or isinstance(value, (list, tuple)):
-            value = "{};{}".format(value[0], value[1])
+            value = f"{value[0]};{value[1]}"
 
         return self.from_db_value(value, None, None, None)
 

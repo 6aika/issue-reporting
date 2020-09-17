@@ -68,7 +68,7 @@ def get_application_from_api_key(api_key):
         except ObjectDoesNotExist:
             raise serializers.ValidationError('Invalid API key')
         if not app.active:
-            raise serializers.ValidationError('The %s application is not active' % app)
+            raise serializers.ValidationError(f'The {app} application is not active')
     else:
         try:
             app = Application.autodetermine()

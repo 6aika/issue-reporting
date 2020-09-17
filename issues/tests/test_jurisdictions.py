@@ -70,7 +70,7 @@ def test_post_issue_multi_jurisdiction(mf_api_client, random_service):
 def test_get_issue_multi_jurisdiction_filters_correctly(mf_api_client, random_service):
     assert not Jurisdiction.objects.exists()  # Precondition check
     jurisdictions = [
-        Jurisdiction.objects.create(identifier="j%s" % x, name="j%s" % x)
+        Jurisdiction.objects.create(identifier=f"j{x}", name=f"j{x}")
         for x in range(4)
     ]
     for j in jurisdictions:

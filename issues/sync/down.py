@@ -45,10 +45,10 @@ def update_local_issue(
             setattr(issue, field.attname, value)
     if "long" in gr_issue and "lat" in gr_issue:
         issue.location = GEOSGeometry(
-            'SRID=4326;POINT({} {})'.format(gr_issue.pop('long'), gr_issue.pop('lat'))
+            f"SRID=4326;POINT({gr_issue.pop('long')} {gr_issue.pop('lat')})"
         )
     if 'service_code' in gr_issue:
-        gr_issue['service_code'] = '{}{}'.format(service_namespace, gr_issue['service_code'])
+        gr_issue['service_code'] = f"{service_namespace}{gr_issue['service_code']}"
     # This has no direct mapping in our schema, but it can be used by implicit autocreation of services
     issue.service_name = gr_issue.pop('service_name', None)
     issue._cache_data()

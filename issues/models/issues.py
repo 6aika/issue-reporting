@@ -56,7 +56,7 @@ class Issue(models.Model):
     )
 
     def __str__(self):
-        return "{}: {}".format(self.identifier, truncatechars(self.description, 50))
+        return f"{self.identifier}: {truncatechars(self.description, 50)}"
 
     def clean(self):
         self._cache_data()

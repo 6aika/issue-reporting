@@ -7,7 +7,7 @@ class LocalRefResolver(RefResolver):
 
     def resolve_remote(self, uri):  # pragma: no cover
         # (this should never happen)
-        raise NotImplementedError("remote refs not supported (uri: %s)" % uri)
+        raise NotImplementedError(f"remote refs not supported (uri: {uri})")
 
 
 Draft4Validator.check_schema(GEOJSON_SCHEMA)

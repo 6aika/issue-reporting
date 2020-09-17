@@ -30,7 +30,7 @@ def test_post_media(mf_api_client, random_service):
     ]
     issues = get_data_from_response(
         mf_api_client.post(
-            '%s?extensions=media' % ISSUE_LIST_ENDPOINT,
+            f'{ISSUE_LIST_ENDPOINT}?extensions=media',
             data={
                 'service_code': random_service.service_code,
                 'lat': 30,

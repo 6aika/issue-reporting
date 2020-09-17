@@ -59,11 +59,7 @@ class FormatEnforcingAPIClient(APIClient):
                 assert self.format in resp["Content-Type"]
 
     def _format_path(self, path):
-        return '{}{}format={}'.format(
-            path,
-            ('&' if '?' in path else '?'),
-            self.format
-        )
+        return f"{path}{'&' if '?' in path else '?'}format={self.format}"
 
 
 @pytest.fixture(params=['xml', 'json', 'sjson'])

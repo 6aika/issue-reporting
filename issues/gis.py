@@ -20,7 +20,7 @@ def determine_gissiness():
 
     if not isinstance(connection.ops, BaseSpatialOperations):  # pragma: no cover
         warn(
-            "The default connection %r is not GIS-enabled; Issue GIS features are not enabled." % connection,
+            f"The default connection {connection!r} is not GIS-enabled; Issue GIS features are not enabled.",
             NoIssueGIS
         )
         return False

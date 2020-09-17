@@ -23,4 +23,4 @@ class IssueGeometry(models.Model):
     geometry = ConfigurableGeometryField()
 
     def __str__(self):  # pragma: no cover
-        return "Geometry for %s" % self.issue
+        return f"Geometry for {self.issue}"

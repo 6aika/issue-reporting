@@ -4,11 +4,11 @@ from django.utils.crypto import get_random_string
 
 
 def print_box(write, title, contents):
-    title = "===== %s =====" % title
+    title = f"===== {title} ====="
     box_width = len(title)
     write(title)
     for line in contents:
-        write("# %s #" % str(line).center(box_width - 4))
+        write(f"# {str(line).center(box_width - 4)} #")
     write("#" * box_width)
 
 
@@ -20,7 +20,7 @@ class Command(BaseCommand):
             self.create_new_superuser()
 
     def create_new_superuser(self):
-        username = 'admin%s' % get_random_string(3)
+        username = f'admin{get_random_string(3)}'
         password = get_random_string(8)
         get_user_model().objects.create_superuser(
             username=username,
@@ -28,6 +28,6 @@ class Command(BaseCommand):
             email='',
         )
         print_box(self.stderr.write, "SUPERUSER CREDENTIALS", [
-            "Username: %s" % username,
-            "Password: %s" % password,
+            f"Username: {username}",
+            f"Password: {password}",
         ])

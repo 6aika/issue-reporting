@@ -17,5 +17,5 @@ def test_gissiness():
     """
     engine = settings.DATABASES['default']['ENGINE']
     if engine not in GISSY:
-        pytest.skip('I have no idea whether %s should be gissy' % engine)
+        pytest.skip(f'I have no idea whether {engine} should be gissy')
     assert GISSY[engine] == determine_gissiness()

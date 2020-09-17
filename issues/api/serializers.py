@@ -125,7 +125,7 @@ class IssueSerializer(serializers.ModelSerializer):
         service_code = data.pop('service_code')
         service = Service.objects.filter(service_code=service_code).first()
         if not service:
-            raise serializers.ValidationError('Service code %s is invalid' % service_code)
+            raise serializers.ValidationError(f'Service code {service_code} is invalid')
         data['service'] = service
 
         lat = data.pop('lat', None)

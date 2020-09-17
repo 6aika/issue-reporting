@@ -15,7 +15,7 @@ def test_service_list_i18n(mf_api_client, random_service):
     assert isinstance(random_service, Service)
     for lang in TEST_LOCALES:
         random_service.set_current_language(lang)
-        random_service.service_name = "Test-%s" % lang
+        random_service.service_name = f"Test-{lang}"
     random_service.save_translations()
     for lang in TEST_LOCALES:
         data = get_data_from_response(
