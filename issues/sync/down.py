@@ -30,7 +30,7 @@ def update_local_issue(
     gr_issue = deepcopy(gr_issue)
     identifier = gr_issue.pop('service_request_id')
     if id_namespace:
-        identifier = '%s:%s' % (id_namespace, identifier)
+        identifier = f'{id_namespace}:{identifier}'
     issue = Issue.objects.filter(identifier=identifier).first()
     if not issue:
         issue = Issue(identifier=identifier)
@@ -45,10 +45,10 @@ def update_local_issue(
             setattr(issue, field.attname, value)
     if "long" in gr_issue and "lat" in gr_issue:
         issue.location = GEOSGeometry(
-            'SRID=4326;POINT(%s %s)' % (gr_issue.pop('long'), gr_issue.pop('lat'))
+            f"SRID=4326;POINT({gr_issue.pop('long')} {gr_issue.pop('lat')})"
         )
     if 'service_code' in gr_issue:
-        gr_issue['service_code'] = '%s%s' % (service_namespace, gr_issue['service_code'])
+        gr_issue['service_code'] = f"{service_namespace}{gr_issue['service_code']}"
     # This has no direct mapping in our schema, but it can be used by implicit autocreation of services
     issue.service_name = gr_issue.pop('service_name', None)
     issue._cache_data()

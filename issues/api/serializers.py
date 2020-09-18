@@ -68,7 +68,7 @@ class IssueSerializer(serializers.ModelSerializer):
             extra_kwargs.setdefault(f, {})["write_only"] = True
 
     def __init__(self, instance=None, data=empty, **kwargs):
-        super(IssueSerializer, self).__init__(instance, data, **kwargs)
+        super().__init__(instance, data, **kwargs)
 
         for ext in self.context.get('extensions', ()):
             ext.extend_issue_serializer(self)
@@ -104,7 +104,7 @@ class IssueSerializer(serializers.ModelSerializer):
         :type instance: issues.models.Issue
         :rtype: dict
         """
-        representation = super(IssueSerializer, self).to_representation(instance)
+        representation = super().to_representation(instance)
         if not (instance.lat and instance.long):  # Remove null coordinate fields
             representation.pop('lat', None)
             representation.pop('long', None)
@@ -125,14 +125,14 @@ class IssueSerializer(serializers.ModelSerializer):
         service_code = data.pop('service_code')
         service = Service.objects.filter(service_code=service_code).first()
         if not service:
-            raise serializers.ValidationError('Service code %s is invalid' % service_code)
+            raise serializers.ValidationError(f'Service code {service_code} is invalid')
         data['service'] = service
 
         lat = data.pop('lat', None)
         long = data.pop('long', None)
         if lat and long:
             data['location'] = GEOSGeometry(  # TODO: Maybe remove? Looks like a GEOS dependency
-                'SRID=4326;POINT(%s %s)' % (long, lat)
+                f'SRID=4326;POINT({long} {lat})'
             )
 
         if not data.get('jurisdiction'):

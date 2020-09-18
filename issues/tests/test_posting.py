@@ -5,7 +5,7 @@ from django.utils.crypto import get_random_string
 
 from issues.models.applications import Application
 from issues.signals import issue_posted
-from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
+from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import ISSUE_LIST_ENDPOINT, close_enough, get_data_from_response, verify_issue
 
 
@@ -21,7 +21,7 @@ def test_default_moderation_status(mf_api_client, random_service, settings, stat
         mf_api_client.post(ISSUE_LIST_ENDPOINT, {
             "lat": 15,
             "long": 15,
-            "description": get_random_string(),
+            "description": get_random_string(12),
             "service_code": random_service.service_code,
         }),
         201,
@@ -40,7 +40,7 @@ ROUNDTRIP_TEST_CASES = [  # TODO: Add more test cases!
     {
         "lat": random.uniform(-50, 50),
         "long": random.uniform(-50, 50),
-        "description": get_random_string(),
+        "description": get_random_string(12),
     },
 ]
 
@@ -90,7 +90,7 @@ def test_post_issue_api_key(mf_api_client, random_service, api_key_mode, pass_ap
             expected_status = 400
 
     input_data = dict(
-        description=get_random_string(),
+        description=get_random_string(12),
         service_code=random_service.service_code,
         address='hello',
         api_key=(expected_app.key if pass_api_key else ''),

@@ -3,12 +3,12 @@ from base64 import b64decode
 
 import pytest
 from django.core.files.base import ContentFile
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.crypto import get_random_string
 
 from issues.models.issues import Issue
 from issues.tests.conftest import mf_api_client, random_service  # noqa
-from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
+from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import ISSUE_LIST_ENDPOINT, get_data_from_response
 # https://raw.githubusercontent.com/mathiasbynens/small/master/jpeg.jpg
 from issues_media.models import IssueMedia
@@ -30,12 +30,12 @@ def test_post_media(mf_api_client, random_service):
     ]
     issues = get_data_from_response(
         mf_api_client.post(
-            '%s?extensions=media' % ISSUE_LIST_ENDPOINT,
+            f'{ISSUE_LIST_ENDPOINT}?extensions=media',
             data={
                 'service_code': random_service.service_code,
                 'lat': 30,
                 'long': 30,
-                'description': get_random_string(),
+                'description': get_random_string(12),
                 'media': files,
             }
         ),

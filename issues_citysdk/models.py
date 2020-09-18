@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Issue_CitySDK(models.Model):
-    issue = models.OneToOneField('issues.Issue', related_name="citysdk")
+    issue = models.OneToOneField('issues.Issue', related_name='citysdk', on_delete=models.CASCADE)
     service_object_id = models.CharField(max_length=100, blank=True)
     service_object_type = models.CharField(max_length=100, blank=True)
     title = models.CharField(max_length=120, blank=True)

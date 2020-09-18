@@ -1,7 +1,7 @@
 from django.utils.crypto import get_random_string
 
 from issues.tests.conftest import mf_api_client, random_service, testing_issues  # noqa
-from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
+from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import ISSUE_LIST_ENDPOINT, get_data_from_response, verify_issue
 from issues_citysdk.models import Issue_CitySDK
 
@@ -60,9 +60,9 @@ def test_by_description(testing_issues, mf_api_client):
 
 
 def test_post_service_object(random_service, mf_api_client):
-    service_object_id = get_random_string()
+    service_object_id = get_random_string(12)
     service_object_type = 'http://www.hel.fi/servicemap/v2'
-    title = get_random_string()
+    title = get_random_string(12)
 
     issues = get_data_from_response(
         mf_api_client.post(

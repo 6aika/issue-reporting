@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import datetime
 import string
 
@@ -8,9 +6,8 @@ from django.db import models
 from django.template.defaultfilters import truncatechars
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from django.utils.six import python_2_unicode_compatible
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from issues.fields import GeoPointField
 
@@ -28,11 +25,10 @@ MODERATION_STATUS_CHOICES = [
 ]
 
 
-@python_2_unicode_compatible
 class Issue(models.Model):
     application = models.ForeignKey('issues.Application', on_delete=models.PROTECT)
     jurisdiction = models.ForeignKey('issues.Jurisdiction', on_delete=models.PROTECT)
-    service = models.ForeignKey('issues.Service')
+    service = models.ForeignKey('issues.Service', on_delete=models.CASCADE)
     service_code = models.CharField(max_length=64, db_index=True)
     identifier = models.CharField(max_length=64, unique=True)
     description = models.TextField()
@@ -58,7 +54,7 @@ class Issue(models.Model):
     )
 
     def __str__(self):
-        return "%s: %s" % (self.identifier, truncatechars(self.description, 50))
+        return f"{self.identifier}: {truncatechars(self.description, 50)}"
 
     def clean(self):
         self._cache_data()
@@ -75,11 +71,11 @@ class Issue(models.Model):
                     _('%(service)s requires coordinates') % {'service': self.service}
                 )
 
-        return super(Issue, self).clean()
+        return super().clean()
 
     def save(self, **kwargs):
         self._cache_data()
-        super(Issue, self).save(**kwargs)
+        super().save(**kwargs)
 
     def _generate_identifier(self):
         for length in range(8, 65, 4):
@@ -128,7 +124,7 @@ class Issue(models.Model):
         if (self.long and self.lat) and not self.location:
             from django.contrib.gis.geos import GEOSGeometry
             self.location = GEOSGeometry(
-                'SRID=4326;POINT(%s %s)' % (self.long, self.lat)
+                f'SRID=4326;POINT({self.long} {self.lat})'
             )
         if self.location:
             self.long = self.location[0]

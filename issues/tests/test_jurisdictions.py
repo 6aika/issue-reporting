@@ -1,9 +1,9 @@
 import pytest
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.crypto import get_random_string
 
 from issues.models import Issue, Jurisdiction
-from issues.tests.schemata import ISSUE_SCHEMA, LIST_OF_ISSUES_SCHEMA
+from issues.tests.schemata import LIST_OF_ISSUES_SCHEMA
 from issues.tests.utils import ISSUE_LIST_ENDPOINT, get_data_from_response, verify_issue
 
 
@@ -16,7 +16,7 @@ def test_post_issue_no_jurisdiction(mf_api_client, random_service):
                 "service_code": random_service.service_code,
                 "lat": 30,
                 "long": 30,
-                "description": get_random_string(),
+                "description": get_random_string(12),
             }),
             201,
             schema=LIST_OF_ISSUES_SCHEMA
@@ -45,7 +45,7 @@ def test_post_issue_multi_jurisdiction(mf_api_client, random_service):
             "service_code": random_service.service_code,
             "lat": 30,
             "long": 30,
-            "description": get_random_string(),
+            "description": get_random_string(12),
         }),
         400
     )
@@ -57,7 +57,7 @@ def test_post_issue_multi_jurisdiction(mf_api_client, random_service):
                 "service_code": random_service.service_code,
                 "lat": 30,
                 "long": 30,
-                "description": get_random_string(),
+                "description": get_random_string(12),
             }),
             201,
             schema=LIST_OF_ISSUES_SCHEMA
@@ -70,7 +70,7 @@ def test_post_issue_multi_jurisdiction(mf_api_client, random_service):
 def test_get_issue_multi_jurisdiction_filters_correctly(mf_api_client, random_service):
     assert not Jurisdiction.objects.exists()  # Precondition check
     jurisdictions = [
-        Jurisdiction.objects.create(identifier="j%s" % x, name="j%s" % x)
+        Jurisdiction.objects.create(identifier=f"j{x}", name=f"j{x}")
         for x in range(4)
     ]
     for j in jurisdictions:
@@ -78,7 +78,7 @@ def test_get_issue_multi_jurisdiction_filters_correctly(mf_api_client, random_se
             Issue.objects.create(
                 jurisdiction=j,
                 service=random_service,
-                description=get_random_string(),
+                description=get_random_string(12),
                 address='Test Street 10',
             )
     for j in jurisdictions:

@@ -38,7 +38,7 @@ def get_config_json(context, **extra):
     """
     request = context['request']
     user = request.user
-    if user and user.is_authenticated():
+    if user and user.is_authenticated:
         extra['csrf_token'] = get_token(request)
 
     try:
@@ -52,7 +52,7 @@ def get_config_json(context, **extra):
     return mark_safe(json.dumps(dict({
         'language': get_language().split('-')[0],
         'api_key': application.key,
-        'api_root': '/%s' % settings.GEOREPORT_API_ROOT,
+        'api_root': f'/{settings.GEOREPORT_API_ROOT}',
         'map_settings': {  # TODO: Make this configurable
             'center': [60.1699, 24.9384],
             'tileUrl': 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',

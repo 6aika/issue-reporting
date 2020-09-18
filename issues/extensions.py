@@ -1,7 +1,7 @@
 from django.apps import apps
 
 
-class IssueExtension(object):
+class IssueExtension:
     #: The identifier for the extension (as referred to in the `extensions` argument)
     identifier = None
 
@@ -61,7 +61,6 @@ class IssueExtension(object):
         :param data: The data dict that was used to create the Issue
         :type data: dict
         """
-        pass
 
     def parse_extended_attributes(self, issue, extended_attributes):  # pragma: no cover
         """
@@ -74,7 +73,6 @@ class IssueExtension(object):
         :param extended_attributes: Extended attributes dict
         :type extended_attributes: dict[str, object]
         """
-        pass
 
     def extend_issue_serializer(self, serializer):
         """
@@ -85,7 +83,6 @@ class IssueExtension(object):
         :param serializer: IssueSerializer
         :type serializer: issues.api.serializers.IssueSerializer
         """
-        pass
 
     def validate_issue_data(self, serializer, data):
         """
@@ -113,7 +110,7 @@ def get_extensions():
 
 
 def get_extension_ids():
-    return set(ex.identifier for ex in get_extensions())
+    return {ex.identifier for ex in get_extensions()}
 
 
 def get_extensions_from_request(request):
@@ -131,7 +128,7 @@ def get_extensions_from_request(request):
         except (AttributeError, KeyError):
             pass
 
-    extensions = set(ex() for ex in get_extensions() if ex.identifier in extension_ids)
+    extensions = {ex() for ex in get_extensions() if ex.identifier in extension_ids}
     request._issue_extensions = extensions
     return extensions
 

@@ -1,8 +1,6 @@
-from __future__ import unicode_literals
+import io
 
-from django.utils import six
-from django.utils.encoding import smart_text
-from django.utils.six.moves import StringIO
+from django.utils.encoding import force_str
 from django.utils.xmlutils import SimplerXMLGenerator
 from rest_framework.renderers import BaseRenderer, JSONRenderer
 
@@ -46,7 +44,7 @@ class XMLRenderer(BaseRenderer):
         view = (renderer_context.get("view") if renderer_context else None)
         self.item_tag_name = getattr(view, "item_tag_name", self.item_tag_name)
         self.root_tag_name = getattr(view, "root_tag_name", self.root_tag_name)
-        stream = StringIO()
+        stream = io.StringIO()
         xml = SimplerXMLGenerator(stream, self.charset)
         xml.startDocument()
         root_tag_name = (getattr(data, "xml_tag", None) or self.root_tag_name)
@@ -71,12 +69,12 @@ class XMLRenderer(BaseRenderer):
                 self._to_xml(xml, item, tag_name=(getattr(data, "xml_tag", None) or self.item_tag_name))
         elif isinstance(data, dict):
             key_order = getattr(data, "key_order", ())
-            for key in sorted(six.iterkeys(data), key=order_by_sort_order(key_order)):
+            for key in sorted(data.keys(), key=order_by_sort_order(key_order)):
                 self._to_xml(xml, data[key], key)
         elif data is None:  # Don't output any value
             pass
         else:
-            xml.characters(smart_text(data))
+            xml.characters(force_str(data))
 
         if tag_name:
             xml.endElement(tag_name)

@@ -1,12 +1,8 @@
-from __future__ import absolute_import
-
 from django.contrib.gis.db import models
-from django.utils.six import python_2_unicode_compatible
 
 from issues.excs import MultipleJurisdictionsError
 
 
-@python_2_unicode_compatible
 class Jurisdiction(models.Model):
     identifier = models.CharField(max_length=64, unique=True)
     name = models.CharField(max_length=64)

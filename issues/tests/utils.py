@@ -1,7 +1,7 @@
 import json
 
 import jsonschema
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 from issues.api.transforms import transform_xml_to_json
 
@@ -11,7 +11,7 @@ ISSUE_LIST_ENDPOINT = reverse_lazy('georeport/v2:issue-list')
 def get_data_from_response(response, status_code=200, schema=None):
     if status_code:  # pragma: no branch
         assert response.status_code == status_code, (
-            "Status code mismatch (%s is not the expected %s)" % (response.status_code, status_code)
+            f"Status code mismatch ({response.status_code} is not the expected {status_code})"
         )
 
     if response["Content-Type"].startswith("application/xml"):
@@ -72,5 +72,5 @@ def verify_issue(data, issue=None):
 
 def close_enough(a, b, epsilon=0.001):
     distance = abs(a - b)
-    assert distance < epsilon, "%s and %s have distance %s (should be < %s)" % (a, b, distance, epsilon)
+    assert distance < epsilon, f"{a} and {b} have distance {distance} (should be < {epsilon})"
     return True  # for use in `assert close_enough()`

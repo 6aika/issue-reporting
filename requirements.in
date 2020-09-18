@@ -1,9 +1,8 @@
 babel<3.0
 django-environ~=0.4.0
 django-parler
-djangorestframework~=3.3.3
+djangorestframework
 iso8601
-jsonschema
-python-dateutil~=2.5.0
-requests~=2.9.1
-six==1.10.0
+jsonschema~=2.5.1
+python-dateutil
+requests

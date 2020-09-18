@@ -14,7 +14,7 @@ class MediaExtension(IssueExtension):
         for file in request.FILES.getlist('media', ()):
             assert isinstance(file, UploadedFile)
             if file.size > 100 * 1024 * 1024:
-                raise ValidationError("File %s is too large" % file)
+                raise ValidationError(f"File {file} is too large")
             # TODO: Add mimetype validation somewhere around here
             IssueMedia.objects.create(
                 issue=issue,

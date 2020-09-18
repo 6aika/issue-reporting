@@ -1,7 +1,7 @@
 STRING_OR_NULL = {"anyOf": [{"type": "string"}, {"type": "null"}]}
 NUMERIC_STRING = {
     "type": "string",
-    "pattern": "^-?[0-9]*(\.[0-9]+)?$"
+    "pattern": r"^-?[0-9]*(\.[0-9]+)?$"
 }
 
 NUMBER_OR_NUMERIC_STRING = {

@@ -28,17 +28,17 @@ def api_exception_handler(exc, context):
 
 class XMLDict(OrderedDict):
     def __init__(self, dict, xml_tag=None):
-        super(XMLDict, self).__init__(dict)
+        super().__init__(dict)
         self.xml_tag = xml_tag
 
 
 class XMLList(list):
     def __init__(self, list, xml_tag=None):
-        super(XMLList, self).__init__(list)
+        super().__init__(list)
         self.xml_tag = xml_tag
 
 
-class IWriteXML(object):
+class IWriteXML:
     def write_xml(self, xml):
         """
         Write this object to the given XMLGenerator.
@@ -68,7 +68,7 @@ def get_application_from_api_key(api_key):
         except ObjectDoesNotExist:
             raise serializers.ValidationError('Invalid API key')
         if not app.active:
-            raise serializers.ValidationError('The %s application is not active' % app)
+            raise serializers.ValidationError(f'The {app} application is not active')
     else:
         try:
             app = Application.autodetermine()
