@@ -1,0 +1,53 @@
+name: CI
+'on':
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.6
+            DATABASE_URL: 'sqlite:///tmp/ir-{envname}.sqlite3'
+          - python-version: 3.6
+            DATABASE_URL: 'mysql://root:@127.0.0.1:3306/ir'
+          - python-version: 3.6
+            DATABASE_URL: 'postgis://postgres:password@127.0.0.1:5432/testdb'
+    services:
+      postgres:
+        image: postgis/postgis:14-3.2-alpine
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: ir
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '${{ matrix.python-version }}'
+          cache: pip
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends libgdal-dev
+      - run: pip install --progress-bar=off -q --upgrade pip setuptools wheel
+      - run: pip install --progress-bar=off -q mysqlclient psycopg2 coveralls -r requirements-dev.txt
+      - run: py.test -vv --cov .
+        env:
+          DEBUG: "1"
+          DATABASE_URL: ${{ matrix.DATABASE_URL }}
+      - uses: codecov/codecov-action@v2
