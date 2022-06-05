@@ -4,44 +4,96 @@
 #
 #    pip-compile requirements-dev.in
 #
-asgiref==3.2.10           # via django
-attrs==20.2.0             # via pytest
-autoflake==1.4            # via -r requirements-dev.in
-autopep8==1.5.4           # via -r requirements-dev.in
-babel==2.8.0              # via -r requirements.in
-certifi==2020.6.20        # via requests
-chardet==3.0.4            # via requests
-click==7.1.2              # via pip-tools
-coverage==5.3             # via pytest-cov
-django-environ==0.4.5     # via -r requirements.in
-django-parler==2.2        # via -r requirements.in
-django==3.1.1             # via djangorestframework
-djangorestframework==3.11.1  # via -r requirements.in
-flake8==3.8.3             # via -r requirements-dev.in
-idna==2.10                # via requests
-iniconfig==1.0.1          # via pytest
-iso8601==0.1.13           # via -r requirements.in
-isort==5.5.2              # via -r requirements-dev.in
-jsonschema==2.5.1         # via -r requirements.in
-mccabe==0.6.1             # via flake8
-more-itertools==8.5.0     # via pytest
-packaging==20.4           # via pytest
-pip-tools==5.3.1          # via -r requirements-dev.in
-pluggy==0.13.1            # via pytest
-py==1.9.0                 # via pytest
-pycodestyle==2.6.0        # via autopep8, flake8
-pyflakes==2.2.0           # via autoflake, flake8
-pyparsing==2.4.7          # via packaging
-pytest-cov==2.10.1        # via -r requirements-dev.in
-pytest-django==3.10.0     # via -r requirements-dev.in
-pytest==6.0.2             # via -r requirements-dev.in, pytest-cov, pytest-django
-python-dateutil==2.8.1    # via -r requirements.in
-pytz==2020.1              # via babel, django
-requests==2.24.0          # via -r requirements.in
-six==1.15.0               # via packaging, pip-tools, python-dateutil
-sqlparse==0.3.1           # via django
-toml==0.10.1              # via autopep8, pytest
-urllib3==1.25.10          # via requests
+asgiref==3.2.10
+    # via django
+attrs==20.2.0
+    # via pytest
+autoflake==1.4
+    # via -r requirements-dev.in
+autopep8==1.5.4
+    # via -r requirements-dev.in
+babel==2.8.0
+    # via -r requirements.in
+certifi==2020.6.20
+    # via requests
+chardet==3.0.4
+    # via requests
+click==7.1.2
+    # via pip-tools
+coverage==5.3
+    # via pytest-cov
+django==3.1.14
+    # via djangorestframework
+django-environ==0.4.5
+    # via -r requirements.in
+django-parler==2.2
+    # via -r requirements.in
+djangorestframework==3.11.1
+    # via -r requirements.in
+flake8==3.8.3
+    # via -r requirements-dev.in
+idna==2.10
+    # via requests
+iniconfig==1.0.1
+    # via pytest
+iso8601==0.1.13
+    # via -r requirements.in
+isort==5.5.2
+    # via -r requirements-dev.in
+jsonschema==2.5.1
+    # via -r requirements.in
+mccabe==0.6.1
+    # via flake8
+more-itertools==8.5.0
+    # via pytest
+packaging==20.4
+    # via pytest
+pip-tools==5.3.1
+    # via -r requirements-dev.in
+pluggy==0.13.1
+    # via pytest
+py==1.9.0
+    # via pytest
+pycodestyle==2.6.0
+    # via
+    #   autopep8
+    #   flake8
+pyflakes==2.2.0
+    # via
+    #   autoflake
+    #   flake8
+pyparsing==2.4.7
+    # via packaging
+pytest==6.0.2
+    # via
+    #   -r requirements-dev.in
+    #   pytest-cov
+    #   pytest-django
+pytest-cov==2.10.1
+    # via -r requirements-dev.in
+pytest-django==3.10.0
+    # via -r requirements-dev.in
+python-dateutil==2.8.1
+    # via -r requirements.in
+pytz==2020.1
+    # via
+    #   babel
+    #   django
+requests==2.24.0
+    # via -r requirements.in
+six==1.15.0
+    # via
+    #   packaging
+    #   pip-tools
+    #   python-dateutil
+sqlparse==0.3.1
+    # via django
+toml==0.10.1
+    # via
+    #   autopep8
+    #   pytest
+urllib3==1.25.10
+    # via requests
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
