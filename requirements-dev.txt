@@ -14,7 +14,7 @@ autopep8==1.6.0
     # via -r requirements-dev.in
 babel==2.10.1
     # via -r requirements.in
-certifi==2022.5.18.1
+certifi==2022.12.7
     # via requests
 charset-normalizer==2.0.12
     # via requests
