@@ -21,9 +21,6 @@ VERY_SMALL_JPEG = b64decode(
 
 
 def test_post_media(mf_api_client, random_service):
-    if sys.version_info[0] == 2 and mf_api_client.format in ('xml', 'sjson'):
-        pytest.xfail('this test is somehow broken on Py2')
-
     files = [
         ContentFile(content=VERY_SMALL_JPEG, name="x%d.jpg" % x)
         for x in range(3)

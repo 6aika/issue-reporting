@@ -6,9 +6,6 @@ import pytest
 
 from issues.sync.down import update_local_issue
 
-if sys.version_info[0] == 2:  # pragma: no cover
-    from codecs import open
-
 
 @pytest.mark.django_db
 def test_import_taskful_georeport():
