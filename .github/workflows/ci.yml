@@ -12,11 +12,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - python-version: 3.6
+          - python-version: 3.8
             DATABASE_URL: 'sqlite:///tmp/ir-{envname}.sqlite3'
-          - python-version: 3.6
+          - python-version: 3.8
             DATABASE_URL: 'mysql://root:@127.0.0.1:3306/ir'
-          - python-version: 3.6
+          - python-version: 3.8
             DATABASE_URL: 'postgis://postgres:password@127.0.0.1:5432/testdb'
     services:
       postgres:
