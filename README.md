@@ -15,7 +15,7 @@ When installing via PyPI or `setup.py`, the standalone project is _not_ availabl
 
 ## Requirements
 
-* Python 3.6+
+* Python 3.8+
 * Any database supported by Django. PostgreSQL with the PostGIS extension is preferrable.
   * Non-GIS-enabled databases will work too, but with degraded performance and/or capabilities.
 
