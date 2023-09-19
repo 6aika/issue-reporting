@@ -86,8 +86,6 @@ AURAJOKIRANTA_GEOJSON = {
 
 @pytest.mark.parametrize('geometry_data', [None, AURAJOKIRANTA_GEOJSON, AURAJOKIRANTA_GEOJSON['geometry']])
 def test_post_geometry(random_service, mf_api_client, geometry_data):
-    if sys.version_info[0] == 2 and mf_api_client.format != 'json':
-        pytest.xfail('unsupported')
     from issues_geometry.models import IssueGeometry
     post_data = {
         'extensions': 'geometry',
