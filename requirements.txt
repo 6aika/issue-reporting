@@ -35,7 +35,7 @@ pytz==2022.1
     #   babel
     #   django
     #   djangorestframework
-requests==2.27.1
+requests==2.31.0
     # via -r requirements.in
 six==1.16.0
     # via python-dateutil
